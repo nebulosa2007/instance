@@ -1,0 +1,9 @@
+[Unit]
+Description=Update all package bases
+
+[Service]
+ExecStart=/usr/bin/updpkgs
+
+[Install]
+WantedBy=default.target
+

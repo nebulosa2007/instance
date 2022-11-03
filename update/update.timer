@@ -1,0 +1,8 @@
+[Unit]
+Description=timer for update all package bases
+
+[Timer]
+OnCalendar=12,23:00
+
+[Install]
+WantedBy=timers.target
