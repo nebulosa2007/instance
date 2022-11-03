@@ -25,6 +25,7 @@ echo
 echo "Total packages: $(/usr/bin/pacman -Q | wc -l)"
 echo
 [ -f /usr/bin/vnstat                               ] && { vnstat --oneline | cut -d";" -f 8,9,10,11| sed 's/;/   RX: /;s/;/   TX: /;s/;/   Total: /'; echo; }
+[ -f /usr/bin/vnstat                               ] && { echo -n "Estimated per month: "; vnstat -m 1 | grep estimated | cut -d"|" -f3 | sed 's/  //'; echo; }
 [ -f /home/$(whoami)/instance/scripts/systemage.sh ] &&   source /home/$(whoami)/instance/scripts/systemage.sh
 echo
 
