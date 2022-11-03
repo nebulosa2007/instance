@@ -61,4 +61,6 @@ alias age="$WAY/systemage.sh"
 alias ustat="watch -n 10 $WAY/serverstatus.sh"
 
 ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
-source "$WAY/sensitive.sh"
+if [ -f "$WAY/sensitive.sh" ]; then
+	source "$WAY/sensitive.sh"
+fi
