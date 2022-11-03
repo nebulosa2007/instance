@@ -1,3 +1,6 @@
+# Program packages:
+# pikaur -Syu --needed lsd netcat micro mc reflector
+
 #ALIASES MANAGEMENT
 alias baupdate=". ~/.bash_aliases"
 alias bpupdate=". ~/.bash_profile"
