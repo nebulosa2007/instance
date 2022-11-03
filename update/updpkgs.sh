@@ -15,12 +15,12 @@ if [ "$md5file"  != "$md5upd" ]
 then
     if [ $COUNTUPD -lt 16 ]
     then
-	[ -f /home/nebulosa/instance/scripts/tgsay.sh ] && /home/nebulosa/instance/scripts/tgsay.sh "<b>Available updates:</b>
+	[ -f /home/ds/instance/scripts/tgsay.sh ] && /home/ds/instance/scripts/tgsay.sh "<b>Available updates:</b>
 $UPDATES
 
 $COUNTUPD total on <b>$host</b>"
     else
-	[ -f /home/nebulosa/instance/scripts/tgsay.sh ] && /home/nebulosa/instance/scripts/tgsay.sh "<b>Available updates:</b>
+	[ -f /home/ds/instance/scripts/tgsay.sh ] && /home/ds/instance/scripts/tgsay.sh "<b>Available updates:</b>
 $COUNTUPD total on <b>$host</b>"
     fi
 echo "$UPDATES">/var/log/updpackages.log
