@@ -15,4 +15,4 @@ echo
 
 [ `pacman -Qu | wc -l` -ne 0 ] && ( printf "${red}Available updates:\n"; cat /var/log/updpackages.log; printf "${nc}\n" ) || echo "System is up-to-date"
 
-printf "${yellow}" ; instance/scripts/systemage.sh ; printf "${nc}\n"
+printf "${yellow}" ; ~/instance/scripts/systemage.sh ; printf "${nc}\n"
