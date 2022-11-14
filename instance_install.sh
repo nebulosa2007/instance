@@ -7,6 +7,7 @@
 ## [Network]
 ## Gateway=......
 ## Address=....../24
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
 sudo systemctl restart systemd-networkd
 ip a
 
@@ -28,7 +29,7 @@ sed -i 's/#ParallelDownloads = 5/ParallelDownloads = 5/' /etc/pacman.conf
 pacstrap /mnt base base-devel linux grub e2fsprogs
 
 cp -f /etc/systemd/network/20-ethernet.network /mnt/etc/systemd/network/20-ethernet.network
-echo "nameserver 8.8.8.8" | sudo tee -a /etc/resolv.conf
+cp -f /etc/resolv.conf /mnt/etc/resolv.conf
 sudo systemctl enable systemd-networkd
 
 
@@ -147,5 +148,4 @@ sudo ln -sf /home/$(whoami)/instance/etc/locale.nopurge /etc/locale.nopurge
 cd && mkdir wireguard && cd wireguard
 curl -O https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh
 chmod +x wireguard-install.sh 
-./wireguard-install.sh 
 sudo ./wireguard-install.sh 
