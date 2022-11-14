@@ -83,10 +83,17 @@ systemctl enable sshd
 
 systemctl enable fstrim.timer
 
+# install vnstat
+pacman -S vnstat
+systemctl enable vnstat
+
+
+
 exit&&cd&&umount -R /mnt
 reboot
 
 # Login trought ssh, then:
+
 # Tuning ssh
 # Add .ssh/id_rsa.pub into .ssh/authorized_keys
 sudo sed -i 's/#PasswordAuthentication no/PasswordAuthentication no/' /etc/ssh/sshd_config
@@ -130,12 +137,6 @@ sudo ln -s /home/$(whoami)/instance/update/update.service /lib/systemd/system/up
 sudo ln -s /home/$(whoami)/instance/update/update.timer /lib/systemd/system/update.timer
 sudo systemctl daemon-reload
 sudo systemctl enable --now update.timer
-
-# install vnstat
-pikaur -Syu --needed vnstat
-vnstat --iflist
-sudo vnstat --add -i ens3
-sudo systemctl enable --now vnstat
 
 # install localepurge
 pikaur -Syu --needed localepurge
