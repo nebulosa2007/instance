@@ -2,7 +2,7 @@
 
 reflector -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 /usr/bin/pacman -Sy
-COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "[ignored]" | /usr/bin/wc -l)
+COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]" | /usr/bin/wc -l)
 
 if [ $COUNTUPD -gt 0 ]
 then
