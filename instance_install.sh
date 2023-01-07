@@ -120,7 +120,7 @@ pikaur -S zramd
 sudo systemctl enable --now zramd
 
 # Install programs to instance scripts
-pikaur -Syu --needed iproute2 lsd netcat micro mc reflector htop btop expac neofetch ranger tmux
+pikaur -Syu --needed iproute2 lsd micro mc reflector htop btop expac neofetch ranger tmux
 
 # instance project installing
 cd

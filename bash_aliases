@@ -30,7 +30,7 @@ alias boottime="sudo systemd-analyze&&sudo systemd-analyze blame --no-pager"
 
 #SHORTS: EXTERNAL PROGRAMS
 alias ls=lsd
-alias tb="nc termbin.com 9999"
+alias 0x0="curl -F file=@- https://0x0.st"
 alias mc="EDITOR=micro mc"
 alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
 
