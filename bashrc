@@ -11,3 +11,18 @@ if [ -n "$SSH_CLIENT" ]; then
         [ `pacman -Qu | wc -l` -ne 0 ] && ( printf "${red}Available updates:\n"; cat /var/log/updpackages.log; printf "${nc}\n" ) || echo "System is up-to-date"
         printf "${yellow}" ; ~/instance/scripts/systemage.sh ; printf "${nc}\n"
 fi
+
+#https://github.com/linuxdabbler/personal-dot-files/blob/master/config/bashrc
+
+## don't duplicate lines in history file
+HISTCONTROL=ignoreboth
+
+## for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=10000
+HISTFILESIZE=20000
+
+## check the window size after each command and update values for columns
+shopt -s checkwinsize
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
