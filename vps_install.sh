@@ -121,6 +121,9 @@ cd pikaur && makepkg -fsri && cd .. && rm -rf pikaur
 pikaur -S zramd
 sudo systemctl enable --now zramd
 
+#Install usefull soft
+pikaur -S htop neofetch ranger
+
 # install wireguard
 cd && mkdir wireguard && cd wireguard
 curl -O https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh
