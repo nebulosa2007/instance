@@ -6,4 +6,5 @@ mkdir instance && curl -L https://github.com/nebulosa2007/instance/archive/v.1.0
 
 ## Cleaning:
 rm instance/.gitignore instance/LICENSE instance/README.md
+
 rm instance/instance_install.sh instance/vps_install.sh
