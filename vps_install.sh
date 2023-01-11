@@ -1,5 +1,8 @@
 # Tuning network
 
+#For DCHP ONLY!
+#printf "[Match]\nName=en*\n\n[Network]\nDHCP=yes\n" > /etc/systemd/network/20-wired.network
+# or
 ## /etc/systemd/network/20-ethernet.network
 ## Name=en*
 ## Name=eth*
@@ -7,9 +10,9 @@
 ## [Network]
 ## Gateway=......
 ## Address=....../24
-echo "nameserver 8.8.8.8" > /etc/resolv.conf
+echo "nameserver 9.9.9.9" > /etc/resolv.conf
 sudo systemctl restart systemd-networkd
-ip a
+ip -c a
 
 passwd
 
@@ -47,6 +50,7 @@ cat /etc/fstab
 sed -i "s/PRESETS=('default' 'fallback')/PRESETS=('default')/" /etc/mkinitcpio.d/linux.preset
 mkinitcpio -P
 rm /boot/initramfs-linux-fallback.img
+
 #install GRUB on BIOS
 grub-install --target=i386-pc --recheck /dev/vda
 sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/' /etc/default/grub
@@ -57,8 +61,8 @@ sed -i 's/#NoExtract   =/NoExtract   = usr\/share\/man\/* usr\/share\/help\/* us
 
 
 #set variables
-M=vpsrus
-U=ds
+M=vps
+U=nebulosa
 
 #Uncomment en_US.UTF-8 only and generate locales
 sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen && locale-gen
@@ -87,8 +91,6 @@ systemctl enable fstrim.timer
 # install vnstat
 pacman -S vnstat
 systemctl enable vnstat
-
-
 
 exit&&cd&&umount -R /mnt
 reboot
@@ -119,33 +121,10 @@ cd pikaur && makepkg -fsri && cd .. && rm -rf pikaur
 pikaur -S zramd
 sudo systemctl enable --now zramd
 
-# Install programs to instance scripts
-pikaur -Syu --needed iproute2 lsd micro mc reflector htop btop expac neofetch ranger tmux
-
-# instance project installing
-cd
-git clone git@github.com:nebulosa2007/instance.git
-ln -sf /home/$(whoami)/instance/bashrc .bashrc
-ln -s /home/$(whoami)/instance/bash_aliases .bash_aliases
-sudo ln -s /home/$(whoami)/instance/etc/tmux.conf /etc/tmux.conf
-sudo cp /home/$(whoami)/instance/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf
-sudo sysctl --system
-
-# install update timer
-cd instance/update
-sudo ln -s /home/$(whoami)/instance/update/updpkgs.sh /usr/bin/updpkgs
-sudo ln -s /home/$(whoami)/instance/update/update.service /lib/systemd/system/update.service
-sudo ln -s /home/$(whoami)/instance/update/update.timer /lib/systemd/system/update.timer
-sudo systemctl daemon-reload
-sudo systemctl enable --now update.timer
-
-# install localepurge
-pikaur -Syu --needed localepurge
-sudo ln -sf /home/$(whoami)/instance/etc/locale.nopurge /etc/locale.nopurge
-
-
 # install wireguard
 cd && mkdir wireguard && cd wireguard
 curl -O https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh
 chmod +x wireguard-install.sh 
 sudo ./wireguard-install.sh 
+
+#TODO install wireguard-gui instead
