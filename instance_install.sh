@@ -3,7 +3,6 @@ pikaur -Syu --needed lsd mc reflector expac tmux
 
 # instance project installing
 cd
-git clone git@github.com:nebulosa2007/instance.git
 ln -sf /home/$(whoami)/instance/bashrc .bashrc
 ln -s /home/$(whoami)/instance/bash_aliases .bash_aliases
 sudo ln -s /home/$(whoami)/instance/etc/tmux.conf /etc/tmux.conf
