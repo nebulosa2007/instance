@@ -26,7 +26,7 @@ alias grep="grep --color=auto"
 alias openports="sudo ss -ntulp"
 alias x="exit"
 alias gethash="tr -dc 'a-z0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null && echo"
-alias boottime="sudo systemd-analyze&&sudo systemd-analyze blame --no-pager"
+alias boottime="systemd-analyze && systemd-analyze blame --no-pager"
 
 #SHORTS: EXTERNAL PROGRAMS
 alias ls=lsd
