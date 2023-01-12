@@ -15,7 +15,7 @@ fi
 #https://github.com/linuxdabbler/personal-dot-files/blob/master/config/bashrc
 
 ## don't duplicate lines in history file
-HISTCONTROL=ignoreboth
+export HISTCONTROL=ignoredups:erasedups
 
 ## for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=10000
