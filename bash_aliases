@@ -39,7 +39,7 @@ backup () { cp "$1"{,.backup};}
 sbackup () { sudo cp "$1"{,.backup};}
 
 #PIKAUR MANAGEMENT
-Install () { pikaur -S $@ || pikaur $1; }
+Install () { pikaur -S --needed $@ || pikaur $1; }
 alias Update="pikaur -Su"
 alias Upgrade="pikaur -Syu"
 alias Search="pikaur -Ss"
