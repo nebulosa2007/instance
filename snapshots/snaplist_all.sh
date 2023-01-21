@@ -4,11 +4,9 @@ red='\033[0;31m'
 nc='\033[0m'
 yellow='\033[1;33m'
 
-runas=$(whoami)
-
 #check root
-if [ $runas != 'root' ]; then
-    printf "${red}command must be run as root...exiting${nc}\n" && exit 1
+if [ $(whoami) != 'root' ]; then
+    printf "${red}Command must be run with sudo.${nc}\n" && exit 1
 fi
 
 #number of root snapshots
