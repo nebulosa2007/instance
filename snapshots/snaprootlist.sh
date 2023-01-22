@@ -20,7 +20,7 @@ do
             [ $operation == "-Rsc" ] && echo -ne ${red}"Before deleting    "
             [ $operation == "starting" ] && echo -ne ${yellow}"Before upgrading   "
             updated=$(awk '/'$snapshot'/,/transaction completed$/' /var/log/pacman.log | grep -E "\[ALPM\] upgraded" | cut -d" " -f4,7 | sed 's/)/,/')
-            [ "$updated" == "" ] && updated=$(awk '/'$snapshot'/,/transaction completed$/' /var/log/pacman.log | grep -E "\[ALPM\] (removed|installed)" | cut -d" " -f5 | sed 's/)/,/')
+            [ "$updated" == "" ] && updated=$(awk '/'$snapshot'/,/transaction completed$/' /var/log/pacman.log | grep -E "\[ALPM\] (removed|installed)" | cut -d" " -f4,5,7 | sed 's/)/,/;s/(//') && pacman_log_line=" "
             updated=$(echo $updated | sed 's/,$/ /;s/(/ /')
             echo -e $pacman_log_line$updated${nc}
         fi
