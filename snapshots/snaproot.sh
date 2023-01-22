@@ -33,7 +33,7 @@ ors="$(btrfs subvolume list / | awk '/root-snapshot/ {print $NF}' | head -n1)"
 #mount Root subvolume device to /mnt
 if [ -e "$rsvdv" ]; then
     mount $rsvdv /mnt
-    printf "${yellow} mounted $rsvdv to /mnt${nc}\n"
+    #printf "${yellow} mounted $rsvdv to /mnt${nc}\n"
 else
     printf "${red} no btrfs drives found${nc}\n" && exit 1
 fi
@@ -43,7 +43,7 @@ cd /mnt
 
 # Check that root subvolume is found...
 if [ -e "$rsv" ]; then
-    printf "${yellow} root subvolume found... $rsv${nc}\n"
+    #printf "${yellow} root subvolume found... $rsv${nc}\n"
 else
     printf "${red} no root subvolume found... exiting${nc}\n" && cd $HOME && umount /mnt && exit 1
 fi
@@ -54,11 +54,10 @@ btrfs subvolume snapshot $rsv root-snapshot-$cdt
 
 #remove a snapshot if there are more than 5
 if [ "$rsl" -ge "$sn"  ]; then
-	printf "${red} removing oldest snapshot... ${nc}\n"
+	#printf "${red} removing oldest snapshot... ${nc}\n"
 	btrfs subvolume delete $ors
 else
-	printf "${yellow} too few snapshots... ${nc}\n"
-	printf "${yellow} not deleting anything ${nc}\n"
+	printf "${yellow} too few snapshots, not deleting anything ${nc}\n"
 fi
 
 cd $HOME && umount /mnt
