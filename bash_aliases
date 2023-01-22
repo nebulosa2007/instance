@@ -37,6 +37,7 @@ alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pa
 #OTHER FUNCTIONS
 backup () { cp "$1"{,.backup};}
 sbackup () { sudo cp "$1"{,.backup};}
+cd() { builtin cd "$@" && command lsd --group-directories-first --color=auto -F;}
 
 #PIKAUR MANAGEMENT
 Install () { pikaur -S --needed $@ || pikaur $1; }
