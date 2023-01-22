@@ -43,6 +43,7 @@ cd /mnt
 
 # Check that root subvolume is found...
 if [ -e "$rsv" ]; then
+    :
     #printf "${yellow} root subvolume found... $rsv${nc}\n"
 else
     printf "${red} no root subvolume found... exiting${nc}\n" && cd $HOME && umount /mnt && exit 1
