@@ -5,6 +5,9 @@ green='\033[0;32m'
 yellow='\033[1;33m'
 nc='\033[0m'
 
+#/ snapshots
+printf "List of root snapshots:${green} $(sudo btrfs subvolume list / | awk '/root-snapshot/' | wc -l) ${nc}\n\n"
+
 sudo btrfs subvolume list / | awk '/root-snapshot/ {print $NF}'| while read snapshot
 do
     cat /var/log/pacman.log | while read pacman_log_line
@@ -27,4 +30,7 @@ do
     done
 done
 
-
+#/home snapshots
+printf "\n"
+printf "List of home snapshots:${green} $(sudo btrfs subvolume list / | awk '/home-snapshot/'| wc -l) ${nc}\n\n"
+sudo btrfs subvolume list / | awk '/home-snapshot/ {print $1"="$2" "$NF}'

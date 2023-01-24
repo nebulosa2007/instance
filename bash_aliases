@@ -58,11 +58,14 @@ pd () { sudo diff -y --suppress-common-lines "$1"{,.pacnew};}
 
 ## INSTANCE SCRIPTS ##
 WAY="$HOME/instance/scripts"
-
 alias sc='echo -e "Y\nY" | $WAY/cleansystem.sh'
 alias packages="$WAY/allpacks.sh"
 alias age="$WAY/systemage.sh"
 alias ustat="watch -n 10 $WAY/serverstatus.sh"
+
+SNAPWAY="$HOME/instance/snapshots"
+alias snaplist="$SNAPWAY/snaplist.sh"
+alias urescue="$SNAPWAY/make_rescue_iso_updater.sh"
 
 ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
 if [ -f "$WAY/sensitive.sh" ]; then
