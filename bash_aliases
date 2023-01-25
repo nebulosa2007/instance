@@ -1,5 +1,5 @@
 # Program packages:
-# pikaur -Syu --needed lsd mc reflector expac
+# pikaur -Syu --needed lsd mc reflector expac fzf
 
 #ALIASES MANAGEMENT
 alias baupdate=". ~/.bash_aliases"
@@ -33,18 +33,20 @@ alias ls=lsd
 alias 0x0="curl -F file=@- https://0x0.st"
 alias mc="EDITOR=micro mc"
 alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
+source /usr/share/fzf/completion.bash
+source /usr/share/fzf/key-bindings.bash
+
 
 #OTHER FUNCTIONS
 backup () { cp "$1"{,.backup};}
 sbackup () { sudo cp "$1"{,.backup};}
-cd() { builtin cd "$@" && command lsd --group-directories-first --color=auto -F;}
+cd() { builtin cd "$@" && command lsd --group-directories-first --color=auto -F; }
 
 #PIKAUR MANAGEMENT
-Install () { pikaur -S --needed $@ || pikaur $1; }
+Install () { pikaur -Sslq $@ | fzf -q $@ -m --reverse --preview 'pikaur -Si {1}' | xargs -ro pikaur -S --needed; }
+Purge   () { pikaur -Qqe     | fzf -q $@ -m --reverse --preview 'pikaur -Si {1}' | xargs -ro pikaur -Rsc;        }
 alias Update="pikaur -Su"
 alias Upgrade="pikaur -Syu"
-alias Search="pikaur -Ss"
-alias Purge="pikaur -Rsc"
 alias Clean="pikaur -Sc"
 
 #SYSTEM MAINTAINING
@@ -71,3 +73,4 @@ alias urescue="$SNAPWAY/make_rescue_iso_updater.sh"
 if [ -f "$WAY/sensitive.sh" ]; then
 	source "$WAY/sensitive.sh"
 fi
+
