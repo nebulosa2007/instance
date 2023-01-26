@@ -43,11 +43,12 @@ sbackup () { sudo cp "$1"{,.backup};}
 cd() { builtin cd "$@" && command lsd --group-directories-first --color=auto -F; }
 
 #PIKAUR MANAGEMENT
-Install () { pikaur -Sslq $@ | fzf -q $@ -m --reverse --preview 'pikaur -Si {1}' | xargs -ro pikaur -S --needed; }
-Purge   () { pikaur -Qqe     | fzf -q $@ -m --reverse --preview 'pikaur -Si {1}' | xargs -ro pikaur -Rsc;        }
+Install () { pikaur -Sslq $@             | fzf -q $@ -m --reverse --preview 'pikaur -Si {1}' | xargs -ro pikaur -S --needed; }
+Purge   () { (pikaur -Qqn; pacman -Qqm) | fzf -q $@ -m --reverse --preview 'pikaur -Si {1}' | xargs -ro pikaur -Rsc;        }
+Clean   () { comm -23 <( (pacman -Qqen; pacman -Qqm) | sort) <({ pacman -Qqg base-devel; expac -l '\n' '%E' base; } | sort -u) | fzf -m --reverse --preview 'pikaur -Si {1}' | xargs -ro pikaur -Rsc; }
 alias Update="pikaur -Su"
 alias Upgrade="pikaur -Syu"
-alias Clean="pikaur -Sc"
+alias Ccache="pikaur -Sc"
 
 #SYSTEM MAINTAINING
 alias topmem="ps -e -orss=,args= |awk '{print \$1 \" \" \$2 }'| awk '{tot[\$2]+=\$1;count[\$2]++} END {for (i in tot) {print tot[i],i,count[i]}}' | sort -n | tail -n 15 | sort -nr | awk '{ hr=\$1/1024; printf(\"%13.2fM\", hr); print \"\t\" \$2 }'; echo; free -m | awk '/Mem/{print(\$1\"\t\"\$3\"M\")}'"
@@ -56,7 +57,6 @@ alias topswp="cat /proc/*/status | grep -E 'VmSwap:|Name:' | grep -B1 'VmSwap' |
 alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Server /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; pikaur -Syu"
 alias whatsnew="find /etc 2>/dev/null | grep pacnew"
 pd () { sudo diff -y --suppress-common-lines "$1"{,.pacnew};}
-
 
 ## INSTANCE SCRIPTS ##
 WAY="$HOME/instance/scripts"
