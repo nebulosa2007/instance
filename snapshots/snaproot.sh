@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sn=15
+sn=10
 ROOTVOLUME="@root"
 ACTION=$(grep "\[PACMAN\]" /var/log/pacman.log | tail -1 | cut -d" " -f3-)
 
