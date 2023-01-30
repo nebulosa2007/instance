@@ -1,11 +1,13 @@
 #!/bin/bash
 
+exit 0
+
 source sensitive.sh
 
 if [ -z "$CHAT_ID" ]; then
     echo 'Please, define CHAT_ID first! See "chat":{"id":xxxxxxx string below:'
     #/usr/bin/wget -qO- https://api.telegram.org/bot$API_TOKEN/getUpdates
-    /usr/bin/curl https://api.telegram.org/bot$API_TOKEN/getUpdates
+    #/usr/bin/curl https://api.telegram.org/bot$API_TOKEN/getUpdates
     exit 1
 fi
 
