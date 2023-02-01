@@ -18,6 +18,7 @@ do
             operation=$(echo $filtered_pacman_log_line | cut -d" " -f1)
             pacman_log_line=$(echo $filtered_pacman_log_line | cut -d" " -f2-| sed 's/full system upgrade//')
             echo -n $snapshot": "
+			[ $operation == "-S" ] && echo -ne ${green}"Before installing  "
             [ $operation == "--upgrade" ] && echo -ne ${green}"Before installing  "
             [ $operation == "--sync" ] && echo -ne ${green}"Before installing  "
             [ $operation == "-Rsc" ] && echo -ne ${red}"Before deleting    "
