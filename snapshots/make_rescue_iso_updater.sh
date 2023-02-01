@@ -2,15 +2,16 @@
 
 SUBVOL="@archiso"
 ISO="archlinux-x86_64.iso"
-MIRROR="https://mirror.yandex.ru/archlinux/iso/latest/"
+MIRROR="https://geo.mirror.pkgbuild.com/iso/latest/"
 FOLDER="/mnt/archiso"
 ALLDONE=0
 
 #Checker if all already done
-#sudo mkdir -p $FOLDER && sudo mount -o noatime,compress=zstd,space_cache=v2,discard=async,subvol=$SUBVOL /dev/sda1 $FOLDER
-#cd $FOLDER && curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c -- && echo "All already done!" && ALLDONE=1
-#cd / && sudo umount $FOLDER && sudo rm -r $FOLDER
-#[ $ALLDONE ] && exit 1
+sudo mkdir -p $FOLDER && sudo mount -o noatime,compress=zstd,space_cache=v2,discard=async,subvol=$SUBVOL /dev/sda1 $FOLDER
+cd $FOLDER && curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c -- && echo "System has already latest iso image of Archlinux. Nothing to do.." && ALLDONE=1
+cd / && sudo umount $FOLDER && sudo rm -r $FOLDER
+[ $ALLDONE -eq 1 ] && exit 1
+
 
 cd /tmp
 echo "Downloading $ISO from " $(echo $MIRROR | cut -d"/" -f3) "..."
