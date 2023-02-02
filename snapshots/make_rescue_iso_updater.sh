@@ -26,7 +26,7 @@ then
         sudo mount /dev/sda1 /mnt && (cd /mnt && sudo btrfs subvolume create $SUBVOL && cd / && sudo umount /mnt) || exit 1
         if [ $? -eq 0 ]
         then 
-        	sudo sed -i 's/GRUB_TIMEOUT=0/GRUB_TIMEOUT=2/' /etc/default/grub
+        	sudo sed -i 's/GRUB_TIMEOUT=0/GRUB_TIMEOUT=1/' /etc/default/grub
         	cat $HOME/instance/snapshots/40_custom.menuentry | sudo tee -a /etc/grub.d/40_custom > /dev/null && sudo grub-mkconfig -o /boot/grub/grub.cfg
         fi
     fi
