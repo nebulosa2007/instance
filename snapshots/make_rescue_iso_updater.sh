@@ -7,11 +7,13 @@ FOLDER="/mnt/archiso"
 ALLDONE=0
 
 #Checker if all already done
-sudo mkdir -p $FOLDER && sudo mount -o noatime,compress=zstd,space_cache=v2,discard=async,subvol=$SUBVOL /dev/sda1 $FOLDER
-cd $FOLDER && curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c -- && echo "System has already latest iso image of Archlinux. Nothing to do.." && ALLDONE=1
-cd / && sudo umount $FOLDER && sudo rm -r $FOLDER
-[ $ALLDONE -eq 1 ] && exit 1
-
+if [ "$(sudo btrfs subvolume list / | awk '/level 5/ && /'$SUBVOL'/ {print $NF}'| head -n1)" != "" ]
+then
+	sudo mkdir -p $FOLDER && sudo mount -o noatime,compress=zstd,space_cache=v2,discard=async,subvol=$SUBVOL /dev/sda1 $FOLDER
+	cd $FOLDER && curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c -- && echo "System has already latest iso image of Archlinux. Nothing to do.." && ALLDONE=1
+	cd / && sudo umount $FOLDER && sudo rm -r $FOLDER
+	[ $ALLDONE -eq 1 ] && exit 1
+fi
 
 cd /tmp
 echo "Downloading $ISO from " $(echo $MIRROR | cut -d"/" -f3) "..."
