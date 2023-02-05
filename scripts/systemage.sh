@@ -1,6 +1,7 @@
 #!/bin/bash
 
-METHOD=$(/usr/bin/ls -ctl --time-style +"%Y-%m-%d" /etc | tail -1 | sed 's/ /\n/g'| tail -2 | head -1)
+METHOD=$(stat /etc | tail -1 | cut -d" " -f3)
+#METHOD=$(/usr/bin/ls -ctl --time-style +"%Y-%m-%d" /etc | tail -1 | sed 's/ /\n/g'| tail -2 | head -1)
 #METHOD=$(head -1 /var/log/pacman.log | cut -c 2-11)
 
 DAYSBETWEEN=$(( ($(date -d $(date +%Y-%m-%d) +%s) - $(date -d $METHOD +%s)) / 86400 ))
