@@ -1,5 +1,6 @@
 # Program packages:
 # pikaur -Syu --needed lsd mc reflector expac fzf
+# READ FIRST about snaplist alias below
 
 #ALIASES MANAGEMENT
 alias baupdate=". ~/.bash_aliases"
@@ -66,7 +67,9 @@ alias age="$WAY/systemage.sh"
 alias ustat="watch -n 10 $WAY/serverstatus.sh"
 
 SNAPWAY="$HOME/instance/snapshots"
-alias snaplist="$SNAPWAY/snaplist.sh"
+# For proper rights snaplist alias do:
+# echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/btrfs subvolume list /" | sudo tee /etc/sudoers.d/btrfslist
+alias snaplist="sudo /usr/bin/btrfs subvolume list / | cut -d' ' -f9 | fzf --reverse --preview '$SNAPWAY/snaplist.sh {1}' --preview-window right:70%:wrap"
 alias urescue="$SNAPWAY/make_rescue_iso_updater.sh"
 
 ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
