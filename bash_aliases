@@ -66,11 +66,16 @@ alias packages="$WAY/allpacks.sh"
 alias age="$WAY/systemage.sh"
 alias ustat="watch -n 10 $WAY/serverstatus.sh"
 
-SNAPWAY="$HOME/instance/snapshots"
-# For proper rights snaplist alias do:
-# echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/btrfs subvolume list /" | sudo tee /etc/sudoers.d/btrfslist
-alias snaplist="sudo /usr/bin/btrfs subvolume list / | cut -d' ' -f9 | fzf --reverse --preview '$SNAPWAY/snaplist.sh {1}' --preview-window right:70%:wrap"
-alias urescue="$SNAPWAY/make_rescue_iso_updater.sh"
+if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then 
+	SNAPWAY="$HOME/instance/snapshots"
+	# For proper rights snaplist alias do:
+	# echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/btrfs subvolume list /" | sudo tee /etc/sudoers.d/btrfslist
+	alias snaplist="sudo /usr/bin/btrfs subvolume list / | cut -d' ' -f9 | grep -Ev '^@' | fzf --reverse --preview '$SNAPWAY/snaplist.sh {1}' --preview-window right:70%:wrap"
+	alias urescue="$SNAPWAY/make_rescue_iso_updater.sh"
+else
+	alias snaplist="echo 'This alias works with btrfs partitions only'"
+	alias urescue="echo 'This alias works with btrfs partitions only'"
+fi
 
 ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
 if [ -f "$WAY/sensitive.sh" ]; then
