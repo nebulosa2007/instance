@@ -52,9 +52,6 @@ alias Upgrade="pikaur -Syu"
 alias Ccache="pikaur -Sc"
 
 #SYSTEM MAINTAINING
-alias topmem="ps -e -orss=,args= |awk '{print \$1 \" \" \$2 }'| awk '{tot[\$2]+=\$1;count[\$2]++} END {for (i in tot) {print tot[i],i,count[i]}}' | sort -n | tail -n 15 | sort -nr | awk '{ hr=\$1/1024; printf(\"%13.2fM\", hr); print \"\t\" \$2 }'; echo; free -m | awk '/Mem/{print(\$1\"\t\"\$3\"M\")}'"
-alias topswp="cat /proc/*/status | grep -E 'VmSwap:|Name:' | grep -B1 'VmSwap' | cut -d':' -f2 | grep -v -- '--' | grep -o -E '[a-zA-Z0-9]+.*$' | cut -d' ' -f1 | xargs -n2 echo | sort -hrk2 | awk '{ hr=\$2/1024; if (hr>0) printf(\"%13.2fM\", hr); if (hr>0) print \"\t\" \$1}'; echo; free -m | awk '/Swap/{print(\$1\"\t\"\$3\"M\")}'"
-
 alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Server /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; pikaur -Syu"
 alias whatsnew="find /etc 2>/dev/null | grep pacnew"
 pd () { sudo diff -y --suppress-common-lines "$1"{,.pacnew};}
@@ -65,6 +62,7 @@ alias sc='echo -e "Y\nY" | $WAY/cleansystem.sh'
 alias packages="$WAY/allpacks.sh"
 alias age="$WAY/systemage.sh"
 alias ustat="watch -n 10 $WAY/serverstatus.sh"
+alias topmem="$WAY/topmem.sh"
 
 if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then 
 	SNAPWAY="$HOME/instance/snapshots"
