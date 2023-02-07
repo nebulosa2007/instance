@@ -9,7 +9,8 @@ if [ -n "$SSH_CLIENT" ]; then
         yellow='\033[1;33m'
         echo    
         [ `pacman -Qu | wc -l` -ne 0 ] && ( printf "${red}Available updates:\n"; cat /var/log/updpackages.log; printf "${nc}\n" ) || echo "System is up-to-date"
-        printf "${yellow}" ; ~/instance/scripts/systemage.sh ; printf "${nc}\n"
+        printf "${yellow}$(~/instance/scripts/systemage.sh)${nc}\n"
+        [ `who | wc -l` -ne 0 ] printf "${yellow}Login warning:$(who)${nc}\n" 
 fi
 
 #https://github.com/linuxdabbler/personal-dot-files/blob/master/config/bashrc
