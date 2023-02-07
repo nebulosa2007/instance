@@ -30,7 +30,7 @@ alias gethash="tr -dc 'a-z0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null && 
 alias boottime="systemd-analyze && systemd-analyze blame --no-pager"
 
 #SHORTS: EXTERNAL PROGRAMS
-alias ls=lsd
+alias ls="lsd --group-directories-first"
 alias 0x0="curl -F file=@- https://0x0.st"
 alias mc="EDITOR=micro mc"
 alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
