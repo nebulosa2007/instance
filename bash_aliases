@@ -44,7 +44,7 @@ sbackup () { sudo cp "$1"{,.backup};}
 cd() { builtin cd "$@" && command lsd --group-directories-first --color=auto -F; }
 
 #PIKAUR MANAGEMENT
-Install () { pikaur -Sslq $@ | sort -u | grep -v ^lib32 | fzf -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -S --needed; }
+Install () { pikaur -Sslq $@ | sort -u | fzf -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -S --needed; }
 Purge	() { (pikaur -Qqn; pacman -Qqm)	| fzf -q $@ -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -Rsc;		}
 Clean	() { comm -23 <( (pacman -Qqen; pacman -Qqm) | sort) <({ pacman -Qqg base-devel; expac -l '\n' '%E' base; } | sort -u) | fzf -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -Rsc; }
 alias Update="pikaur -Su"
