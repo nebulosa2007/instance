@@ -67,7 +67,7 @@ alias topmem="$WAY/topmem.sh"
 if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then 
 	SNAPWAY="$HOME/instance/snapshots"
 	# For proper rights snaplist alias do:
-	# echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/btrfs subvolume list /" | sudo tee /etc/sudoers.d/btrfslist
+	# echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/btrfs subvolume list /" | sudo tee /etc/sudoers.d/btrfslist && sudo chmod 440 /etc/sudoers.d/btrfslist && sudo visudo -c
 	alias snaplist="sudo /usr/bin/btrfs subvolume list / | cut -d' ' -f9 | grep -Ev '^@' | fzf --reverse --preview '$SNAPWAY/snaplist.sh {1}' --preview-window right:70%:wrap"
 	alias urescue="$SNAPWAY/make_rescue_iso_updater.sh"
 else

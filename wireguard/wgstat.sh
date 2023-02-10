@@ -1,10 +1,12 @@
 #!/bin/bash
-CONFIG="/etc/wireguard/wg0.conf"
-CLIENTS=$(sudo awk '/###/;/Allowed/{print $NF}' $CONFIG | tr '\n' ' ' | sed 's/,/, /g;s/ ### /\n|/g;s/### //;s/Client //g')
+
+cd /home/$(whoami)/instance/wireguard/var/
+
+CLIENTS=$(grep "Address" *.conf | sed 's/.conf//;s/Address = //;s/wg0-//;s/:/ /' | tr '\n' '|')
 
 echo "Statistic from: " $(uptime -s)
 echo
-sudo wg | awk '/allowed ips/,/transfer/' |  while read stat_line
+sudo /usr/bin/wg show wg0 | awk '/allowed ips/,/transfer/' |  while read stat_line
 do
 	key_ip=$(echo $stat_line | awk '/allowed ips:/ {print $3}')
 	if [ "$key_ip" == "" ]

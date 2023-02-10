@@ -10,3 +10,8 @@ chmod +x wireguard-install.sh
 sudo ./wireguard-install.sh
 
 # Best practic will be save all *.conf files in var directory
+
+# For wgstat script without sudo
+echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/wg show wg0" | sudo tee /etc/sudoers.d/wgstatus
+sudo chmod 440 /etc/sudoers.d/wgstatus
+sudo visudo -c
