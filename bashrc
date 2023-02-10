@@ -1,12 +1,16 @@
 PS1='\n\[\033[00;31m\]\h\[\033[00;37m\]:\[\033[00;34m\]\w\[\033[00m\] $ '
+
 if [ -f ~/.bash_aliases ]; then
         . ~/.bash_aliases
 fi
+
 if [[ -r /usr/share/bash-completion/bash_completion ]]; then
   . /usr/share/bash-completion/bash_completion
 fi
+
 complete -cf sudo
-if [ -n "$SSH_CLIENT" ]; then
+
+if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
         red='\033[0;31m'
         nc='\033[0m'
         yellow='\033[1;33m'
@@ -17,10 +21,8 @@ if [ -n "$SSH_CLIENT" ]; then
         echo $(~/instance/scripts/systemage.sh)
 		[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && printf "${red}systemctl list-units --failed${nc}\n"
        	echo
-        [ `who | grep pts | wc -l` -ne 1 ] && printf "${yellow}Login warning:\n$(who)${nc}\n" 
+        [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "${yellow}Login warning:\n$(who)${nc}\n" 
 fi
-
-#https://github.com/linuxdabbler/personal-dot-files/blob/master/config/bashrc
 
 ## don't duplicate lines in history file
 export HISTCONTROL="erasedups:ignorespace"
