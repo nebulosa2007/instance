@@ -1,3 +1,6 @@
+#Fix locale
+export LC_ALL="en_US.UTF-8"
+
 PS1='\n\[\033[00;31m\]\h\[\033[00;37m\]:\[\033[00;34m\]\w\[\033[00m\] $ '
 
 if [ -f ~/.bash_aliases ]; then
