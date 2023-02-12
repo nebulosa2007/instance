@@ -1,5 +1,5 @@
 # Program packages:
-# pikaur -Syu --needed lsd mc reflector expac fzf
+# pikaur -Syu --needed lsd mc reflector expac fzf bash-completion
 # READ FIRST about snaplist alias below
 
 #ALIASES MANAGEMENT
@@ -59,8 +59,8 @@ pd () { sudo diff -y --suppress-common-lines "$1"{,.pacnew};}
 ## INSTANCE SCRIPTS ##
 WAY="$HOME/instance/scripts"
 alias sc='echo -e "Y\nY" | $WAY/cleansystem.sh'
-alias packages="$WAY/allpacks.sh"
-alias age="$WAY/systemage.sh"
+alias packages="$WAY/packages.sh"
+alias age="$WAY/age.sh"
 alias ustat="watch -n 10 $WAY/serverstatus.sh"
 alias topmem="$WAY/topmem.sh"
 
