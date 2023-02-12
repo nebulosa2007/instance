@@ -1,6 +1,3 @@
-#Fix locale
-export LC_ALL="en_US.UTF-8"
-
 PS1='\n\[\033[00;31m\]\h\[\033[00;37m\]:\[\033[00;34m\]\w\[\033[00m\] $ '
 
 if [ -f ~/.bash_aliases ]; then
@@ -20,7 +17,7 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
         green='\033[0;32m'
 		uptime
         [ `pacman -Qu | grep -v "\[ignored\]" | wc -l` -ne 0 ] && printf "\n${yellow}Available updates:\n$(cat /var/log/updpackages.log)${nc}\n\n" || printf "\n${green}System is up-to-date${nc}\n"
-        echo $(~/instance/scripts/systemage.sh)
+        echo $(~/instance/scripts/age.sh)
 		[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && printf "\n${red}systemctl list-units --failed${nc}\n"
         [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow}Login warning:\n$(who)${nc}\n" 
 fi
