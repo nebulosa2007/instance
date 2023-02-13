@@ -70,6 +70,7 @@ if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
 	# echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/btrfs subvolume list /" | sudo tee /etc/sudoers.d/btrfslist && sudo chmod 440 /etc/sudoers.d/btrfslist && sudo visudo -c
 	alias snaplist="sudo /usr/bin/btrfs subvolume list / | cut -d' ' -f9 | grep -Ev '^@' | fzf --reverse --preview '$SNAPWAY/snaplist.sh {1}' --preview-window right:70%:wrap"
 	alias urescue="$SNAPWAY/make_rescue_iso_updater.sh"
+	alias purgesnap="$SNAPWAY/purgesnap.sh"
 else
 	alias snaplist="echo 'This alias works with btrfs partitions only'"
 	alias urescue="echo 'This alias works with btrfs partitions only'"
