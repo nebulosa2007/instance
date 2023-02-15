@@ -18,7 +18,7 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
 		uptime
         [ `pacman -Qu | grep -v "\[ignored\]" | wc -l` -ne 0 ] && printf "\n${yellow}Available updates:\n$(cat /var/log/updpackages.log)${nc}\n\n" || printf "\n${green}System is up-to-date${nc}\n"
         echo $(~/instance/scripts/age.sh)
-		[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && printf "\n${red}systemctl list-units --failed${nc}\n"
+		[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && printf "\n${red}$(systemctl list-units --failed -q)${nc}\n"
         [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow}Login warning:\n$(who)${nc}\n" 
 fi
 
