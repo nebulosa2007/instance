@@ -8,13 +8,13 @@ alias bpupdate=". ~/.bash_profile"
 alias brupdate=". ~/.bashrc"
 
 #SYSTEMD MANAGEMENT
-alias Sstart="sudo systemctl start"
-alias Sstop="sudo systemctl stop"
+alias Sstart="sudo systemctl start && sleep 5 && sudo systemctl status"
+alias Sstop="sudo systemctl stop && sleep 5 && sudo systemctl status"
 alias Senable="sudo systemctl enable"
 alias Sdisable="sudo systemctl disable"
 alias Sstatus="sudo systemctl status"
-alias Srestart="sudo systemctl restart"
-alias Stimers="sudo systemctl list-timers --all"
+alias Srestart="sudo systemctl restart && sleep 5 && sudo systemctl status"
+alias Stimers="systemctl list-timers --all"
 alias Slists="systemctl list-units --type=service --all"
 
 #TUNING PROGRAMS
