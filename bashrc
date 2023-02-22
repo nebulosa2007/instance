@@ -20,8 +20,9 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
         echo -n " "; ~/instance/scripts/age.sh 
 		[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && printf "\n${red} $(systemctl list-units --failed -q)${nc}\n"
         [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow} Login warning:\n$(who)${nc}\n" 
-		echo; echo -n " "; ~/instance/scripts/logger.sh
+		echo;
 fi
+echo -n " "; ~/instance/scripts/logger.sh
 
 ## don't duplicate lines in history file
 export HISTCONTROL="erasedups:ignorespace"
