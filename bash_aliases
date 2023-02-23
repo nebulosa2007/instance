@@ -8,14 +8,14 @@ alias bpupdate=". ~/.bash_profile"
 alias brupdate=". ~/.bashrc"
 
 #SYSTEMD MANAGEMENT
-alias Sstart="sudo systemctl start && sleep 5 && sudo systemctl status"
-alias Sstop="sudo systemctl stop && sleep 5 && sudo systemctl status"
+Sstart   () { sudo systemctl start   "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager; }
+Sstop    () { sudo systemctl stop    "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager; }
+Srestart () { sudo systemctl restart "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager; }
 alias Senable="sudo systemctl enable"
 alias Sdisable="sudo systemctl disable"
 alias Sstatus="sudo systemctl status"
-alias Srestart="sudo systemctl restart && sleep 5 && sudo systemctl status"
 alias Stimers="systemctl list-timers --all"
-alias Slists="systemctl list-units --type=service --all"
+alias Slists="systemctl list-units --type=service --all --no-pager"
 
 #TUNING PROGRAMS
 alias cp="cp -iv"
@@ -39,13 +39,13 @@ source /usr/share/fzf/key-bindings.bash
 
 
 #OTHER FUNCTIONS
-backup () { cp "$1"{,.backup};}
-sbackup () { sudo cp "$1"{,.backup};}
-cd() { builtin cd "$@" && command lsd --group-directories-first --color=auto -F; }
+backup  () { cp "$1"{,.backup}; }
+sbackup () { sudo cp "$1"{,.backup}; }
+cd      () { builtin cd "$@" && command lsd --group-directories-first --color=auto -F; }
 
 #PIKAUR MANAGEMENT
 Install () { pikaur -Sslq $@ | sort -u | fzf -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -S --needed; }
-Purge	() { (pikaur -Qqn; pacman -Qqm)	| fzf -q $@ -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -Rsc;		}
+Purge	() { (pikaur -Qqn; pacman -Qqm)	| fzf -q $@ -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -Rsc; }
 Clean	() { comm -23 <( (pacman -Qqen; pacman -Qqm) | sort) <({ pacman -Qqg base-devel; expac -l '\n' '%E' base; } | sort -u) | fzf -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -Rsc; }
 alias Update="pikaur -Su"
 alias Upgrade="pikaur -Syu"
@@ -54,7 +54,7 @@ alias Ccache="pikaur -Sc"
 #SYSTEM MAINTAINING
 alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Server /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; pikaur -Syu"
 alias whatsnew="find /etc 2>/dev/null | grep pacnew"
-pd () { sudo diff -y --suppress-common-lines "$1"{,.pacnew};}
+pd      () { sudo diff -y --suppress-common-lines "$1"{,.pacnew}; }
 
 ## INSTANCE SCRIPTS ##
 WAY="$HOME/instance/scripts"
