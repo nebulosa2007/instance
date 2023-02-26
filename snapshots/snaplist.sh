@@ -13,19 +13,16 @@ function print_snapshot_log
         then
             filtered_pacman_log_line=$(echo $pacman_log_line | cut -d" " -f4- | sed "s/Running //;s/--color=always //;s/--needed //;s/'//g;s/pacman //;")
             operation=$(echo $filtered_pacman_log_line | cut -d" " -f1)
-            packages=$(awk '/'$snapshot'/,/transaction completed$/' /var/log/pacman.log | grep -E "\[ALPM\] (removed|installed|downgraded|upgraded)" | cut -d" " -f4-7 | sed 's/)/,/;s/(//')
-            packages=$(echo $packages | sed 's/,$/ /')
-            echo -n $snapshot": "
-            [ $operation == "-S" ] && echo -ne ${green}"Before installing "
-            [ $operation == "--sync" ] && echo -ne ${green}"Before installing "
-            [ $operation == "-Rsc" ] && echo -ne ${red}"Before deleting   "
-            [ $operation == "-Rsnc" ] && echo -ne ${red}"Before deleting   "
-            [ $operation == "-Rsn" ] && echo -ne ${red}"Before deleting   "
-            [ $operation == "--remove" ] && echo -ne ${red}"Before deleting   "
-            [ $operation == "starting" ] && echo -ne ${yellow}"Before upgrading  "
-            [ $operation == "-U" ] && echo -ne ${yellow}"Before upgrading  "
-            [ $operation == "--upgrade" ] && { [[ $packages == *"->"* ]] && echo -ne ${yellow}"Before upgrading  " || echo -ne ${green}"Before installing "; }
-            echo -e $packages${nc}
+            packages=$(echo $(awk '/'$snapshot'/,/transaction completed$/' /var/log/pacman.log | grep -E "\[ALPM\] (removed|installed|downgraded|upgraded)" | cut -d" " -f4-7 | sed 's/)/,/;s/(//') | sed 's/,$/ /')
+
+            case $operation in
+            "-S" |"--sync"   ) color=$green;  action="installing ";;
+            "-R"*|"--remove" ) color=$red;    action="deleting ";;
+            "-U" |"starting" ) color=$yellow; action="upgrading ";;
+                  "--upgrade") [[ $packages == *"->"* ]] && { color=$yellow; action="upgrading  ";} || { color=$green; action="installing ";};;
+            esac
+
+            echo -e $snapshot": "${color}"Before "$action$packages${nc}
         fi
     done
 }
