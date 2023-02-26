@@ -16,13 +16,13 @@ function print_snapshot_log
             packages=$(echo $(awk '/'$snapshot'/,/transaction completed$/' /var/log/pacman.log | grep -E "\[ALPM\] (removed|installed|downgraded|upgraded)" | cut -d" " -f4-7 | sed 's/)/,/;s/(//') | sed 's/,$/ /')
 
             case $operation in
-            "-S" |"--sync"   ) color=$green;  action="installing ";;
-            "-R"*|"--remove" ) color=$red;    action="deleting ";;
-            "-U" |"starting" ) color=$yellow; action="upgrading ";;
-                  "--upgrade") [[ $packages == *"->"* ]] && { color=$yellow; action="upgrading  ";} || { color=$green; action="installing ";};;
+            "-S"  | "--sync"   ) color=$green;  action="install";;
+            "-R"* | "--remove" ) color=$red;    action="delet";;
+            "-U"  | "starting" ) color=$yellow; action="upgrad";;
+                    "--upgrade") [[ $packages == *"->"* ]] && { color=$yellow; action="upgrad";} || { color=$green; action="install";};;
             esac
 
-            echo -e $snapshot": "${color}"Before "$action$packages${nc}
+            echo -e $snapshot": "${color}"Before "$action"ing "$packages${nc}
         fi
     done
 }
