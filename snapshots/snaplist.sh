@@ -2,7 +2,7 @@
 
 red='\033[0;31m'
 green='\033[0;32m'
-yellow='\033[1;33m'
+yellow='\033[0;33m'
 nc='\033[0m'
 
 function print_snapshot_log

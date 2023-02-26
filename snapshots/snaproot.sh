@@ -6,7 +6,7 @@ ACTION=$(grep "\[PACMAN\]" /var/log/pacman.log | tail -1 | cut -d" " -f3-)
 
 red='\033[0;31m'
 nc='\033[0m'
-yellow='\033[1;33m'
+yellow='\033[0;33m'
 
 #Root subvolume device
 rsvdv="$(df -Th | grep btrfs | grep /$ | cut -d' ' -f 1)"
