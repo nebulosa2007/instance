@@ -1,0 +1,8 @@
+[Unit]
+Description=Timer for WgStat Logger
+
+[Timer]
+OnCalendar=hourly
+
+[Install]
+WantedBy=timers.target
