@@ -8,9 +8,9 @@ alias bpupdate=". ~/.bash_profile"
 alias brupdate=". ~/.bashrc"
 
 #SYSTEMD MANAGEMENT
-Sstart   () { sudo systemctl start   "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager; }
-Sstop    () { sudo systemctl stop    "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager; }
-Srestart () { sudo systemctl restart "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager; }
+Sstart   () { sudo systemctl start   "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager -l; }
+Sstop    () { sudo systemctl stop    "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager -l; }
+Srestart () { sudo systemctl restart "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager -l; }
 alias Senable="sudo systemctl enable"
 alias Sdisable="sudo systemctl disable"
 alias Sstatus="sudo systemctl status"
