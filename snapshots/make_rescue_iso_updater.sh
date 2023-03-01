@@ -2,7 +2,7 @@
 
 SUBVOL="@archiso"
 ISO="archlinux-x86_64.iso"
-MIRROR="https://geo.mirror.pkgbuild.com/iso/latest/"
+MIRROR="https://mirror.ams1.nl.leaseweb.net/archlinux/iso/latest/"
 FOLDER="/mnt/archiso"
 ALLDONE=0
 
