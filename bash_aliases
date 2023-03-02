@@ -1,5 +1,5 @@
 # Program packages:
-# pikaur -Syu --needed lsd mc reflector expac fzf bash-completion
+# pikaur -Syu --needed lsd mc reflector expac fzf bash-completion tmux
 # READ FIRST about snaplist alias below
 
 #ALIASES MANAGEMENT
@@ -53,8 +53,7 @@ alias Ccache="pikaur -Sc"
 
 #SYSTEM MAINTAINING
 alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Server /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; pikaur -Syu"
-alias whatsnew="find /etc 2>/dev/null | grep pacnew"
-pd      () { sudo diff -y --suppress-common-lines "$1"{,.pacnew}; }
+alias whatsnew="find /etc 2>/dev/null | grep pacnew | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -I{} sh -c \"tmux new-session -d -s whatsnew && tmux send 'diff -y --suppress-common-lines {} {}.pacnew' ENTER && tmux split-window && tmux send 'micro {}' ENTER && tmux split-window -h && tmux send 'micro {}.pacnew' ENTER; tmux resize-pane -U 10\"; tmux a -t whatsnew"
 
 ## INSTANCE SCRIPTS ##
 WAY="$HOME/instance/scripts"
