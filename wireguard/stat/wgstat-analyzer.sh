@@ -28,8 +28,8 @@ function client_daily ()
 		fi
 	done
 
-	let TRD=($TRDADD+$MAXTRD-$MINTRD)/1024/1024
-	let TRX=($TRXADD+$MAXTRX-$MINTRX)/1024/1024
+	let TRD=$TRDADD+$MAXTRD-$MINTRD
+	let TRX=$TRXADD+$MAXTRX-$MINTRX
 	let TOTAL=$TRX+$TRD
 }
 
@@ -39,5 +39,5 @@ function client_daily ()
 for DAYS in $(ls -1 $LOGSDIR/*.log | grep -Eo "[0-9]+-[0-9]+-[0-9]+" | sort -u)
 do
 	client_daily $1 $DAYS
-	echo $1" "$DAY" TRX: "$TRX"Mb TRD: "$TRD"Mb Total: "$TOTAL"Mb"
+	echo $1" "$DAY" TRX: "$(($TRX/1024/1024))" Mb TRD: "$(($TRD/1024/1024))" Mb Total: "$(($TOTAL/1024/1024))" Mb"
 done
