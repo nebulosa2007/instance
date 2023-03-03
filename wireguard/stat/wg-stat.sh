@@ -2,8 +2,8 @@
 
 LOGDIR="/var/log/wgstat"
 CLIENTS=$(awk '/###/,/AllowedIPs =/' /etc/wireguard/wg0.conf | grep -E "(###|AllowedIPs)" | sed 's/### Client //;s/AllowedIPs = //' | tr '\n' '|' | sed 's/|10/ 10/g')
-DATE=$(date +"%F")
-HOUR=$(date +"%H")
+DATE=$(date -d '1 hour ago' +"%F")
+HOUR=$(date -d '1 hour ago' +"%H")
 UPTIME=$(awk -F'.' '{print $1}' /proc/uptime)
 
 mkdir -p $LOGDIR
