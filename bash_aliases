@@ -34,9 +34,6 @@ alias ls="lsd --group-directories-first -F"
 alias 0x0="curl -F file=@- https://0x0.st"
 alias mc="EDITOR=micro mc"
 alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
-source /usr/share/fzf/completion.bash
-source /usr/share/fzf/key-bindings.bash
-
 
 #OTHER FUNCTIONS
 backup  () { cp "$1"{,.backup}; }
