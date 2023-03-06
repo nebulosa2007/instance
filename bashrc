@@ -21,7 +21,7 @@ fi
 ## Search command in bash history
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
-## Don't duplicate lines in history file and don't save commands wirh starting space
+## Don't duplicate lines in history file and don't save commands with starting space
 export HISTCONTROL="erasedups:ignorespace"
 
 # https://wiki.archlinux.org/title/bash#Auto_%22cd%22_when_entering_just_a_path
