@@ -30,7 +30,7 @@ alias gethash="tr -dc 'a-z0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null && 
 alias boottime="systemd-analyze && systemd-analyze blame --no-pager"
 
 #SHORTS: EXTERNAL PROGRAMS
-alias ls="lsd --group-directories-first"
+alias ls="lsd --group-directories-first -F"
 alias 0x0="curl -F file=@- https://0x0.st"
 alias mc="EDITOR=micro mc"
 alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
@@ -41,7 +41,7 @@ source /usr/share/fzf/key-bindings.bash
 #OTHER FUNCTIONS
 backup  () { cp "$1"{,.backup}; }
 sbackup () { sudo cp "$1"{,.backup}; }
-cd      () { builtin cd "$@" && command lsd --group-directories-first --color=auto -F; }
+cd      () { builtin cd "$@" && ls; }
 
 #PIKAUR MANAGEMENT
 Install () { pikaur -Sslq $@ | sort -u | fzf -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -S --needed; }
@@ -71,8 +71,7 @@ if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
 	alias urescue="$SNAPWAY/make_rescue_iso_updater.sh"
 	alias purgesnap="$SNAPWAY/purgesnap.sh"
 else
-	alias snaplist="echo 'This alias works with btrfs partitions only'"
-	alias urescue="echo 'This alias works with btrfs partitions only'"
+	alias {snaplist,urescue,purgesnap}="echo 'This alias works with btrfs partitions only'"
 fi
 
 ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
