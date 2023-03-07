@@ -42,33 +42,32 @@ yellow='\033[1;33m';
 green='\033[0;32m';
 nc='\033[0m';
 
-
 ## Quick server status for SSH conection
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
-    uptime
-    [ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}\n"
-    [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow} Login warning:\n$(who)${nc}\n"
+	echo -ne "\n"; uptime;
+    [ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
+    [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow} Login warning:\n$(who | sed 's/^/ /')${nc}"
+	# https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
+    PACNEWCOUNT=$(find /etc -name *.pacnew 2>/dev/null | wc -l)
+    [ $PACNEWCOUNT -ne 0 ] && echo -e "\n Pacnew files: $PACNEWCOUNT update(s) remaining"
 fi
+
 
 #INSTANCE PROJECT SCRIPTS:
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
-    if [ -f /var/log/updpackages.log ]; then
-	if [ `pacman -Qu | grep -v "\[ignored\]" | wc -l` -ne 0 ]; then
-	    echo -e "\n${yellow} Available updates:\n$(cat /var/log/updpackages.log)${nc}\n"
+    if [ -f /var/log/updpackages.log ] && [ `pacman -Qu | grep -v "\[ignored\]" | wc -l` -ne 0 ]; then
+    	echo -e "\n${yellow} Available updates:\n$(cat /var/log/updpackages.log | sed 's/^/ /')${nc}"
 	else
-	    echo -e "\n${green} System is up-to-date${nc}\n"
-	fi
+		echo -e "\n${green} System is up-to-date${nc}"
     fi
 
     if [ -f ~/instance/scripts/age.sh ]; then
-		echo -n " "; 
+		echo -ne "\n "; 
 		~/instance/scripts/age.sh
-		echo
     fi
 
     if [ -f ~/instance/scripts/logger.sh ]; then
-		echo -n " "; 
+		echo -ne "\n";
 		~/instance/scripts/logger.sh
-		echo
     fi
 fi
