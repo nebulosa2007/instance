@@ -48,26 +48,27 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
     uptime
     [ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}\n"
     [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow} Login warning:\n$(who)${nc}\n"
-    echo;
 fi
 
 #INSTANCE PROJECT SCRIPTS:
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
     if [ -f /var/log/updpackages.log ]; then
 	if [ `pacman -Qu | grep -v "\[ignored\]" | wc -l` -ne 0 ]; then
-	    echo -e "\n${yellow} Available updates:\n$(cat /var/log/updpackages.log)${nc}\n\n"
+	    echo -e "\n${yellow} Available updates:\n$(cat /var/log/updpackages.log)${nc}\n"
 	else
 	    echo -e "\n${green} System is up-to-date${nc}\n"
 	fi
     fi
 
     if [ -f ~/instance/scripts/age.sh ]; then
-	echo -n " ";
-	~/instance/scripts/age.sh
+		echo -n " "; 
+		~/instance/scripts/age.sh
+		echo
     fi
 
     if [ -f ~/instance/scripts/logger.sh ]; then
-	echo -n " ";
-	~/instance/scripts/logger.sh
+		echo -n " "; 
+		~/instance/scripts/logger.sh
+		echo
     fi
 fi
