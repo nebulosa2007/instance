@@ -17,7 +17,7 @@ NOWDIFF=$(diff $OLDLOG $NOWLOG  | grep -E '^>')
 
 if [ "$NOWDIFF"  != "" ]
 then
-	echo -n "Changes in system journal:"
+	echo -n " Changes in system journal:"
 	echo $NOWDIFF | tr ">" "\n"
 	#cp $OLDLOG $OLDLOG.backup
 	echo "$JRNLLOG" | sort |uniq -u > $OLDLOG
