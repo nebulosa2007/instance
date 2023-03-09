@@ -60,9 +60,9 @@ alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf -
 INSTANCESCRIPTWAY="$HOME/instance/scripts"
 alias sc='echo -e "Y\nY" | $INSTANCESCRIPTWAY/cleansystem.sh'
 alias packages="$INSTANCESCRIPTWAY/packages.sh"
-alias age="$$INSTANCESCRIPTWAY/age.sh"
-alias ustat="watch -n 10 $$INSTANCESCRIPTWAY/serverstatus.sh"
-alias topmem="$$INSTANCESCRIPTWAY/topmem.sh"
+alias age="$INSTANCESCRIPTWAY/age.sh"
+alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
+alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
 
 if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then 
 	SNAPWAY="$HOME/instance/snapshots"
@@ -77,7 +77,7 @@ else
 fi
 
 ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
-if [ -f "$$INSTANCESCRIPTWAY/sensitive.sh" ]; then
-	source "$$INSTANCESCRIPTWAY/sensitive.sh"
+if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
+	source "$INSTANCESCRIPTWAY/sensitive.sh"
 fi
 
