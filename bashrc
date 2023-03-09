@@ -49,7 +49,7 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
     [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow} Login warning:\n$(who | sed 's/^/ /')${nc}"
 	# https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
     PACNEWCOUNT=$(find /etc -name *.pacnew 2>/dev/null | wc -l)
-    [ $PACNEWCOUNT -ne 0 ] && echo -e "\n Pacnew files: $PACNEWCOUNT update(s) remaining"
+    [ $PACNEWCOUNT -ne 0 ] && echo -e "\n Pacnew files: $PACNEWCOUNT update"$([ $PACNEWCOUNT -ne 1 ] && echo -n "s")" remaining"
 fi
 
 
