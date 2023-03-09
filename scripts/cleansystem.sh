@@ -9,7 +9,7 @@ sudo journalctl --vacuum-size=5M
 sudo journalctl --verify
 sudo journalctl --disk-usage
 
-find /var/log -type f -regex ".*\.gz$" 2> /dev/null | sudo xargs rm -rf
-find /var/log -type f -regex ".*\.[0-9]$" 2> /dev/null | sudo xargs rm -rf
+sudo find /var/log -type f -regex ".*\.gz$" -delete 2> /dev/null
+sudo find /var/log -type f -regex ".*\.[0-9]$" -delete 2> /dev/null
 
 df -h | grep -E "[s|v]da"
