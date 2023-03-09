@@ -58,12 +58,12 @@ alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Se
 alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
 
 ## INSTANCE SCRIPTS ##
-WAY="$HOME/instance/scripts"
+INSTANSEWAY="$HOME/instance/scripts"
 alias sc='echo -e "Y\nY" | $WAY/cleansystem.sh'
-alias packages="$WAY/packages.sh"
-alias age="$WAY/age.sh"
-alias ustat="watch -n 10 $WAY/serverstatus.sh"
-alias topmem="$WAY/topmem.sh"
+alias packages="$INSTANSEWAY/packages.sh"
+alias age="$INSTANSEWAY/age.sh"
+alias ustat="watch -n 10 $INSTANSEWAY/serverstatus.sh"
+alias topmem="$INSTANSEWAY/topmem.sh"
 
 if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then 
 	SNAPWAY="$HOME/instance/snapshots"
@@ -78,7 +78,7 @@ else
 fi
 
 ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
-if [ -f "$WAY/sensitive.sh" ]; then
-	source "$WAY/sensitive.sh"
+if [ -f "$INSTANSEWAY/sensitive.sh" ]; then
+	source "$INSTANSEWAY/sensitive.sh"
 fi
 
