@@ -5,14 +5,13 @@
 # https://wiki.archlinux.org/title/Bash#Aliases
 ## ALIASES MANAGEMENT
 alias baupdate=". ~/.bash_aliases"
-alias bpupdate=". ~/.bash_profile"
 alias brupdate=". ~/.bashrc"
 
 # https://wiki.archlinux.org/title/Systemd#Using_units
 ## SYSTEMD MANAGEMENT
-Sstart   () { sudo systemctl start   "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager -l; }
-Sstop    () { sudo systemctl stop    "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager -l; }
-Srestart () { sudo systemctl restart "$1" && echo "Success! Waiting 5 sec..." && sleep 5 && sudo systemctl status "$1" --no-pager -l; }
+Sstart   () { sudo systemctl start   "$1" && echo "Success! Waiting 3 sec..." && sleep 3 && sudo systemctl status "$1" --no-pager -l; }
+Sstop    () { sudo systemctl stop    "$1" && echo "Success! Waiting 3 sec..." && sleep 3 && sudo systemctl status "$1" --no-pager -l; }
+Srestart () { sudo systemctl restart "$1" && echo "Success! Waiting 3 sec..." && sleep 3 && sudo systemctl status "$1" --no-pager -l; }
 alias Senable="sudo systemctl enable"
 alias Sdisable="sudo systemctl disable"
 alias Sstatus="sudo systemctl status"
@@ -44,10 +43,10 @@ sbackup () { sudo cp "$1"{,.backup}; }
 cd      () { builtin cd "$@" && ls; }
 
 ## PIKAUR MANAGEMENT
-Install () { pikaur -Sslq $@ | sort -u | fzf -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -S --needed; }
-Purge	() { (pikaur -Qqn; pacman -Qqm)	| fzf -q $@ -i -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -Rsc; }
+# https://wiki.archlinux.org/title/Fzf#Pacman
+Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)>" || ([ "$#" -eq 1 ] && (pikaur -Sslq $1 | sort -u | fzf -q $1 -i -m --reverse --preview 'pikaur -Sii {1}' --preview-window right:60%:wrap | xargs -ro pikaur -S --needed) || pikaur -S --needed $@); }
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Packages_and_dependencies
-Clean	() { comm -23 <( (pacman -Qqen; pacman -Qqm) | sort) <({ pacman -Qqg base-devel; expac -l '\n' '%E' base; } | sort -u) | fzf -m --reverse --preview 'pikaur -Si {1}' --preview-window right:60%:wrap | xargs -ro pikaur -Rsc; }
+Purge	() { [ "$#" -eq 0 ] && (comm -23 <((pacman -Qqen; pacman -Qqm)| sort) <((expac -l '\n' '%E' base-devel; expac -l '\n' '%E' base) | sort -u) | sort -u | fzf -i -m --reverse --preview 'pikaur -Sii {1}' --preview-window right:80%:wrap | xargs -ro pikaur -Rsc) || pikaur -Rsc $@; }
 alias Update="pikaur -Su"
 alias Upgrade="pikaur -Syu"
 alias Ccache="pikaur -Sc"
