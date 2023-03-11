@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#Fix subid 
-sudo sed -i 's/subvolid=256,//;s/subvolid=257,//' /etc/fstab
+#Fix subid
+sudo sed -i 's/subvolid\=[0-9]\+,//g' /etc/fstab
 #Make a test snapshot of @root and @home
 sudo mount /dev/sda1 /mnt && cd /mnt
 sudo btrfs subvolume delete letstest_root && sudo btrfs subvolume delete letstest_home
