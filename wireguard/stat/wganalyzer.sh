@@ -26,42 +26,31 @@ function client_daily ()
 
 CLIENTCONFS="/home/$(whoami)/instance/wireguard/var"
 LOGSDIR="/var/log/wgstat"
-#CLIENTS=$(cd $CLIENTCONFS; ls *.conf | sed "s/wg0-//g;s/\.conf//g")
-DAYS=$(ls -1 $LOGSDIR/*.log | grep -Eo "[0-9]+-[0-9]+-[0-9]+" | sort -u)
-MONTHS=$(ls -1 $LOGSDIR/*.log | grep -Eo "[0-9]{4}-[0-9]{2}" | sort -u)
 
+# Print stat monthly or daily?
+PFM=$( (( [ -z $1 ] || [ $1 == "All" ] ) && [ -z $2 ] ) && echo 1 || echo 0 )
+# Print stat for each client or only for one?
+CLIENTS=$( ( [ -z $1 ] || [ "$1" == "All" ] ) && ( ls $CLIENTCONFS/*.conf | sed 's/.*\///g;s/wg0-//g;s/\.conf//g' ) || echo $1 )
 
-#if [ -z $1 ] || [ "$1" == "All" ]
-#then
-	for MONTH in $MONTHS
-	do 
-		TOTALM=0;
-		( [ -z $1 ] || [ "$1" == "All" ] ) && CLIENTS=$(cd $CLIENTCONFS; ls *.conf | sed "s/wg0-//g;s/\.conf//g") || CLIENTS=$1
-		for CLIENT in $CLIENTS
+[ -z $1 ] || echo "Month/Day Client TRX TRD ALL"
+for MONTH in $( ls $LOGSDIR/*.log | grep -Eo "[0-9]{4}-[0-9]{2}" | sort -u )
+do
+	TOTALXM=0; TOTALDM=0;
+	# How many days?
+	DAYS=$(ls $LOGSDIR/*.log | grep -Eo $( [ -z $2 ] && echo $MONTH"-[0-9]+" || echo $2 ) | sort -u )
+	for CLIENT in $CLIENTS
+	do
+		TRXM=0; TRDM=0;
+		for DAY in $DAYS
 		do
-			TRXM=0; TRDM=0; echo $CLIENT
-			[ -z $2 ] && { DAYFILTER=$MONTH"-[0-9]+"; DAT=$MONTH; } || { DAYFILTER=$2; DAT=$2; }
-			for DAY in $(echo $DAYS | grep -Eo $DAYFILTER )
-			do
-			  	client_daily $CLIENT $DAY
-				let "TRDM = TRDM + TRDD"
-				let "TRXM = TRXM + TRXD"
-				echo $DAY" "$CLIENT" TRX: "$(($TRXD / 1000 / 1000))" Mb TRD: "$(($TRDD / 1000 / 1000))" Mb Total: "$((($TRDD + $TRXD) / 1000 / 1000))" Mb" 
-			done
-			let "TOTALM =  TOTALM + TRDM + TRXM"
-			echo $DAT" "$CLIENT" TRX: "$(($TRXM / 1000 / 1000))" Mb TRD: "$(($TRDM / 1000 / 1000))" Mb Total: "$((($TRDM + $TRXM) / 1000 / 1000))" Mb"
+			client_daily $CLIENT $DAY
+			let "TRDM = TRDM + TRDD"
+			let "TRXM = TRXM + TRXD"
+			[ $PFM -eq 0 ] && echo $DAY $CLIENT $TRXD $TRDD $(( $TRDD + $TRXD ))
 		done
+		let "TOTALDM =  TOTALDM + TRDM"
+		let "TOTALXM =  TOTALXM + TRXM"
+		[ $PFM -eq 1 ] && echo $MONTH $CLIENT $TRXM $TRDM $(( $TRDM + $TRXM ))
 	done
-#else
-#	TOTALM=0;
-#	[ -z $2 ] || DAYS=$2
-#	CLIENT=$1
-#	for DAY in $DAYS
-#	do
-#		client_daily $CLIENT $DAY
-#		let "TOTALM =  TOTALM + TRDD + TRXD"
-#		echo $DAY" "$1" TRX: "$(($TRXD / 1000 / 1000))" Mb TRD: "$(($TRDD / 1000 / 1000))" Mb Total: "$((($TRDD + $TRXD) / 1000 / 1000))" Mb"
-#	done
-#fi
-echo "Total period: "$(($TOTALM / 1000 / 1000))" Mb ("$(($TOTALM / 1000 / 1000 / 1000))" Gb)"
-echo 
+done
+[ -z $1 ] || echo -e "Total -" $TOTALXM $TOTALDM $(( $TOTALXM + $TOTALDM )) "\n\n"
