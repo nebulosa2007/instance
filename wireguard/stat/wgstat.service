@@ -2,7 +2,7 @@
 Description=Dump transfer log for wg0 interface each hour 
 
 [Service]
-ExecStart=/usr/bin/wg-stat
+ExecStart=/usr/bin/wgstat
 
 [Install]
 WantedBy=default.target
