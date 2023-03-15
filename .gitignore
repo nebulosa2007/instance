@@ -1,3 +1,9 @@
 # Project instance and subdirectories of other projects
+#For scripts stuff
 *sensitive*
+
+#For TG bot stuff
 *verterbot*
+
+#For wireguard stuff
+var/
