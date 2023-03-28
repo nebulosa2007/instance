@@ -37,7 +37,8 @@ do
 		do
 			client_daily $CLIENT $DAY
 			IP=$(cat $LOGSDIR/$DAY*.log | grep "$CLIENT " | cut -d" " -f5 | sort -u)
-			echo "$DAY 24 86400 $CLIENT $IP $TRXD $TRDD" >> "$LOGSDIR/$DAY-24.log"
+			echo "$DAY 24 0 $CLIENT $IP $TRXD $TRDD" >> "$LOGSDIR/$DAY-24.log"
 		done
 		rm $(ls $LOGSDIR/$DAY*.log | grep -v "\-24.log")
+	fi
 done
