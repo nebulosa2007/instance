@@ -31,9 +31,12 @@ LOGSDIR="/var/log/wgstat"
 PFM=$( (( [ -z $1 ] || [ $1 == "All" ] ) && [ -z $2 ] ) && echo 1 || echo 0 )
 # Print stat for each client or only for one?
 CLIENTS=$( ( [ -z $1 ] || [ "$1" == "All" ] ) && ( ls $CLIENTCONFS/*.conf | sed 's/.*\///g;s/wg0-//g;s/\.conf//g' ) || echo $1 )
+# Last Month only?
+MONTHS=$( ls $LOGSDIR/*.log | grep -Eo "[0-9]{4}-[0-9]{2}" | sort -u )
+MONTHLIST=$( [ -z $1 ] && ( echo $MONTHS | awk '{print $NF}') || echo $MONTHS )
 
 [ -z $1 ] || echo "Month/Day Client TRX TRD ALL"
-for MONTH in $( ls $LOGSDIR/*.log | grep -Eo "[0-9]{4}-[0-9]{2}" | sort -u )
+for MONTH in $MONTHLIST
 do
 	TOTALXM=0; TOTALDM=0;
 	# How many days?
