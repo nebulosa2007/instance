@@ -8,7 +8,7 @@ function client_daily ()
 	MINTRD=0; MAXTRD=0;
 	OLDIFS=$IFS; IFS=$'\n';
 	for LINE in $(grep $1" " $LOGSDIR/$2*.log)
-	do 
+	do
 		IFS=$OLDIFS
 		declare -a arr=($LINE)
 		if [ ${arr[2]} -lt 3600 ]
