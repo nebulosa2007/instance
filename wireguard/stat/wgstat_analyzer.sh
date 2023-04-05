@@ -7,7 +7,7 @@ function client_daily ()
 	MINTRX=0; MAXTRX=0;
 	MINTRD=0; MAXTRD=0;
 	OLDIFS=$IFS; IFS=$'\n';
-	for LINE in $(grep $1" " $LOGSDIR/$2*.log)
+	for LINE in $(grep $1" " $LOGDIR/$2*.log)
 	do
 		IFS=$OLDIFS
 		declare -a arr=($LINE)
@@ -25,14 +25,14 @@ function client_daily ()
 }
 
 CLIENTCONFS="/home/$(whoami)/instance/wireguard/var"
-LOGSDIR="/var/log/wgstat"
+LOGDIR="/var/log/wgstat"
 
 # Print stat monthly or daily?
 PFM=$( (( [ -z $1 ] || [ $1 == "All" ] ) && [ -z $2 ] ) && echo 1 || echo 0 )
 # Print stat for each client or only for one?
 CLIENTS=$( ( [ -z $1 ] || [ "$1" == "All" ] ) && ( ls $CLIENTCONFS/*.conf | sed 's/.*\///g;s/wg0-//g;s/\.conf//g' ) || echo $1 )
 # Last Month only?
-MONTHS=$( ls $LOGSDIR/*.log | grep -Eo "[0-9]{4}-[0-9]{2}" | sort -u )
+MONTHS=$( ls $LOGDIR/*.log | grep -Eo "[0-9]{4}-[0-9]{2}" | sort -u )
 MONTHLIST=$( [ -z $1 ] && ( echo $MONTHS | awk '{print $NF}') || echo $MONTHS )
 
 [ -z $1 ] || echo "Month/Day Client TRX TRD ALL"
@@ -40,7 +40,7 @@ for MONTH in $MONTHLIST
 do
 	TOTALXM=0; TOTALDM=0;
 	# How many days?
-	DAYS=$(ls $LOGSDIR/*.log | grep -Eo $( [ -z $2 ] && echo $MONTH"-[0-9]+" || echo $2 ) | sort -u )
+	DAYS=$(ls $LOGDIR/*.log | grep -Eo $( [ -z $2 ] && echo $MONTH"-[0-9]+" || echo $2 ) | sort -u )
 	for CLIENT in $CLIENTS
 	do
 		TRXM=0; TRDM=0;

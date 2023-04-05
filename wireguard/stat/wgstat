@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 function client_daily ()
 {
 	reload=1;
@@ -7,7 +8,7 @@ function client_daily ()
 	MINTRX=0; MAXTRX=0;
 	MINTRD=0; MAXTRD=0;
 	OLDIFS=$IFS; IFS=$'\n';
-	for LINE in $(grep $1" " $LOGSDIR/$2*.log)
+	for LINE in $(grep $1" " $LOGDIR/$2*.log)
 	do
 		IFS=$OLDIFS
 		declare -a arr=($LINE)
@@ -23,7 +24,6 @@ function client_daily ()
 	let "TRDD = ADDTRD +  MAXTRD - MINTRD"
 	let "TRXD = ADDTRX +  MAXTRX - MINTRX"
 }
-
 
 LOGDIR="/var/log/wgstat"
 CLIENTS=$(awk '/###/,/AllowedIPs =/' /etc/wireguard/wg0.conf | grep -E "(###|AllowedIPs)" | sed 's/### Client //;s/AllowedIPs = //' | tr '\n' '|' | sed 's/|10/ 10/g')
