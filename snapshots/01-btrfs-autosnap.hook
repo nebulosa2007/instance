@@ -9,6 +9,6 @@ Target = *
 Description = Making BTRFS snapshot...
 Depends = btrfs-progs
 When = PreTransaction
-Exec = /usr/bin/snaproot
+Exec = /usr/bin/mksnaproot
 AbortOnFail
 NeedsTargets
