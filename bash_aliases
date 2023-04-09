@@ -69,15 +69,13 @@ if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
 	# https://wiki.archlinux.org/title/Sudo#Configure_sudo_using_drop-in_files_in_/etc/sudoers.d
 	## For proper rights snaplist alias, do:
 	## echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/btrfs subvolume list /" | sudo tee /etc/sudoers.d/btrfslist && sudo chmod 440 /etc/sudoers.d/btrfslist && sudo visudo -c
-	alias snaplist="sudo /usr/bin/btrfs subvolume list / | cut -d' ' -f9 | grep -Ev '^@' | fzf --reverse --preview '$SNAPWAY/snaplist.sh {1}' --preview-window right:70%:wrap"
-	alias snaprescue="$SNAPWAY/make_rescue_iso_updater.sh"
-	alias snappurge="$SNAPWAY/purgesnap.sh"
+	alias snapctl="sudo mount /dev/sda1 /mnt && sudo /usr/bin/btrfs subvolume list / | cut -d' ' -f9 | grep -Ev '^@' | fzf -m --reverse --preview '$SNAPWAY/snaplist.sh {1}' --preview-window right:70%:wrap | xargs sudo btrfs subvolume delete; builtin cd && sudo umount /mnt"
+	alias uisorescue="$SNAPWAY/uisorescue.sh"
 else
-	alias {snaplist,snaprescue,snappurge}="echo 'This alias works with btrfs partitions only'"
+	alias {snapctl,uisorescue}="echo 'This alias works with btrfs partitions only'"
 fi
 
 ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
 if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
 	source "$INSTANCESCRIPTWAY/sensitive.sh"
 fi
-
