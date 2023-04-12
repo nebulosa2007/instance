@@ -20,6 +20,7 @@ function client_daily ()
 		[ $reload -eq 1 ] && { MINTRX=${arr[5]}; MINTRD=${arr[6]}; reload=0; }
 		MAXTRX=${arr[5]}; MAXTRD=${arr[6]};
 	done
+	IFS=$OLDIFS
 	let "TRDD = ADDTRD +  MAXTRD - MINTRD"
 	let "TRXD = ADDTRX +  MAXTRX - MINTRX"
 }
