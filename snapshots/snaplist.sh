@@ -11,9 +11,9 @@ function print_snapshot_log
     do
         if [[ $pacman_log_line == *"[$snapshot]"* ]];
         then
-            filtered_pacman_log_line=$(echo $pacman_log_line | cut -d" " -f4- | sed "s/Running //;s/--color=always //;s/--needed //;s/'//g;s/pacman //;")
+            filtered_pacman_log_line=$(echo $pacman_log_line | cut -d" " -f4- | sed "s/Running //;s/--color=always //;s/--needed //;s/'//g;s/\/usr\/bin\///;s/pacman //")
             operation=$(echo $filtered_pacman_log_line | cut -d" " -f1)
-            packages=$(echo $(awk '/'$snapshot'/,/transaction completed$/' /var/log/pacman.log | grep -E "\[ALPM\] (removed|installed|downgraded|upgraded)" | cut -d" " -f4-7 | sed 's/)/,/;s/(//') | sed 's/,$/ /')
+            packages=$(echo $(awk '/'$snapshot'/,/transaction completed$/' /var/log/pacman.log | grep -E "\[ALPM\] (removed|installed|downgraded|upgraded|reinstalled)" | cut -d" " -f4-7 | sed 's/)/,/;s/(//') | sed 's/,$/ /')
 
             case $operation in
             "-S"  | "--sync"   ) color=$green;  action="install";;
