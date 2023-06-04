@@ -9,7 +9,7 @@ declare -a swp=($(cat /proc/*/status | grep -E 'VmSwap:|Name:' | grep -B1 'VmSwa
 printf "%-9s %35s %-9s %20s\n" "MEMORY" "Top $TOP processes       " "SWAP" ""
 for (( j=0; j<${#mem[@]}; j++ ));
 do
-  printf "%9s %-35s %9s %-20s\n" $(echo ${mem[$j]} | sed 's/|/ /;s/usr\///;s/bin\///;s/lib\///;s/\///') $(echo ${swp[$j]} | sed 's/|/ /')
+  printf "%9s %-35s %9s %-20s\n" $(echo ${mem[$j]} | sed 's/|/ /;s/usr\///;s/bin\///;s/lib\///;s/\///;s/systemd\///') $(echo ${swp[$j]} | sed 's/|/ /')
 done
 echo
 printf "%9s %-35s %9s %-20s\n" $(free -m | awk '/Mem/{print($3"M "$1)}'| sed 's/Mem:/MemTotal/') $(free -m | awk '/Swap/{print($3"M "$1)}' | sed 's/Swap:/SwapTotal/')

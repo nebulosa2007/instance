@@ -47,6 +47,7 @@ do
 		TRXM=0; TRDM=0;
 		for DAY in $DAYS
 		do
+			#echo $CLIENT $DAY
 			client_daily $CLIENT $DAY
 			let "TRDM = TRDM + TRDD"
 			let "TRXM = TRXM + TRXD"
