@@ -45,7 +45,7 @@ nc='\033[0m';
 ## Quick server status for SSH conection
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
 	echo -ne "\n"; uptime;
-    [ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
+    #[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
     [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow} Login warning:\n$(who | sed 's/^/ /')${nc}"
 	# https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
     PACNEWCOUNT=$(find /etc -name *.pacnew 2>/dev/null | wc -l)
@@ -54,6 +54,8 @@ fi
 
 
 #INSTANCE PROJECT SCRIPTS:
+[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
+
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
     if [ -f /var/log/updpackages.log ] && [ `pacman -Qu | grep -v "\[ignored\]" | wc -l` -ne 0 ]; then
     	echo -e "\n${yellow} Available updates:\n$(cat /var/log/updpackages.log | sed 's/^/ /')${nc}"
