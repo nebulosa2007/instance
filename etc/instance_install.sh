@@ -1,6 +1,7 @@
 # Instance project set installing:
 # IMPORTANT: See notes in .bash_aliases for installing needed packages
 cd ~
+echo "PATHINSTANCE=\"/home/"$(whoami)"/instance\"" | sudo tee /etc/instance.conf
 ln -sf /home/$(whoami)/instance/bashrc .bashrc
 ln -s /home/$(whoami)/instance/bash_aliases .bash_aliases
 
