@@ -25,7 +25,8 @@ function client_daily ()
 	let "TRXD = ADDTRX +  MAXTRX - MINTRX"
 }
 
-CLIENTCONFS="/home/$(whoami)/instance/wireguard/var"
+source /etc/instance.conf
+CLIENTCONFS="$PATHINSTANCE/wireguard/var"
 LOGDIR="/var/log/wgstat"
 
 # Print stat monthly or daily?

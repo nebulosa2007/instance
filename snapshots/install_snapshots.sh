@@ -1,8 +1,9 @@
 #!/bin/bash
 
+source /etc/instance.conf
 sudo mkdir -p /etc/pacman.d/hooks
-sudo ln -s /home/$(whoami)/instance/snapshots/mksnaproot.sh /usr/bin/mksnaproot
-sudo cp /home/$(whoami)/instance/snapshots/01-btrfs-autosnap.hook /etc/pacman.d/hooks/01-btrfs-autosnap.hook
+sudo cp $PATHINSTANCE/snapshots/mksnaproot.sh /usr/bin/mksnaproot
+sudo cp $PATHINSTANCE/snapshots/01-btrfs-autosnap.hook /etc/pacman.d/hooks/01-btrfs-autosnap.hook
 
 #Cache cleaning for minimize size of snapshots
 sudo rm -f /var/cache/pacman/pkg/*

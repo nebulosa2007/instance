@@ -2,11 +2,12 @@
 # IMPORTANT: See notes in .bash_aliases for installing needed packages
 cd ~
 echo "PATHINSTANCE=\"/home/"$(whoami)"/instance\"" | sudo tee /etc/instance.conf
-ln -sf /home/$(whoami)/instance/bashrc .bashrc
-ln -s /home/$(whoami)/instance/bash_aliases .bash_aliases
+source /etc/instance.conf
+ln -sf $PATHINSTANCE/bashrc .bashrc
+ln -s  $PATHINSTANCE/bash_aliases .bash_aliases
 
 # Tuning system
-sudo cp /home/$(whoami)/instance/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sysctl --system
+sudo cp $PATHINSTANCE/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sysctl --system
 
 # 1. Install update timer
 # See instructions in update/install_updatetimer.sh
