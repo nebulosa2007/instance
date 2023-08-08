@@ -28,4 +28,11 @@ $COUNTUPD total on <b>$host</b>"
 echo "$UPDATES">/var/log/updpackages.log
 fi
 
+#Desktop notifier: KDE
+SESSION="plasma"
+DBUS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$(pgrep $SESSION | head -1)/environ) 
+UPDMODE=$(grep -E "(systemd|linux)" /var/log/updpackages.log > /dev/null && echo "security-low" || echo "system-software-install")
+USERKDE=$(echo $PATHINSTANCE | cut -d"/" -f3)
+[ "$DBUS" != "" ] && sudo -u $USERKDE DISPLAY=:0 $DBUS notify-send --icon=$UPDMODE "Available updates ($COUNTUPD):" "$(cat /var/log/updpackages.log)"
+
 fi
