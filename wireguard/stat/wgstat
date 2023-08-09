@@ -7,7 +7,7 @@ function client_daily ()
 	MINTRX=0; MAXTRX=0;
 	MINTRD=0; MAXTRD=0;
 	OLDIFS=$IFS; IFS=$'\n';
-	for LINE in $(grep $1" " $LOGDIR/$2*.log)
+	for LINE in $(grep " $1 " $LOGDIR/$2*.log)
 	do
 		IFS=$OLDIFS
 		declare -a arr=($LINE)
@@ -49,7 +49,7 @@ then
 	for CLIENT in $(cat $LOGDIR/$DATE*.log | cut -d" " -f4 | sort -u)
 	do
 		client_daily $CLIENT $DATE
-		ip=$(cat $LOGDIR/$DATE*.log | grep "$CLIENT " | cut -d" " -f5 | sort -u)
+		ip=$(cat $LOGDIR/$DATE*.log | grep " $CLIENT " | cut -d" " -f5 | sort -u)
 		echo "$DATE 24 0 $CLIENT $ip $TRXD $TRDD" >> $LOGFILEDAY
 	done
 	rm $(ls $LOGDIR/$DATE*.log | grep -v "\-24.log")
