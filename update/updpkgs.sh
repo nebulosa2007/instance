@@ -30,9 +30,13 @@ fi
 
 #Desktop notifier: KDE
 SESSION="plasma"
-DBUS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$(pgrep $SESSION | head -1)/environ) 
+PID=$(pgrep $SESSION | head -1)
+if [ -n "$PID" ]
+then
+DBUS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ)
 UPDMODE=$(grep -E "(systemd|linux)" /var/log/updpackages.log > /dev/null && echo "security-low" || echo "system-software-install")
 USERKDE=$(echo $PATHINSTANCE | cut -d"/" -f3)
-[ "$DBUS" != "" ] && [ -f /usr/bin/notify-send ] && sudo -u $USERKDE DISPLAY=:0 $DBUS notify-send --icon=$UPDMODE "Available updates ($COUNTUPD):" "$(cat /var/log/updpackages.log)"
+[ -n "$DBUS" ] && [ -f /usr/bin/notify-send ] && sudo -u $USERKDE DISPLAY=:0 $DBUS notify-send --icon=$UPDMODE "Available updates ($COUNTUPD):" "$(cat /var/log/updpackages.log)"
+fi
 
 fi
