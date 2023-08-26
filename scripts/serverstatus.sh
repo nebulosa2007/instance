@@ -38,7 +38,7 @@ else
         [ -f /usr/bin/vnstat                       ] && { vnstat --oneline | cut -d";" -f 8,9,10,11| sed 's/;/   RX: /;s/;/   TX: /;s/;/   Total: /'; }
         [ -f /usr/bin/vnstat                       ] && { echo -n "Expected month traffic: "; vnstat -m 1 | grep estimated | cut -d"|" -f3 | sed 's/  //'; echo; }
         [ -f /usr/bin/nc                           ] && { nc localhost 7634 |sed 's/|//m' | sed 's/||/ \n/g' | awk -F'|' '{print $1 " " $3 " " $4}'; }
-        [ -f /usr/bin/sensors                      ] && { sensors | egrep '(temp1|fan1)' | awk '{print $1 " " $2}'; }
+        [ -f /usr/bin/sensors                      ] && { sensors | grep -E '(temp1|fan1)' | awk '{print $1 " " $2}'; }
         [ -f /usr/bin/nvidia-smi                   ] && { nvidia-smi -q -d temperature | grep Current | awk '{print $1 " " $5 " " $6}'; }
         [ -f $PATHINSTANCE/scripts/age.sh          ] && source $PATHINSTANCE/scripts/age.sh
         echo
