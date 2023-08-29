@@ -1,5 +1,8 @@
 [Unit]
-Description=timer for update all package bases
+Description=Timer for update all package bases
+Documentation=https://github.com/nebulosa2007/instance/tree/main/update
+Wants=network-online.target
+After=network-online.target
 
 [Timer]
 OnCalendar=12,23:00
