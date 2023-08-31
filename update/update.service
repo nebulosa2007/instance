@@ -1,9 +1,11 @@
 [Unit]
-Description=Update all package bases
+Description=Refresh pacman and AUR updates with Update
+Documentation=https://github.com/nebulosa2007/instance/tree/main/update
+Wants=network-online.target
+After=network-online.target nss-lookup.target
 
 [Service]
 ExecStart=/usr/bin/updpkgs
 
 [Install]
-WantedBy=default.target
-
+WantedBy=multi-user.target
