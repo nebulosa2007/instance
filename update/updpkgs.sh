@@ -2,6 +2,10 @@
 
 source /etc/instance.conf
 
+ONLINE=0
+for testsite in $(grep "Server" /etc/pacman.d/mirrorlist | cut -d"/" -f3) ; do ping -q -w 1 -c 1 $testsite &> /dev/null && { ONLINE=1; break; } || { echo "Wait online"; sleep 15; } ; done
+[ $ONLINE -eq 0 ] && exit 0
+
 reflector -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 /usr/bin/pacman -Sy
 COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]" | /usr/bin/wc -l)
