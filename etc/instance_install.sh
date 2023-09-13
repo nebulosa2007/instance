@@ -2,6 +2,8 @@
 # IMPORTANT: See notes in .bash_aliases for installing needed packages
 cd ~
 echo "PATHINSTANCE=\"/home/"$(whoami)"/instance\"" | sudo tee /etc/instance.conf
+echo "TG_BOT_API_TOKEN=''" | sudo tee -a /etc/instance.conf
+echo "TG_BOT_CHAT_ID=''" | sudo tee -a /etc/instance.conf
 source /etc/instance.conf
 ln -sf $PATHINSTANCE/bashrc .bashrc
 ln -s  $PATHINSTANCE/bash_aliases .bash_aliases
