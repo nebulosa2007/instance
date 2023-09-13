@@ -32,8 +32,8 @@ $COUNTUPD total on <b>$host</b>"
     else
 	MSG="<b>Available updates:</b>
 $COUNTUPD total on <b>$host</b>"
-	[ -f $PATHINSTANCE/scripts/tgsay.sh ] && $PATHINSTANCE/scripts/tgsay.sh "$MSG"
     fi
+	[ -f $PATHINSTANCE/scripts/tgsay.sh ] && $PATHINSTANCE/scripts/tgsay.sh "$MSG"
 
 
 ## Desktop notifier: KDE MODULE
