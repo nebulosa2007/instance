@@ -44,15 +44,15 @@ cd      () { builtin cd "$@" && ls; }
 
 ## PIKAUR MANAGEMENT
 # https://wiki.archlinux.org/title/Fzf#Pacman
-Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)>" || ([ "$#" -eq 1 ] && (pikaur -Sslq $1 | sort -u | fzf -q $1 -i -m --reverse --preview 'pikaur -Sii {1}' --preview-window right:60%:wrap | xargs -ro pikaur -S --needed) || pikaur -S --needed $@); }
+Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)>" || ([ "$#" -eq 1 ] && (pikaur -Sslq $1 | sort -u | fzf -q $1 -i -m --reverse --preview 'pikaur -Sii {1}' --preview-window right:60%:wrap | xargs -ro pikaur -S --needed --noedit) || pikaur -S --needed --noedit $@); }
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Packages_and_dependencies
 Purge	() { [ "$#" -eq 0 ] && (comm -23 <((pacman -Qqen; pacman -Qqm)| sort) <((expac -l '\n' '%E' base-devel; expac -l '\n' '%E' base) | sort -u) | sort -u | fzf -i -m --reverse --preview 'pikaur -Sii {1}' --preview-window right:80%:wrap | xargs -ro pikaur -Rsc) || pikaur -Rsc $@; }
-alias Update="pikaur -Su"
-alias Upgrade="pikaur -Syu"
+alias Update="pikaur -Su --noedit"
+alias Upgrade="pikaur -Syu --noedit"
 alias Ccache="pikaur -Sc"
 
 #SYSTEM MAINTAINING
-alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Server /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; pikaur -Syu"
+alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Server /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; pikaur -Syu --noedit"
 # https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
 alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
 
