@@ -57,7 +57,9 @@ alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Se
 alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
 
 ## INSTANCE SCRIPTS ##
-INSTANCESCRIPTWAY="$HOME/instance/scripts"
+source /etc/instance.conf
+INSTANCESCRIPTWAY="$PATHINSTANCE/scripts"
+alias instance="cd $PATHINSTANCE"
 alias sc='echo -e "Y\nY" | $INSTANCESCRIPTWAY/cleansystem.sh'
 alias packages="$INSTANCESCRIPTWAY/packages.sh"
 alias age="$INSTANCESCRIPTWAY/age.sh"
@@ -65,7 +67,7 @@ alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
 alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
 
 if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then 
-	SNAPWAY="$HOME/instance/snapshots"
+	SNAPWAY="$PATHINSTANCE/snapshots"
 	# https://wiki.archlinux.org/title/Sudo#Configure_sudo_using_drop-in_files_in_/etc/sudoers.d
 	## For proper rights snaplist alias, do:
 	## echo "%wheel ALL=(ALL:ALL) NOPASSWD:/usr/bin/btrfs subvolume list /" | sudo tee /etc/sudoers.d/btrfslist && sudo chmod 440 /etc/sudoers.d/btrfslist && sudo visudo -c

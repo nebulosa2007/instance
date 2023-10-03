@@ -1,4 +1,4 @@
-#!/bin/bash
+#Wireguard module of Instance project
 
 # Lasy install wireguard server. WARNING: this setup wouldn't work with wg-gui etc.
 
@@ -19,7 +19,8 @@ sudo chmod 440 /etc/sudoers.d/wgstatus
 sudo visudo -c
 
 # Install wgstat service
-sudo cp $PATHINSTANCE/wireguard/stat/wgstat         /usr/bin/wgstat
+#IMPORTANT: Only for one partition systems. Use cp instead ln below:
+sudo ln -sf $PATHINSTANCE/wireguard/stat/wgstat     /usr/bin/wgstat
 sudo cp $PATHINSTANCE/wireguard/stat/wgstat.service /lib/systemd/system/wgstat.service
 sudo cp $PATHINSTANCE/wireguard/stat/wgstat.timer   /lib/systemd/system/wgstat.timer
 sudo systemctl daemon-reload

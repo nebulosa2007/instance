@@ -54,6 +54,9 @@ fi
 
 
 #INSTANCE PROJECT SCRIPTS:
+
+source /etc/instance.conf
+
 [ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
 
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
@@ -63,13 +66,13 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
 		echo -e "\n${green} System is up-to-date${nc}"
     fi
 
-    if [ -f ~/instance/scripts/age.sh ]; then
+    if [ -f $PATHINSTANCE/scripts/age.sh ]; then
 		echo -ne "\n "; 
-		~/instance/scripts/age.sh
+		$PATHINSTANCE/scripts/age.sh
     fi
 
-    if [ -f ~/instance/scripts/logger.sh ]; then
+    if [ -f $PATHINSTANCE/scripts/logger.sh ]; then
 		echo -ne "\n";
-		~/instance/scripts/logger.sh
+		$PATHINSTANCE/scripts/logger.sh
     fi
 fi
