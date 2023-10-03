@@ -1,5 +1,5 @@
 # ARCH Instance Project
-Set of usefil scripts for Arch Linux instance
+Set of useful scripts for Arch Linux instance
 
 Installing instructions: 
 1. `cd .config` (`mkdir .config` - if not exist)
