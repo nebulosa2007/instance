@@ -11,6 +11,11 @@ ln -sf  $PATHINSTANCE/bash_aliases .bash_aliases
 # Tuning system
 sudo cp $PATHINSTANCE/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
 
+# Tuming programs
+mkdir -p /home/$(whoami)/.config/{neofetch,tmux}
+ln -sf $PATHINSTANCE/etc/neofetch.conf /home/$(whoami)/.config/neofetch/config.conf
+ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
+
 # 1. Install update timer
 # See instructions in update/install_updatetimer.sh
 
