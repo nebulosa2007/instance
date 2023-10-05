@@ -42,9 +42,9 @@ $COUNTUPD total on <b>$host</b>"
 	if [ -n "$PID" ]
 	then
 		DBUS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ | tr -d '\0')
-		UPDMODE=$(grep -E "(systemd|linux)" /var/log/updpackages.log > /dev/null && echo "security-low" || echo "system-software-install")
+		UPDMODE=$(grep -E "(systemd|linux|grub)" /var/log/updpackages.log > /dev/null && echo "security-low" || echo "system-software-install")
 		USERKDE=$(echo $PATHINSTANCE | cut -d"/" -f3)
-		[ -n "$DBUS" ] && [ -f /usr/bin/notify-send ] && sudo -u $USERKDE DISPLAY=:0 $DBUS notify-send --icon=$UPDMODE "Available updates ($COUNTUPD):" "$(cat /var/log/updpackages.log)"
+		[ -n "$DBUS" ] && [ -x "$(command -v notify-send)" ] && sudo -u $USERKDE DISPLAY=:0 $DBUS notify-send --icon=$UPDMODE "Available updates ($COUNTUPD):" "$(cat /var/log/updpackages.log)"
 	fi
   fi
 fi
