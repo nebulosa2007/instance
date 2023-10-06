@@ -59,7 +59,7 @@ alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf -
 ## INSTANCE SCRIPTS ##
 source /etc/instance.conf
 INSTANCESCRIPTWAY="$PATHINSTANCE/scripts"
-alias instance="cd $PATHINSTANCE"
+alias ins="cd $PATHINSTANCE"
 alias sc='echo -e "Y\nY" | $INSTANCESCRIPTWAY/cleansystem.sh'
 alias packages="$INSTANCESCRIPTWAY/packages.sh"
 alias age="$INSTANCESCRIPTWAY/age.sh"
