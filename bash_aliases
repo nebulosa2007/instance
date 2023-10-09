@@ -9,12 +9,15 @@ alias brupdate=". ~/.bashrc"
 
 # https://wiki.archlinux.org/title/Systemd#Using_units
 ## SYSTEMD MANAGEMENT
-Sstart   () { sudo systemctl start   "$1" && echo "Success! Waiting 3 sec..." && sleep 3 && sudo systemctl status "$1" --no-pager -l; }
-Sstop    () { sudo systemctl stop    "$1" && echo "Success! Waiting 3 sec..." && sleep 3 && sudo systemctl status "$1" --no-pager -l; }
-Srestart () { sudo systemctl restart "$1" && echo "Success! Waiting 3 sec..." && sleep 3 && sudo systemctl status "$1" --no-pager -l; }
-alias Senable="sudo systemctl enable"
-alias Sdisable="sudo systemctl disable"
-alias Sstatus="sudo systemctl status"
+IsSerUser () { [ "$(systemctl --user show -pLoadError $1)" == "LoadError=" ] && echo "U"; }
+Sstatus   () { systemctl --user status --no-pager -l "$1" 2>/dev/null || sudo systemctl status --no-pager -l "$1"; }
+Systemctl () { A="$1"; shift; (systemctl --user "$A" "$@" 2>/dev/null || sudo systemctl "$A" "$@" ) && wait3sec "Success! Wait 3 sec"; Sstatus "${!#}"; }
+Sstart    () { Systemctl start "$@"; }
+Sstop     () { Systemctl stop "$@"; }
+Srestart  () { Systemctl restart "$@"; }
+Sdisable  () { Systemctl disable "$@"; }
+
+Senable   () { systemctl enable "$@"; }
 alias Stimers="systemctl list-timers --all"
 alias Slists="systemctl list-units --type=service --all --no-pager"
 
@@ -41,6 +44,7 @@ alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pa
 backup  () { cp "$1"{,.backup}; }
 sbackup () { sudo cp "$1"{,.backup}; }
 cd      () { builtin cd "$@" && ls; }
+wait3sec() { echo -n "$1"; for i in \{1 2 3\}; do echo -n "."; sleep 1; done; echo; }
 
 ## PIKAUR MANAGEMENT
 # https://wiki.archlinux.org/title/Fzf#Pacman
