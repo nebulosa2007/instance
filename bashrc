@@ -27,7 +27,7 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
 	export GIT_PS1_SHOWDIRTYSTATE=on        # any nonempty value. + for staged, * if unstaged
 	export GIT_PS1_SHOWSTASHSTATE=on        # any nonempty value. $ if something is stashed
 	export GIT_PS1_SHOWUNTRACKEDFILES=on    # any nonempty value. % if there are untracked files
-	export GIT_PS1_SHOWUPSTREAM="auto"      # auto: <, >, <> behind, ahead, or diverged from upstream
+	export GIT_PS1_SHOWUPSTREAM="verbose"   # auto: <, >, <> behind, ahead, or diverged from upstream
 	                                        # or a space-delimited list of the following options (verbose .. .. ..):
 	                                        # verbose  show number of commits ahead/behind (+/-) upstream
 	                                        # name     if verbose, then also show the upstream abbrev name
