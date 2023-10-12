@@ -45,6 +45,7 @@ backup  () { cp "$1"{,.backup}; }
 sbackup () { sudo cp "$1"{,.backup}; }
 cd      () { builtin cd "$@" && ls; }
 wait3sec() { echo -n "$1"; for i in \{1 2 3\}; do echo -n "."; sleep 1; done; echo; }
+line    () { l=$1"p"; shift; sed -n $l $@; }
 
 ## PIKAUR MANAGEMENT
 # https://wiki.archlinux.org/title/Fzf#Pacman

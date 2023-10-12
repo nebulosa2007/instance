@@ -1,4 +1,4 @@
-PS1='\n\[\033[00;31m\]\h\[\033[00;37m\]:\[\033[00;34m\]\w\[\033[00m\] $ '
+PS1='\n $([ -n "$SSH_CLIENT" ] && echo " \[\033[00;34m\]SSH \h\[\033[00;37m\]: ")\[\033[00;3$([[ $(stat --printf="%U%a" $(pwd)) == *$(whoami)7* ]] && echo 2 || echo 1)m\]\w\[\033[00m\]$(__git_ps1 " (%s)") $ '
 
 if [ -f ~/.bash_aliases ]; then
         . ~/.bash_aliases
@@ -15,6 +15,29 @@ if [ -f /usr/share/fzf/completion.bash ]; then
 fi
 if [ -f /usr/share/fzf/key-bindings.bash ]; then
 	. /usr/share/fzf/key-bindings.bash
+fi
+
+# https://wiki.archlinux.org/title/Git#Bash_completion
+if [ -f /usr/share/git/completion/git-completion.bash ]; then
+	. /usr/share/git/completion/git-completion.bash
+fi
+
+#https://wiki.archlinux.org/title/Git#Git_prompt
+if [ -f /usr/share/git/completion/git-prompt.sh ]; then
+	export GIT_PS1_SHOWDIRTYSTATE=on        # any nonempty value. + for staged, * if unstaged
+	export GIT_PS1_SHOWSTASHSTATE=on        # any nonempty value. $ if something is stashed
+	export GIT_PS1_SHOWUNTRACKEDFILES=on    # any nonempty value. % if there are untracked files
+	export GIT_PS1_SHOWUPSTREAM="auto"      # auto: <, >, <> behind, ahead, or diverged from upstream
+	                                        # or a space-delimited list of the following options (verbose .. .. ..):
+	                                        # verbose  show number of commits ahead/behind (+/-) upstream
+	                                        # name     if verbose, then also show the upstream abbrev name
+	                                        # legacy   don't use the '--count' option available in recent versions of git-rev-list
+	                                        # git always compare HEAD to @{upstream}
+	                                        # svn always compare HEAD to your SVN upstream
+	export GIT_PS1_STATESEPARATOR=" "       # separator between branch name and state symbols
+	export GIT_PS1_DESCRIBE_STYLE="default" # show commit relative to tag or branch, when detached HEAD
+	export GIT_PS1_SHOWCOLORHINTS=on        # any nonempty value. display in color
+	. /usr/share/git/completion/git-prompt.sh
 fi
 
 # https://wiki.archlinux.org/title/bash#History
