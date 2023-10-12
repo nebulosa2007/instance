@@ -2,7 +2,7 @@
 
 df -h | grep -E "[s|v]da"
 sudo pacman -Rsn $(pacman -Qdtq)
-sudo rm -f $(awk '/Cache/ {print $3}' /etc/pacman.conf)/*.pkg.tar.zst
+sudo rm -f $(awk '/Cache/ {print $3}' /etc/pacman.conf)/*.pkg.tar.{zst,zst.sig} 
 
 sudo journalctl --disk-usage
 sudo journalctl --vacuum-size=5M
