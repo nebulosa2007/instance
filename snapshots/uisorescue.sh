@@ -4,6 +4,7 @@ SUBVOL="@archiso"
 ISO="archlinux-x86_64.iso"
 MIRROR="https://mirror.ams1.nl.leaseweb.net/archlinux/iso/latest/"
 FOLDER="/mnt/archiso"
+
 ALLDONE=0
 ROOTDRIVE=$(df -Th | grep btrfs | grep /$ | cut -d' ' -f 1)
 
@@ -21,7 +22,7 @@ then
 	[ $ALLDONE -eq 1 ] && exit 1
 fi
 
-cd /tmp
+cd /home/$(whoami)
 echo "Downloading $ISO from " $(echo $MIRROR | cut -d"/" -f3) "..."
 curl -L -O -C - "$MIRROR$ISO"
 curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c --
@@ -41,9 +42,9 @@ then
     sudo mkdir -p $FOLDER && sudo mount -o noatime,compress=zstd,space_cache=v2,discard=async,subvol=$SUBVOL $ROOTDRIVE $FOLDER || exit 1
     if [ $? -eq 0 ]
     then
-    	sudo curl -o "$FOLDER/$ISO" "FILE:///tmp/$ISO" 
+    	sudo curl -o "$FOLDER/$ISO" "FILE:///home/$(whoami)/$ISO" 
     	cd $FOLDER && curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c --
     	cd / && sudo umount $FOLDER && sudo rm -r $FOLDER  
-    	rm /tmp/$ISO
+    	rm /home/$(whoami)/$ISO
     fi
 fi
