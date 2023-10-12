@@ -16,6 +16,18 @@ mkdir -p /home/$(whoami)/.config/{neofetch,tmux}
 ln -sf $PATHINSTANCE/etc/neofetch.conf /home/$(whoami)/.config/neofetch/config.conf
 ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
 
+# Tuning sshd server (in case the host is remote)
+# On client host:
+# ssh-keygen -t ed25519 && ssh-copy-id -i $HOME/.ssh/id_ed25519.pub user@ip_server
+sudo ln -sf $PATHINSTANCE/etc/sshdloginkeyonly.conf /etc/ssh/sshd_config.d/sshdloginkeyonly.conf
+sudo systemctl reload sshd
+# DOUBLE CHECK
+sudo sshd -T | grep -E -i 'ChallengeResponseAuthentication|PasswordAuthentication|UsePAM|PermitRootLogin'
+# On client host, testing:
+# ssh root@ip_server  - should be: Permission denied (publickey).
+# ssh -o PubkeyAuthentication=no user@ip_server - should be: Permission denied (publickey).
+
+
 # 1. Install update timer
 # See instructions in update/install_updatetimer.sh
 
