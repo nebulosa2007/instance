@@ -1,9 +1,3 @@
-PS1='\n $([ -n "$SSH_CLIENT" ] && echo " \[\033[00;34m\]SSH \h\[\033[00;37m\]: ")\[\033[00;3$([[ $(stat --printf="%U%a" $(pwd)) == *$(whoami)7* ]] && echo 2 || echo 1)m\]\w\[\033[00m\]$(__git_ps1 " (%s)") $ '
-
-if [ -f ~/.bash_aliases ]; then
-        . ~/.bash_aliases
-fi
-
 # https://wiki.archlinux.org/title/Bash#Common_programs_and_options
 if [ -f /usr/share/bash-completion/bash_completion ]; then
 	. /usr/share/bash-completion/bash_completion
@@ -38,6 +32,16 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
 	export GIT_PS1_DESCRIBE_STYLE="default" # show commit relative to tag or branch, when detached HEAD
 	export GIT_PS1_SHOWCOLORHINTS=on        # any nonempty value. display in color
 	. /usr/share/git/completion/git-prompt.sh
+fi
+
+PS1='\n \
+$([ -n "$SSH_CLIENT" ] && echo "\[\033[00;34m\]SSH \h\[\033[00;37m\]: ")\
+\[\033[00;3$([[ $(stat --printf="%U%a" $(pwd)) == *$(whoami)7* ]] && echo 2 || echo 1)m\]\w\[\033[00m\]\
+$(__git_ps1 " (%s)") \
+$ '
+
+if [ -f ~/.bash_aliases ]; then
+        . ~/.bash_aliases
 fi
 
 # https://wiki.archlinux.org/title/bash#History
