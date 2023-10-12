@@ -22,7 +22,7 @@ ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
 sudo ln -sf $PATHINSTANCE/etc/sshdloginkeyonly.conf /etc/ssh/sshd_config.d/sshdloginkeyonly.conf
 sudo systemctl reload sshd
 # DOUBLE CHECK
-sudo sshd -T | grep -E -i 'ChallengeResponseAuthentication|PasswordAuthentication|UsePAM|PermitRootLogin'
+sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin'
 # On client host, testing:
 # ssh root@ip_server  - should be: Permission denied (publickey).
 # ssh -o PubkeyAuthentication=no user@ip_server - should be: Permission denied (publickey).
