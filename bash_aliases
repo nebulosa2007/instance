@@ -9,8 +9,8 @@ alias brupdate=". ~/.bashrc"
 
 # https://wiki.archlinux.org/title/Systemd#Using_units
 ## SYSTEMD MANAGEMENT
-IsSerUser () { [ "$(systemctl --user show -pLoadError $1)" == "LoadError=" ] && echo "U"; }
-Sstatus   () { systemctl --user status --no-pager -l "$1" 2>/dev/null || sudo systemctl status --no-pager -l "$1"; }
+#IsSerUser () { [ "$(systemctl --user show -pLoadError $1)" == "LoadError=" ] && echo "U"; }
+Sstatus   () { systemctl --user status --no-pager -l "$1" 2>/dev/null || systemctl status --no-pager -l "$1"; }
 Systemctl () { A="$1"; shift; (systemctl --user "$A" "$@" 2>/dev/null || sudo systemctl "$A" "$@" ) && wait3sec "Success! Wait 3 sec"; Sstatus "${!#}"; }
 Sstart    () { Systemctl start "$@"; }
 Sstop     () { Systemctl stop "$@"; }
