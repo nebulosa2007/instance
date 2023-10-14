@@ -1,0 +1,27 @@
+post_install() {
+	sysctl -q --system
+	systemctl --quiet daemon-reload
+    echo "Open in browser http://<ip_server>:5000"
+    echo "The default username and password are 'admin'. Please change it to secure your setup!
+    echo "Specify in server settings PostUp and PostDown script for proper work:
+    echo "PostUp:   '/opt/wireguard-ui/wgiptables up'"
+    echo "PostDown: '/opt/wireguard-ui/wgiptables down'"
+    echo "Then save server settings and check connection for a user 
+    echo "Please start and enable services: wg-reload, wireguard-ui and wg-quick@wg0"
+    echo "==> 'sudo systemctl enable --now wg-reload.{service,path} wireguard-ui wg-quick@wg0'"
+    echo "==> 'systemctl status wg-reload.{service,path} wireguard-ui wg-quick@wg0'"
+}
+
+post_upgrade() {
+	systemctl --quiet daemon-reload
+}
+
+pre_remove() {
+    systemctl --quiet --no-reload disable --now wireguard-ui.service
+    systemctl --quiet --no-reload disable --now wg-reload.path
+    systemctl --quiet --no-reload disable --now wg-reload.service
+}
+
+post_remove() {
+	systemctl --quiet daemon-reload
+}
