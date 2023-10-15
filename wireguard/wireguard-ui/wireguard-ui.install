@@ -1,19 +1,37 @@
+all_off="$(tput sgr0)"
+bold="${all_off}$(tput bold)"
+blue="${bold}$(tput setaf 4)"
+yellow="${bold}$(tput setaf 3)"
+
+noteb() {
+  printf "${blue}  ->${yellow} ${bold}$1${all_off}\n"
+}
+
+note() {
+  printf "${blue}  ->${yellow} $1${all_off}\n"
+}
+
 post_install() {
-	sysctl -q --system
-	systemctl --quiet daemon-reload
-    echo "Open in browser http://<ip_server>:5000"
-    echo "The default username and password are 'admin'. Please change it to secure your setup!
-    echo "Specify in server settings PostUp and PostDown script for proper work:
+    sysctl -q --system
+    systemctl --quiet daemon-reload
+    echo
+    noteb "Please start and enable service:"
+    echo "sudo systemctl enable --now wireguard-ui"
+    echo
+    note "Then open in browser http://<ip_server>:5000"
+    noteb "The default username and password are 'admin'. Please change it to secure your setup!"
+    echo
+    noteb "REQUIRED: Also specify in server settings PostUp and PostDown scripts:"
     echo "PostUp:   '/opt/wireguard-ui/wgiptables up'"
     echo "PostDown: '/opt/wireguard-ui/wgiptables down'"
-    echo "Then save server settings and check connection for a user 
-    echo "Please start and enable services: wg-reload, wireguard-ui and wg-quick@wg0"
-    echo "==> 'sudo systemctl enable --now wg-reload.{service,path} wireguard-ui wg-quick@wg0'"
-    echo "==> 'systemctl status wg-reload.{service,path} wireguard-ui wg-quick@wg0'"
+    echo
+    noteb "Then save server settings and finally start wg server:"
+    echo "sudo systemctl enable --now wg-reload.{service,path}"
+    echo
 }
 
 post_upgrade() {
-	systemctl --quiet daemon-reload
+	post_install
 }
 
 pre_remove() {
@@ -23,5 +41,7 @@ pre_remove() {
 }
 
 post_remove() {
+    rm -fr /opt/wireguard-ui
 	systemctl --quiet daemon-reload
+    sysctl -q --system
 }
