@@ -20,12 +20,11 @@ source=(https://github.com/ngoduykhanh/$_pkgname/releases/download/v$pkgver/$_pk
 		wg-reload.path
 		wg-reload.service)
 md5sums=('aa38b4b0950e9df0dcf3ddba87516f0a'
-         'd7e769f1713ce9b8eec49b967c870563'
+         '9632dcff1438fdd29befaf0f4db1873c'
          '70c4fc283f2195096c491f7be65d6342'
          '12311001d83cabe4b66a01fb819bed39'
          '9efcd8b52477051ac3297b295e3a777e'
          '66b402a7b0ac73787f744931302f3dac')
-
 package() {
   install -d $pkgdir/{opt/$_pkgname,usr/lib/systemd/system,etc/sysctl.d}
   install -Dm755 $_pkgname $pkgdir/opt/$_pkgname/$_pkgname
