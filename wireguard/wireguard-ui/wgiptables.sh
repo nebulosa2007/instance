@@ -4,7 +4,7 @@
 
 SERVER_WG_NIC="wg0" #Default interface
 SERVER_PUB_NIC=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
-SERVER_PORT=$(grep -Po '(?<=ListenPort = )(\S+)' "/etc/wireguard/"$SERVER_WG_NIC".conf"
+SERVER_PORT=$(grep -Po '(?<=ListenPort = )(\S+)' "/etc/wireguard/"$SERVER_WG_NIC".conf")
 
 if [ "$1" == "up" ]; then
   iptables -I INPUT -p udp --dport $SERVER_PORT -j ACCEPT
