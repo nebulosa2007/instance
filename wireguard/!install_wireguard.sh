@@ -1,8 +1,8 @@
 #Wireguard module of Instance project
 
-source /etc/instance.conf
-cd $PATHINSTANCE/wireguard
-mkdir -p var && cd var
+#source /etc/instance.conf
+#cd $PATHINSTANCE/wireguard
+#mkdir -p var && cd var
 
 # https://github.com/angristan/wireguard-install
 # curl -O https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh
