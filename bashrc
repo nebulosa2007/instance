@@ -1,3 +1,6 @@
+# Program packages:
+# pikaur -Syu --needed bash_completion fzf git tmux
+
 # https://wiki.archlinux.org/title/Bash#Common_programs_and_options
 if [ -f /usr/share/bash-completion/bash_completion ]; then
 	. /usr/share/bash-completion/bash_completion
