@@ -22,6 +22,8 @@ sudo cp $PATHINSTANCE/etc/mtproxy.conf /etc/mtproxy.conf
 sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null)'/' /etc/mtproxy.conf
 sudo systemctl enable --now mtproxy mtproxy-config.timer 
 
+#todo generation link. http://seriyps.ru/mtpgen.html
+
 # Tuning sshd server (in case the host is remote)
 # On client host:
 # ssh-keygen -t ed25519 && ssh-copy-id -i $HOME/.ssh/id_ed25519.pub user@ip_server
