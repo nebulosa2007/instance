@@ -16,6 +16,12 @@ mkdir -p /home/$(whoami)/.config/{neofetch,tmux}
 ln -sf $PATHINSTANCE/etc/neofetch.conf /home/$(whoami)/.config/neofetch/config.conf
 ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
 
+# Telegram proxy
+pikaur -Syu mtproxy-git
+echo cp $PATHINSTANCE/etc/mtproxy.conf /etc/mtproxy.conf
+sudo sed -i 's/SECRET=\'\'/SECRET='$(head -c 16 /dev/urandom | xxd -ps)'/' /etc/mtproxy.conf
+sudo systemctl enable -now mtproxy mtproxy-config.timer 
+
 # Tuning sshd server (in case the host is remote)
 # On client host:
 # ssh-keygen -t ed25519 && ssh-copy-id -i $HOME/.ssh/id_ed25519.pub user@ip_server
