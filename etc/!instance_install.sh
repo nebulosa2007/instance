@@ -30,7 +30,7 @@ sudo systemctl enable --now mtproxy mtproxy-config.timer
 sudo ln -sf $PATHINSTANCE/etc/sshdloginkeyonly.conf /etc/ssh/sshd_config.d/sshdloginkeyonly.conf
 sudo systemctl reload sshd
 # DOUBLE CHECK
-sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin'
+sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 # On client host, testing:
 # ssh root@ip_server  - should be: Permission denied (publickey).
 # ssh -o PubkeyAuthentication=no user@ip_server - should be: Permission denied (publickey).
