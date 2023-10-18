@@ -7,6 +7,7 @@ echo "TG_BOT_CHAT_ID=''" | sudo tee -a /etc/instance.conf
 source /etc/instance.conf
 ln -sf $PATHINSTANCE/bashrc .bashrc
 ln -sf  $PATHINSTANCE/bash_aliases .bash_aliases
+# Install packages that noted in bash_aliases
 
 # Tuning system
 sudo cp $PATHINSTANCE/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system

@@ -1,5 +1,5 @@
 # Program packages:
-# pikaur -Syu --needed lsd mc reflector expac fzf bash-completion etc-update
+# pikaur -Syu --needed lsd mc reflector expac fzf bash-completion etc-update less
 # READ FIRST about snaplist alias below
 
 # https://wiki.archlinux.org/title/Bash#Aliases
