@@ -22,7 +22,7 @@ ln -sf $PATHINSTANCE/etc/yt-dlp.conf /home/$(whoami)/.config/yt-dpl/config
 # Tuning sshd server (in case the host is remote)
 # On client host:
 # ssh-keygen -t ed25519 && ssh-copy-id -i $HOME/.ssh/id_ed25519.pub user@ip_server
-sudo ln -sf $PATHINSTANCE/etc/sshdloginkeyonly.conf /etc/ssh/sshd_config.d/sshdloginkeyonly.conf
+sudo ln -sf $PATHINSTANCE/etc/sshd.conf /etc/ssh/sshd_config.d/sshd.conf
 sudo systemctl reload sshd
 # DOUBLE CHECK
 sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
@@ -50,7 +50,7 @@ sudo systemctl enable sslh.socket
 #todo make transparent
 
 # Firewall
-
+sudo $PATHINSTANCE/scripts/firewall-on
 # After firewall setup
 sudo systemctl restart wg-quick@wg0
 
