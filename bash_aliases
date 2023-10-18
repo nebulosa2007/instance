@@ -17,7 +17,7 @@ Sstop     () { Systemctl stop "$@"; }
 Srestart  () { Systemctl restart "$@"; }
 Sdisable  () { Systemctl disable "$@"; }
 
-Senable   () { systemctl enable "$@"; }
+Senable   () { sudo systemctl enable "$@"; }
 alias Stimers="systemctl list-timers --all"
 alias Slists="systemctl list-units --type=service --all --no-pager"
 
