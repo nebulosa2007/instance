@@ -12,9 +12,10 @@ ln -sf  $PATHINSTANCE/bash_aliases .bash_aliases
 sudo cp $PATHINSTANCE/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
 
 # Tuming programs
-mkdir -p /home/$(whoami)/.config/{neofetch,tmux}
+mkdir -p /home/$(whoami)/.config/{neofetch,tmux,yt-dlp}
 ln -sf $PATHINSTANCE/etc/neofetch.conf /home/$(whoami)/.config/neofetch/config.conf
 ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
+ln -sf $PATHINSTANCE/etc/yt-dlp.conf /home/$(whoami)/.config/yt-dpl/config
 
 
 # Tuning sshd server (in case the host is remote)
