@@ -19,3 +19,6 @@ find /home/$(whoami)/.cache/pikaur/pkg -delete 2> /dev/null
 [ -x "$(command -v btrfs)" ] && (sudo btrfs scrub start /; echo "Waiting 30 seconds..."; sleep 30; sudo btrfs scrub status /)
 
 df -h | grep -E "[s|v]da"
+
+#todo Make df 1 string only for btrfs
+#todo Waiting not 30 second nut more intellectual - scan existing pid of pros and wait less seconds 
