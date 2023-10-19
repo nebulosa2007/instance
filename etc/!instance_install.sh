@@ -42,12 +42,18 @@ sudo systemctl enable --now mtproxy mtproxy-config.timer
 # Wireguard server
 pikaur -Sy wireguard-ui
 
-# SSLH multiplexor
-sudo ln -sf $PATHINSTANCE/etc/sslh.conf /etc/sslh.conf
-sudo cp /run/systemd/generator/sslh.socket /etc/systemd/system/sslh.socket
-printf "[Install]\nWantedBy = multi-user.target" | sudo tee -a  /etc/systemd/system/sslh.socket
+# SSLH multiplexor, transparent mode
+sudo ln -sf $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
+#sudo cp $PATHINSTANCE/etc/99-sslh.conf /etc/sysctl.d/99-sslh.conf && sudo sysctl --system
+#sudo useradd --system -s /usr/bin/nologin sslh
+#sudo cp /run/systemd/generator/sslh.socket /etc/systemd/system/sslh.socket
+#printf "[Install]\nWantedBy = multi-user.target" | sudo tee -a  /etc/systemd/system/sslh.socket
+#sudo systemctl enable sslh-fork.service
 sudo systemctl enable sslh.socket
-#todo make transparent
+# Configure routing for those marked packets
+#sudo ip rule add fwmark 0x1 lookup 100
+#sudo ip route add local 0.0.0.0/0 dev lo table 100
+# And required firewall on
 
 # Firewall
 sudo $PATHINSTANCE/scripts/firewall-on
