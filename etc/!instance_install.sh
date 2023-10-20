@@ -41,17 +41,20 @@ sudo systemctl enable --now mtproxy mtproxy-config.timer
 #todo make aur not git version
 
 # Wireguard server
-pikaur -Sy wireguard-ui-bin
+pikaur -Sy --needed wireguard-ui-bin
 
 # SSLH multiplexor, transparent mode
-#todo make aur package with transparent mode 
-sudo ln -sf $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
-#sudo cp $PATHINSTANCE/etc/99-sslh.conf /etc/sysctl.d/99-sslh.conf && sudo sysctl --system
-#sudo useradd --system -s /usr/bin/nologin sslh
-#sudo cp /run/systemd/generator/sslh.socket /etc/systemd/system/sslh.socket
-#printf "[Install]\nWantedBy = multi-user.target" | sudo tee -a  /etc/systemd/system/sslh.socket
+pikaur -Sy --needed sslh-git
+sudo cp $PATHINSTANCE/etc/99-sslh.conf /etc/sysctl.d/99-sslh.conf && sudo sysctl --system
+sudo useradd -mG wheel --system -s /usr/bin/nologin sslh
+sudo cp $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
+sudo systemctl daemon-reload
+sudo cp /run/systemd/generator/sslh.socket /etc/systemd/system/sslh.socket
+printf "\n[Install]\nWantedBy = multi-user.target" | sudo tee -a  /etc/systemd/system/sslh.socket
+sudo systemctl enable --now sslh.socket
+
+#todo make aur package with transparent mode:
 #sudo systemctl enable sslh-fork.service
-sudo systemctl enable sslh.socket
 # Configure routing for those marked packets
 #sudo ip rule add fwmark 0x1 lookup 100
 #sudo ip route add local 0.0.0.0/0 dev lo table 100
