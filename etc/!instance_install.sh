@@ -75,3 +75,7 @@ sudo systemctl restart wg-quick@wg0
 
 # 3. Install wireguard and wgstat services 
 # See instructions in wireguard/install_wireguard.sh
+
+# Remote repositories 
+# git remote set-url --add --push origin git@...1
+# git remote set-url --add --push origin git@...2
