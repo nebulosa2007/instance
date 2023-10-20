@@ -16,7 +16,7 @@ sudo cp $PATHINSTANCE/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sy
 mkdir -p /home/$(whoami)/.config/{neofetch,tmux,yt-dlp}
 ln -sf $PATHINSTANCE/etc/neofetch.conf /home/$(whoami)/.config/neofetch/config.conf
 ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
-ln -sf $PATHINSTANCE/etc/yt-dlp.conf /home/$(whoami)/.config/yt-dpl/config
+ln -sf $PATHINSTANCE/etc/yt-dlp.conf /home/$(whoami)/.config/yt-dlp/config
 
 
 # Tuning sshd server (in case the host is remote)
@@ -38,9 +38,10 @@ sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=
 sudo systemctl enable --now mtproxy mtproxy-config.timer 
 #todo add command to see statistic on 127.0.0.1:8888 outside the server - ssh tunneling
 #todo generation link. http://seriyps.ru/mtpgen.html
+#todo make aur not git version
 
 # Wireguard server
-pikaur -Sy wireguard-ui
+pikaur -Sy wireguard-ui-bin
 
 # SSLH multiplexor, transparent mode
 #todo make aur package with transparent mode 
