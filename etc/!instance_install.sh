@@ -45,15 +45,15 @@ pikaur -Sy --needed wireguard-ui-bin
 
 # SSLH multiplexor, transparent mode
 pikaur -Sy --needed sslh-git
-sudo cp $PATHINSTANCE/etc/99-sslh.conf /etc/sysctl.d/99-sslh.conf && sudo sysctl --system
-sudo useradd -mG wheel --system -s /usr/bin/nologin sslh
-sudo cp $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
+sudo ln -sf $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
 sudo systemctl daemon-reload
 sudo cp /run/systemd/generator/sslh.socket /etc/systemd/system/sslh.socket
 printf "\n[Install]\nWantedBy = multi-user.target" | sudo tee -a  /etc/systemd/system/sslh.socket
 sudo systemctl enable --now sslh.socket
 
 #todo make aur package with transparent mode:
+#sudo cp $PATHINSTANCE/etc/99-sslh.conf /etc/sysctl.d/99-sslh.conf && sudo sysctl --system
+#sudo useradd -mG wheel --system -s /usr/bin/nologin sslh
 #sudo systemctl enable sslh-fork.service
 # Configure routing for those marked packets
 #sudo ip rule add fwmark 0x1 lookup 100
