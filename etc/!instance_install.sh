@@ -43,6 +43,7 @@ sudo systemctl enable --now mtproxy mtproxy-config.timer
 pikaur -Sy wireguard-ui
 
 # SSLH multiplexor, transparent mode
+#todo make aur package with transparent mode 
 sudo ln -sf $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
 #sudo cp $PATHINSTANCE/etc/99-sslh.conf /etc/sysctl.d/99-sslh.conf && sudo sysctl --system
 #sudo useradd --system -s /usr/bin/nologin sslh
