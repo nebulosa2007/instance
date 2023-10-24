@@ -34,8 +34,10 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 # Telegram server
 pikaur -S --needed  mtproxy-git
 sudo cp $PATHINSTANCE/etc/mtproxy.conf /etc/mtproxy.conf
-sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null)'/' /etc/mtproxy.conf
-sudo systemctl enable --now mtproxy mtproxy-config.timer 
+sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=16 2>/dev/null)'/' /etc/mtproxy.conf
+grep "SECRET=" /etc/mtproxy.conf
+#echo "tg://proxy?server=SERVER_NAME&port=PORT&secret=SECRET"
+sudo systemctl enable --now mtproxy mtproxy-config.timer
 #todo add command to see statistic on 127.0.0.1:8888 outside the server - ssh tunneling
 #todo generation link. http://seriyps.ru/mtpgen.html
 #todo make aur not git version
