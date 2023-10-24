@@ -1,13 +1,13 @@
 # Instance project set installing:
 # IMPORTANT: See notes in .bash_aliases for installing needed packages
-cd ~
+
 echo "PATHINSTANCE=\"/home/"$(whoami)"/.config/instance\"" | sudo tee /etc/instance.conf
 echo "TG_BOT_API_TOKEN=''" | sudo tee -a /etc/instance.conf
-echo "TG_BOT_CHAT_ID=''" | sudo tee -a /etc/instance.conf
+echo "TG_BOT_CHAT_ID=''"   | sudo tee -a /etc/instance.conf
 source /etc/instance.conf
-ln -sf $PATHINSTANCE/bashrc .bashrc
-ln -sf  $PATHINSTANCE/bash_aliases .bash_aliases
-# Install packages that noted in bash_aliases
+ln -sf $PATHINSTANCE/bashrc       /home/($whoami)/.bashrc
+ln -sf $PATHINSTANCE/bash_aliases /home/($whoami)/.bash_aliases
+# Install packages that pointed in bash_aliases
 
 # Tuning system
 sudo cp $PATHINSTANCE/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
@@ -30,17 +30,12 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 # ssh root@ip_server  - should be: Permission denied (publickey).
 # ssh -o PubkeyAuthentication=no user@ip_server - should be: Permission denied (publickey).
 
-
 # Telegram server
 pikaur -S --needed  mtproxy-git
 sudo cp $PATHINSTANCE/etc/mtproxy.conf /etc/mtproxy.conf
 sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=16 2>/dev/null)'/' /etc/mtproxy.conf
-grep "SECRET=" /etc/mtproxy.conf
-#echo "tg://proxy?server=SERVER_NAME&port=PORT&secret=SECRET"
 sudo systemctl enable --now mtproxy mtproxy-config.timer
-#todo add command to see statistic on 127.0.0.1:8888 outside the server - ssh tunneling
 #todo generation link. http://seriyps.ru/mtpgen.html
-#todo make aur not git version
 
 # Wireguard server
 pikaur -Sy --needed wireguard-ui-bin
