@@ -33,16 +33,23 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 # Telegram server
 pikaur -S --needed  mtproxy-git
 sudo cp $PATHINSTANCE/etc/mtproxy.conf /etc/mtproxy.conf
-sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=16 2>/dev/null)'/' /etc/mtproxy.conf
+sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null)'/' /etc/mtproxy.conf
 sudo systemctl enable --now mtproxy mtproxy-config.timer
-#todo generation link. http://seriyps.ru/mtpgen.html
+# generation link: http://seriyps.ru/mtpgen.html Fake-TLS base64 link needed
 
 # Wireguard server
 pikaur -Sy --needed wireguard-ui-bin
+# Read notes after install
+# IPv6 config:
+# Add in Server Interface Addresses - fd42:42:42::0/64
+# Add in DNS Servers - 2620:fe::fe (free DNS resolver from Quad9)
+# When you will create new user add at Allowed IPs section - ::/0 (not included automatically)
+# Test your WG connection here: https://ipv6-test.com - ISPs for IPv4 and IPv6 will be the same
 
-# SSLH multiplexor, transparent mode
-pikaur -Sy --needed sslh-git
-sudo ln -sf $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
+
+# SSLH multiplexor
+pikaur -Sy --needed sslh
+sudo cp $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
 sudo systemctl daemon-reload
 sudo cp /run/systemd/generator/sslh.socket /etc/systemd/system/sslh.socket
 printf "\n[Install]\nWantedBy = multi-user.target" | sudo tee -a  /etc/systemd/system/sslh.socket
@@ -57,6 +64,7 @@ sudo systemctl enable --now sslh.socket
 #sudo ip route add local 0.0.0.0/0 dev lo table 100
 # And required firewall on
 
+
 # Firewall
 sudo $PATHINSTANCE/scripts/firewall-on
 # After firewall setup
@@ -65,7 +73,6 @@ sudo systemctl restart wg-quick@wg0
 
 # 1. Install update timer
 # See instructions in update/install_updatetimer.sh
-#todo make an aur package ???
 
 # 2. Install btrfs snapshot hooks for pacman
 # See instructions in snapshots/install_snapshots.sh
@@ -73,6 +80,8 @@ sudo systemctl restart wg-quick@wg0
 # 3. Install wireguard and wgstat services 
 # See instructions in wireguard/install_wireguard.sh
 
-# Remote repositories 
+
+
+# Personal notes, remote repositories
 # git remote set-url --add --push origin git@...1
 # git remote set-url --add --push origin git@...2
