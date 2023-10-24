@@ -15,7 +15,9 @@ sudo cp $PATHINSTANCE/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sy
 # Tuming programs
 mkdir -p /home/$(whoami)/.config/{neofetch,tmux,yt-dlp}
 ln -sf $PATHINSTANCE/etc/neofetch.conf /home/$(whoami)/.config/neofetch/config.conf
+# https://wiki.archlinux.org/title/Tmux
 ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
+# https://wiki.archlinux.org/title/Yt-dlp
 ln -sf $PATHINSTANCE/etc/yt-dlp.conf /home/$(whoami)/.config/yt-dlp/config
 
 
@@ -30,12 +32,14 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 # ssh root@ip_server  - should be: Permission denied (publickey).
 # ssh -o PubkeyAuthentication=no user@ip_server - should be: Permission denied (publickey).
 
+
 # Telegram server
 pikaur -S --needed  mtproxy-git
 sudo cp $PATHINSTANCE/etc/mtproxy.conf /etc/mtproxy.conf
 sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null)'/' /etc/mtproxy.conf
 sudo systemctl enable --now mtproxy mtproxy-config.timer
 # generation link: http://seriyps.ru/mtpgen.html Fake-TLS base64 link needed
+
 
 # Wireguard server
 pikaur -Sy --needed wireguard-ui-bin
@@ -48,6 +52,7 @@ pikaur -Sy --needed wireguard-ui-bin
 
 
 # SSLH multiplexor
+# https://wiki.archlinux.org/title/Sslh
 pikaur -Sy --needed sslh
 sudo cp $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
 sudo systemctl daemon-reload
@@ -71,15 +76,23 @@ sudo $PATHINSTANCE/scripts/firewall-on
 sudo systemctl restart wg-quick@wg0
 
 
+# Snapshots
+# https://wiki.archlinux.org/title/Yabsnap
+
+#For minimizing size of snapshots
+sudo rm -f /var/cache/pacman/pkg/*
+sudo sed -i 's/#CacheDir    = \/var\/cache\/pacman\/pkg\//CacheDir     = \/tmp\//' /etc/pacman.conf
+pikaur -Sy --needed yabsnap
+sudo yabsnap create-config root      #for root partittion
+sudo sed -i 's/source=/source=\//' /etc/yabsnap/configs/root.conf
+sudo systemctl enable --now yabsnap.timer
+
 # 1. Install update timer
 # See instructions in update/install_updatetimer.sh
 
-# 2. Install btrfs snapshot hooks for pacman
-# See instructions in snapshots/install_snapshots.sh
-
-# 3. Install wireguard and wgstat services 
+# 2. Install wgstat services
 # See instructions in wireguard/install_wireguard.sh
-
+#todo need update due wireguard-ui!
 
 
 # Personal notes, remote repositories
