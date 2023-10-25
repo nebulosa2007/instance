@@ -2,7 +2,7 @@
 
 df -h | grep -E "[s|v]da"
 sudo pacman -Rsn $(pacman -Qdtq)
-sudo rm -f $(awk '/Cache/ {print $3}' /etc/pacman.conf)/*.pkg.tar.{zst,zst.sig} 
+sudo rm -f $(awk '/Cache/ {print $3}' /etc/pacman.conf)/*.pkg.tar.{zst,zst.sig}
 
 sudo journalctl --disk-usage
 sudo journalctl --vacuum-size=5M
@@ -21,4 +21,4 @@ find /home/$(whoami)/.cache/pikaur/pkg -delete 2> /dev/null
 df -h | grep -E "[s|v]da"
 
 #todo Make df 1 string only for btrfs
-#todo Waiting not 30 second nut more intellectual - scan existing pid of pros and wait less seconds 
+#todo Waiting not 30 second nut more intellectual - scan existing pid of pros and wait less seconds

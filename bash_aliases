@@ -71,7 +71,7 @@ alias age="$INSTANCESCRIPTWAY/age.sh"
 alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
 alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
 
-if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then 
+if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
     SNAPWAY="$PATHINSTANCE/snapshots"
     # https://wiki.archlinux.org/title/Sudo#Configure_sudo_using_drop-in_files_in_/etc/sudoers.d
     ## For proper rights snaplist alias, do:
@@ -86,3 +86,5 @@ fi
 if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
    source "$INSTANCESCRIPTWAY/sensitive.sh"
 fi
+
+##Tips: grep -RnE " $"  - show spaces at end of lines for all files in folder reqursively

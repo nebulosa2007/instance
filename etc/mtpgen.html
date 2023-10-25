@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>Telegram MTProto Proxy link generator</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Telegram MTProto Proxy link generator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="canonical" href="http://seriyps.ru/mtpgen.html"/>
         <script>
          function $$(query, context) {
@@ -144,7 +144,7 @@
                  var domain_bytes = Array.from(tls_domain).map( (c) => c.charCodeAt(0) );
                  var tls_bytes = hexToBytes("ee" + secret).concat(domain_bytes);
                  var tg_prefix = url_type + "proxy?server=" + server + "&port=" + port + "&secret=";
-                 
+
                  setUrl("#url-normal", tg_prefix + secret);
                  setUrl("#url-dd", tg_prefix + dd_secret);
                  setUrl("#url-tls-hex", tg_prefix + encodeURIComponent(bytesToHex(tls_bytes)));
@@ -186,8 +186,8 @@
              }
          })
         </script>
-	</head>
-	<body>
+    </head>
+    <body>
         <h1>Telegram MTProto Proxy link generator</h1>
         <form id="generator-form">
             <div>
@@ -269,4 +269,3 @@
         </div>
     </body>
 </html>
-

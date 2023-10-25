@@ -1,5 +1,5 @@
 [Unit]
-Description=Dump transfer log for wg0 interface each hour 
+Description=Dump transfer log for wg0 interface each hour
 
 [Service]
 ExecStart=/usr/bin/wgstat

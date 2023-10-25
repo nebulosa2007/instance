@@ -3,38 +3,38 @@
 
 # https://wiki.archlinux.org/title/Bash#Common_programs_and_options
 if [ -f /usr/share/bash-completion/bash_completion ]; then
-	. /usr/share/bash-completion/bash_completion
+    . /usr/share/bash-completion/bash_completion
 fi
 
 # https://wiki.archlinux.org/title/Fzf#Bash
 if [ -f /usr/share/fzf/completion.bash ]; then
-	. /usr/share/fzf/completion.bash
+    . /usr/share/fzf/completion.bash
 fi
 if [ -f /usr/share/fzf/key-bindings.bash ]; then
-	. /usr/share/fzf/key-bindings.bash
+    . /usr/share/fzf/key-bindings.bash
 fi
 
 # https://wiki.archlinux.org/title/Git#Bash_completion
 if [ -f /usr/share/git/completion/git-completion.bash ]; then
-	. /usr/share/git/completion/git-completion.bash
+    . /usr/share/git/completion/git-completion.bash
 fi
 
 #https://wiki.archlinux.org/title/Git#Git_prompt
 if [ -f /usr/share/git/completion/git-prompt.sh ]; then
-	export GIT_PS1_SHOWDIRTYSTATE=on        # any nonempty value. + for staged, * if unstaged
-	export GIT_PS1_SHOWSTASHSTATE=on        # any nonempty value. $ if something is stashed
-	export GIT_PS1_SHOWUNTRACKEDFILES=on    # any nonempty value. % if there are untracked files
-	export GIT_PS1_SHOWUPSTREAM="verbose"   # auto: <, >, <> behind, ahead, or diverged from upstream
-	                                        # or a space-delimited list of the following options (verbose .. .. ..):
-	                                        # verbose  show number of commits ahead/behind (+/-) upstream
-	                                        # name     if verbose, then also show the upstream abbrev name
-	                                        # legacy   don't use the '--count' option available in recent versions of git-rev-list
-	                                        # git always compare HEAD to @{upstream}
-	                                        # svn always compare HEAD to your SVN upstream
-	export GIT_PS1_STATESEPARATOR=" "       # separator between branch name and state symbols
-	export GIT_PS1_DESCRIBE_STYLE="default" # show commit relative to tag or branch, when detached HEAD
-	export GIT_PS1_SHOWCOLORHINTS=on        # any nonempty value. display in color
-	. /usr/share/git/completion/git-prompt.sh
+    export GIT_PS1_SHOWDIRTYSTATE=on        # any nonempty value. + for staged, * if unstaged
+    export GIT_PS1_SHOWSTASHSTATE=on        # any nonempty value. $ if something is stashed
+    export GIT_PS1_SHOWUNTRACKEDFILES=on    # any nonempty value. % if there are untracked files
+    export GIT_PS1_SHOWUPSTREAM="verbose"   # auto: <, >, <> behind, ahead, or diverged from upstream
+                                            # or a space-delimited list of the following options (verbose .. .. ..):
+                                            # verbose  show number of commits ahead/behind (+/-) upstream
+                                            # name     if verbose, then also show the upstream abbrev name
+                                            # legacy   don't use the '--count' option available in recent versions of git-rev-list
+                                            # git always compare HEAD to @{upstream}
+                                            # svn always compare HEAD to your SVN upstream
+    export GIT_PS1_STATESEPARATOR=" "       # separator between branch name and state symbols
+    export GIT_PS1_DESCRIBE_STYLE="default" # show commit relative to tag or branch, when detached HEAD
+    export GIT_PS1_SHOWCOLORHINTS=on        # any nonempty value. display in color
+    . /usr/share/git/completion/git-prompt.sh
 fi
 
 PS1='\n \
@@ -62,7 +62,7 @@ shopt -s autocd
 ## check the window size after each command and update values for columns
 shopt -s checkwinsize
 
-# https://wiki.archlinux.org/title/Systemd/Journal#Filtering_output Tip
+# https://wiki.archlinux.org/title/Systemd/Journal#Filtering_output
 SYSTEMD_LESS=FRXMK
 
 # https://wiki.archlinux.org/title/Bash/Prompt_customization#Colors
@@ -74,10 +74,10 @@ nc='\033[0m';
 
 ## Quick server status for SSH conection
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
-	echo -ne "\n"; uptime;
+    echo -ne "\n"; uptime;
     #[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
     [ `who | grep pts | grep -v "tmux" | wc -l` -ne 1 ] && echo -e "\n${yellow} Login warning:\n$(who | sed 's/^/ /')${nc}"
-	# https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
+    # https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
     PACNEWCOUNT=$(find /etc -name *.pacnew 2>/dev/null | wc -l)
     [ $PACNEWCOUNT -ne 0 ] && echo -e "\n Pacnew files: $PACNEWCOUNT update"$([ $PACNEWCOUNT -ne 1 ] && echo -n "s")" remaining"
 fi
@@ -91,26 +91,26 @@ source /etc/instance.conf
 
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
     if [ -f /var/log/updpackages.log ] && [ `pacman -Qu | grep -v "\[ignored\]" | wc -l` -ne 0 ]; then
-    	echo -e "\n${yellow} Available updates:\n$(cat /var/log/updpackages.log | sed 's/^/ /')${nc}"
-	else
-		echo -e "\n${green} System is up-to-date${nc}"
+        echo -e "\n${yellow} Available updates:\n$(cat /var/log/updpackages.log | sed 's/^/ /')${nc}"
+    else
+        echo -e "\n${green} System is up-to-date${nc}"
     fi
 
     if [ -f $PATHINSTANCE/scripts/age.sh ]; then
-		echo -ne "\n "; 
-		$PATHINSTANCE/scripts/age.sh
+        echo -ne "\n ";
+        $PATHINSTANCE/scripts/age.sh
     fi
 
     if [ -f $PATHINSTANCE/scripts/logger.sh ]; then
-		echo -ne "\n";
-		$PATHINSTANCE/scripts/logger.sh
+        echo -ne "\n";
+        $PATHINSTANCE/scripts/logger.sh
     fi
 fi
 
 # Check if the tmux session exists, discarding output (zero for success, non-zero for failure)
 tmux has-session -t 0 2>/dev/null
 if [ $? -eq 0 ] && [ -z "$TMUX" ]; then
-	echo -ne "\n${yellow}Attaching to an existing tmux session"
-	for i in {1..3}; do echo -n "."; sleep 1; done;  echo -e "${nc}"
-	tmux attach-session -t 0
+    echo -ne "\n${yellow}Attaching to an existing tmux session"
+    for i in {1..3}; do echo -n "."; sleep 1; done;  echo -e "${nc}"
+    tmux attach-session -t 0
 fi
