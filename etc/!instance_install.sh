@@ -60,30 +60,18 @@ sudo cp /run/systemd/generator/sslh.socket /etc/systemd/system/sslh.socket
 printf "\n[Install]\nWantedBy = multi-user.target" | sudo tee -a  /etc/systemd/system/sslh.socket
 sudo systemctl enable --now sslh.socket
 
-#todo make aur package with transparent mode:
-#sudo cp $PATHINSTANCE/etc/99-sslh.conf /etc/sysctl.d/99-sslh.conf && sudo sysctl --system
-#sudo useradd -mG wheel --system -s /usr/bin/nologin sslh
-#sudo systemctl enable sslh-fork.service
-# Configure routing for those marked packets
-#sudo ip rule add fwmark 0x1 lookup 100
-#sudo ip route add local 0.0.0.0/0 dev lo table 100
-# And required firewall on
-
-
 # Firewall
 sudo $PATHINSTANCE/scripts/firewall-on
 # After firewall setup
 sudo systemctl restart wg-quick@wg0
 
-
 # Snapshots
 # https://wiki.archlinux.org/title/Yabsnap
-
 #For minimizing size of snapshots
 sudo rm -f /var/cache/pacman/pkg/*
 sudo sed -i 's/#CacheDir    = \/var\/cache\/pacman\/pkg\//CacheDir     = \/tmp\//' /etc/pacman.conf
 pikaur -Sy --needed yabsnap
-sudo yabsnap create-config root      #for root partittion
+sudo yabsnap create-config root   #for root partittion
 sudo sed -i 's/source=/source=\//' /etc/yabsnap/configs/root.conf
 sudo systemctl enable --now yabsnap.timer
 
