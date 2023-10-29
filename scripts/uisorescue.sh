@@ -7,9 +7,12 @@ MIRROR="https://mirror.ams1.nl.leaseweb.net/archlinux/iso/latest/"
 FOLDER="/mnt/archiso"
 
 ALLDONE=0
-ROOTDRIVE=$(df -Th | grep btrfs | grep /$ | cut -d' ' -f 1)
+ROOTDRIVE=$(mount | grep -Po '^.*(?= on \/ type btrfs)')
 
-#Checker if all already done
+[ "$ROOTDRIVE" == "" ] && echo "This script works only with BTRFS" && exit 1
+[ ! -e /etc/default/grub ] && echo "This script works only with GRUB" && exit 1
+
+#Checker if it's all already done
 if [ "$(sudo btrfs subvolume list / | awk '/level 5/ && /'$SUBVOL'/ {print $NF}'| head -n1)" != "" ]
 then
     sudo mkdir -p $FOLDER && sudo mount -o noatime,compress=zstd,space_cache=v2,discard=async,subvol=$SUBVOL $ROOTDRIVE $FOLDER
