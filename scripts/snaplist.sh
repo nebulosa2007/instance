@@ -5,7 +5,7 @@ green='\033[0;32m'
 yellow='\033[0;33m'
 nc='\033[0m'
 
-function print_snapshot_log
+function print_snapshot_comment
 {
 	hookfile="01-yabsnap-pacman-pre.hook"
     cat /var/log/pacman.log | grep "running '"$hookfile"'" | while read pacman_log_line
@@ -35,19 +35,19 @@ function print_snapshot_log
     done
 }
 
+SNAPDIR="/.snapshots"
+
 if [ -z $1 ]
 then
-    SNAPDIR="/.snapshots"
-    LISTROOT=$(ls -d -1 $SNAPDIR/*/ 2>/dev/null | tr " " "\n" | sed 's/\/$//g')
-    printf "List of snapshots:${green} $(echo $LISTROOT | wc -w) ${nc}\n\n"
-    echo $LISTROOT | tr " " "\n" | while read snapshot
-    do
-        echo -n $(basename $snapshot)": "
-        cat $snapshot-meta.json | echo $(tr -d '"{}')
-    done
+    list=$(ls -d -1 $SNAPDIR/*/ 2>/dev/null | tr " " "\n" | sed 's/\/$//g')
+    printf "List of snapshots:${green} $(echo $list | wc -w) ${nc}\n\n"
 else
-    #snapshot=$1
-    cat $1-meta.json | echo $(tr -d '"{}')
-    #LOG=$(print_snapshot_log $snapshot)
+    list=$SNAPDIR/$1
+    #LOG=$(print_snapshot_comment $list)
     #[ "$LOG" == "" ] && echo "No comments about this shapshot found" || echo $LOG
 fi
+echo $list | tr " " "\n" | while read snapshot
+do
+   echo -n $(basename $snapshot)": "
+   cat $snapshot-meta.json | echo $(tr -d '"{}')
+done
