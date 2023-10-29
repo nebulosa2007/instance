@@ -72,7 +72,7 @@ alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
 alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
 
 if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
-    alias snapctl="\ls -d /.snapshots/*/ | sed 's/\/.snapshots\///g' | fzf -m --reverse --preview 'basename {1}' --preview-window right:70%:wrap | xargs -I SNAP sudo btrfs subvolume delete /mnt/SNAP"
+    alias snapctl="\ls -d /.snapshots/*/ | sed 's/\/.snapshots\///g' | fzf -m --reverse --preview 'basename {1}' --preview-window right:70%:wrap | xargs -I SNAP sudo btrfs subvolume delete /.snapshots/SNAP"
     alias uisorescue="$INSTANCESCRIPTWAY/uisorescue.sh"
 else
     alias {snapctl,uisorescue}="echo 'This alias works with btrfs partitions only'"
