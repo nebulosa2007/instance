@@ -3,8 +3,6 @@
 # pikaur -Syu --needed vnstat netcat lv_sensors
 source /etc/instance.conf
 
-LIMIT="1TB"
-
 if [ "$1" == "estimated" ]
 then
         [ -x "$(command -v vnstat)"       ] && { echo -n "Expected month traffic: "; vnstat -m 1 | grep estimated | cut -d"|" -f3 | sed 's/  //;s/\n\r//'; echo "Limit is: "$LIMIT; }
