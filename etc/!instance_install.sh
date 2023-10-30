@@ -5,8 +5,8 @@ echo "PATHINSTANCE=\"/home/"$(whoami)"/.config/instance\"" | sudo tee /etc/insta
 echo "TG_BOT_API_TOKEN=''" | sudo tee -a /etc/instance.conf
 echo "TG_BOT_CHAT_ID=''"   | sudo tee -a /etc/instance.conf
 source /etc/instance.conf
-ln -sf $PATHINSTANCE/bashrc       /home/($whoami)/.bashrc
-ln -sf $PATHINSTANCE/bash_aliases /home/($whoami)/.bash_aliases
+ln -sf $PATHINSTANCE/bashrc       /home/$(whoami)/.bashrc
+ln -sf $PATHINSTANCE/bash_aliases /home/$(whoami)/.bash_aliases
 # Install packages that pointed in bash_aliases
 
 # Tuning system
