@@ -19,7 +19,7 @@ else
         echo
         free -m
         echo
-        df -h | grep -E "/[s|v]da"
+        df -h | grep -E "$( [ "$(mount | grep -Po '(?<= on \/ type )(\S+)')" == "btrfs" ] && echo '/$' || echo '/[s|v]da' )"
         echo
         COUNTUPD=$(pacman -Qu | grep -v "ignored" | wc -l)
         if [ $COUNTUPD -gt 0 ]
