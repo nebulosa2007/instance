@@ -80,13 +80,17 @@ iptables -A FORWARD -j fw-open
 iptables -A FORWARD -j REJECT --reject-with icmp-host-unreachable
 iptables -P FORWARD DROP
 
-# #
-# # Save settings
-# #
-echo " * SAVING RULES"
+echo " * SAVING RULES for iptables v4"
 iptables-save -f /etc/iptables/iptables.rules
 
-cat << EOF > /etc/iptables/ip6tables.rules
+echo " * STARTING IPTABLES v4"
+systemctl enable --now iptables
+
+ipv6gateway=$(ip -6 route ls | grep default | grep -Po '(?<=via )(\S+)' | head -1)
+
+if  [ "$ipv6gateway" != "" ]; then
+  echo " * SAVING RULES for iptables v6"
+  cat << EOF > /etc/iptables/ip6tables.rules
 *raw
 :PREROUTING ACCEPT [0:0]
 :OUTPUT ACCEPT [22:2432]
@@ -120,11 +124,14 @@ COMMIT
 COMMIT
 EOF
 
-echo " * Setting ICMPv6 Neighbor Discovery Protocol"
-ipv6gateway=$(ip -6 route ls | grep default | grep -Po '(?<=via )(\S+)' | head -1)
-echo "   Default IPv6 gateway is:" $ipv6gateway
-sed -i 's/fd42::\/10/'$ipv6gateway'\/128/' /etc/iptables/ip6tables.rules
+  echo " * Setting ICMPv6 Neighbor Discovery Protocol"
+  echo "   Default IPv6 gateway is:" $ipv6gateway
+  sed -i 's/fd42::\/10/'$ipv6gateway'\/128/' /etc/iptables/ip6tables.rules
 
-echo " * STARTING IPTABLES AND IP6TABLES"
-systemctl enable --now iptables ip6tables
+  echo " * STARTING IPTABLES v6"
+  systemctl enable --now ip6tables
+else
+  echo " * No default IPv6 gateway found. Skip starting IPv6 iptables"
+fi
+
 echo "All set. Good luck!"
