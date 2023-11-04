@@ -21,6 +21,7 @@ ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
 # https://wiki.archlinux.org/title/Yt-dlp
 ln -sf $PATHINSTANCE/etc/yt-dlp.conf /home/$(whoami)/.config/yt-dlp/config
 
+sudo vnstat --add -i wg0
 
 # Tuning sshd server (in case the host is remote)
 # On client host:
@@ -43,14 +44,15 @@ sudo systemctl enable --now mtproxy mtproxy-config.timer
 
 
 # Wireguard server
-pikaur -Sy --needed wireguard-ui-bin
+pikaur -Sy --needed wireguard-ui
+sudo systemctl enable --now wireguard-ui
 # Read notes after install
 # IPv6 config:
 # Add in Server Interface Addresses - fd42:42:42::0/64
 # Add in DNS Servers - 2620:fe::fe (free DNS resolver from Quad9)
 # When you will create new user add at Allowed IPs section - ::/0 (not included automatically)
 # Test your WG connection here: https://ipv6-test.com - ISPs for IPv4 and IPv6 will be the same
-
+sudo systemctl enable --now wg-reload.{service,path}
 
 # SSLH multiplexor
 # https://wiki.archlinux.org/title/Sslh
@@ -76,12 +78,8 @@ sudo yabsnap create-config root   #for root partittion
 sudo sed -i 's/source=/source=\//' /etc/yabsnap/configs/root.conf
 sudo systemctl enable --now yabsnap.timer
 
-# 1. Install update timer
+# Install update timer
 # See instructions in update/install_updatetimer.sh
-
-# 2. Install wgstat services
-# See instructions in wireguard/install_wireguard.sh
-#todo need update due wireguard-ui!
 
 
 # Personal notes, remote repositories
