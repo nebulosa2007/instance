@@ -71,7 +71,7 @@ alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
 alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
 
 if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
-    alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview 'yabsnap list-json | grep {2} | jq -r \".comment\"'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
+    alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview '$INSTANCESCRIPTWAY/snaplist.sh {2}'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
     alias uisorescue="$INSTANCESCRIPTWAY/uisorescue.sh"
 else
     alias {snapctl,uisorescue}="echo 'This alias works with btrfs partitions only'"
