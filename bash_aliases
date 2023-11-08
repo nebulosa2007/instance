@@ -34,7 +34,7 @@ alias boottime="systemd-analyze && systemd-analyze blame --no-pager"
 
 ## SHORTS: EXTERNAL PROGRAMS
 alias ls="lsd --group-directories-first -F"
-alias 0x0="curl -F file=@- https://0x0.st"
+alias 0x0="curl -4 -F file=@- https://0x0.st"
 alias mc="EDITOR=micro mc"
 # https://wiki.archlinux.org/title/Reflector
 alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
