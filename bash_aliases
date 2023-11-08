@@ -1,5 +1,5 @@
 # Program packages:
-# pikaur -Syu --needed lsd mc reflector expac fzf bash-completion etc-update less
+# pikaur -Syu --needed lsd mc reflector expac fzf bash-completion etc-update less jq
 
 # https://wiki.archlinux.org/title/Bash#Aliases
 ## ALIASES MANAGEMENT
