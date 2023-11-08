@@ -47,7 +47,7 @@ function print_snapshot_comment
     cut -d" " -f4-7 | sed 's/)/,/;s/(//') | sed 's/,$/ /')
 
   # Print comment for snapshot
-  echo -e ${color}$action" "$packages${nc}
+  echo -e "\n"${color}$action" "$packages${nc}"\n\n"
 }
 
 
@@ -64,11 +64,12 @@ fi
 # Print comments for snapshosts
 echo $list | tr " " "\n" | while read snapshot
 do
-   # Print a name of shapshot
-   echo -n $(basename $snapshot)": "
+   # Print a time of shapshot
+   #echo $(basename $snapshot)": "
+   t=${snapshot##*-}
+   echo -n "${t:0:4}-${t:4:2}-${t:6:2} ${t:8:2}:${t:10:2}:${t:12:2}    "
    # Print info about snapshot in one line from json file
    cat $snapshot-meta.json | echo $(tr -d '"{}')
    # If the trigger is "I" print log from /var/log/pacman.log
    [ "$(grep -Po '(?<= \"trigger\": \")(\S)' $snapshot-meta.json)" == "I" ] && print_snapshot_comment ${snapshot:18:15}
-   echo
 done
