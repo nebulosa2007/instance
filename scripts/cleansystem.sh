@@ -23,6 +23,10 @@ sudo find /var/log -type f -regex ".*\.[0-9]$" -delete 2> /dev/null
 find /home/$(whoami)/.cache/pikaur/build -delete 2> /dev/null
 find /home/$(whoami)/.cache/pikaur/pkg -delete 2> /dev/null
 
+# Cleaning HOME folder
+[ -d "$HOME/.thumbnails" ] && { find "$HOME/.thumbnails" -type f -atime +7 -delete; find "$HOME/.thumbnails" -empty -type d -atime +7 -delete ; }
+[ -d "$HOME/.cache" ]      && { find "$HOME/.cache" -type f -atime +7 -delete;      find "$HOME/.cache" -empty -type d -atime +7 -delete ; }
+
 # https://wiki.archlinux.org/title/Btrfs#Scrub
 if [ -x "$(command -v btrfs)" ]; then
   sudo btrfs scrub start /
