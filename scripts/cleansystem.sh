@@ -6,8 +6,8 @@ df -h | grep -E "$( [ "$(mount | grep -Po '(?<= on \/ type )(\S+)')" == "btrfs" 
 sudo pacman -Rsn $(pacman -Qdtq)
 
 # https://wiki.archlinux.org/title/Pacman#Package_cache_directory
-# In case Cache folder is '/tmp' to do not flush other files
-sudo rm -f $(awk '/Cache/ {print $3}' /etc/pacman.conf)/*.pkg.tar.{zst,zst.sig}
+# In case Cache folder is '/tmp' to do not wipe other files
+sudo find $(grep -Po '(?<=^CacheDir) *= *\K(\S+)' /etc/pacman.conf) -type f -name "*.pkg.tar.zst*" -delete 2> /dev/null
 
 # https://wiki.archlinux.org/title/Systemd/Journal#Clean_journal_files_manually
 sudo journalctl --disk-usage
@@ -20,12 +20,12 @@ sudo find /var/log -type f -regex ".*\.gz$" -delete 2> /dev/null
 sudo find /var/log -type f -regex ".*\.[0-9]$" -delete 2> /dev/null
 
 # Cleaning pikaur cache
-find /home/$(whoami)/.cache/pikaur/build -delete 2> /dev/null
-find /home/$(whoami)/.cache/pikaur/pkg -delete 2> /dev/null
+[ -d "/home/$(whoami)/.cache/pikaur/build" ] && find /home/$(whoami)/.cache/pikaur/build -type f -delete 2> /dev/null
+[ -d "/home/$(whoami)/.cache/pikaur/pkg" ]   && find /home/$(whoami)/.cache/pikaur/pkg   -type f -delete 2> /dev/null
 
 # Cleaning HOME folder
-[ -d "$HOME/.thumbnails" ] && { find "$HOME/.thumbnails" -type f -atime +7 -delete; find "$HOME/.thumbnails" -empty -type d -atime +7 -delete ; }
-[ -d "$HOME/.cache" ]      && { find "$HOME/.cache" -type f -atime +7 -delete;      find "$HOME/.cache" -empty -type d -atime +7 -delete ; }
+[ -d "/home/$(whoami)/.thumbnails" ] && { find "/home/$(whoami)/.thumbnails" -type f -atime +7 -delete; find "/home/$(whoami)/.thumbnails" -empty -type d -atime +7 -delete ; }
+[ -d "/home/$(whoami)/.cache" ]      && { find "/home/$(whoami)/.cache"      -type f -atime +7 -delete; find "/home/$(whoami)/.cache"      -empty -type d -atime +7 -delete ; }
 
 # https://wiki.archlinux.org/title/Btrfs#Scrub
 if [ -x "$(command -v btrfs)" ]; then
