@@ -1,7 +1,7 @@
 #!/bin/bash
 
-METHOD=$(stat /etc | tail -1 | cut -d" " -f3)
-#METHOD=$(/usr/bin/ls -ctl --time-style +"%Y-%m-%d" /etc | tail -1 | sed 's/ /\n/g'| tail -2 | head -1)
+#METHOD=$(stat /etc | tail -1 | cut -d" " -f3)
+METHOD=$(/usr/bin/ls -ctl --time-style +"%Y-%m-%d" /etc | tail -1 | grep -Po "[0-9]+-[0-9]+-[0-9]+")
 #METHOD=$(head -1 /var/log/pacman.log | cut -c 2-11)
 
 DATE_LOCAL=$(echo $METHOD | sed 's/-/ /g' | awk '{print $3"."$2"."$1}')
