@@ -21,7 +21,6 @@ ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
 # https://wiki.archlinux.org/title/Yt-dlp
 ln -sf $PATHINSTANCE/etc/yt-dlp.conf /home/$(whoami)/.config/yt-dlp/config
 
-sudo vnstat --add -i wg0
 
 # Tuning sshd server (in case the host is remote)
 # On client host:
@@ -52,7 +51,8 @@ sudo systemctl enable --now wireguard-ui
 # Add in DNS Servers - 2620:fe::fe (free DNS resolver from Quad9)
 # When you will create new user add at Allowed IPs section - ::/0 (not included automatically)
 # Test your WG connection here: https://ipv6-test.com - ISPs for IPv4 and IPv6 will be the same
-sudo systemctl enable --now wg-reload.{service,path}
+sudo systemctl enable --now wgui.{service,path}
+sudo vnstat --add -i wg0
 
 # SSLH multiplexor
 # https://wiki.archlinux.org/title/Sslh
