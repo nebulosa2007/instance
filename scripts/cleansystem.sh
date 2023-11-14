@@ -7,7 +7,7 @@ sudo pacman -Rsn $(pacman -Qdtq)
 
 # https://wiki.archlinux.org/title/Pacman#Package_cache_directory
 # In case Cache folder is '/tmp' to do not wipe other files
-sudo find $(grep -Po '(?<=^CacheDir) *= *\K(\S+)' /etc/pacman.conf) -type f -name "*.pkg.tar.zst*" -delete 2> /dev/null
+sudo find $(grep -Po '(?<=CacheDir) *= *\K(\S+)' /etc/pacman.conf) -type f -name "*.pkg.tar.zst*" -delete 2> /dev/null
 
 # https://wiki.archlinux.org/title/Systemd/Journal#Clean_journal_files_manually
 sudo journalctl --disk-usage
