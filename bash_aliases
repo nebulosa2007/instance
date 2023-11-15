@@ -69,6 +69,7 @@ alias packages="$INSTANCESCRIPTWAY/packages.sh"
 alias age="$INSTANCESCRIPTWAY/age.sh"
 alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
 alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
+alias bugspaces="grep -RnE ' $' 2>/dev/null"
 
 if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
     alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview '$INSTANCESCRIPTWAY/snaplist.sh {2}'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
@@ -81,5 +82,3 @@ fi
 if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
    source "$INSTANCESCRIPTWAY/sensitive.sh"
 fi
-
-##Tips: grep -RnE " $"  - show spaces at end of lines for all files in folder reqursively
