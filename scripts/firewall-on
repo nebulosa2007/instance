@@ -60,7 +60,7 @@ do
   echo "Open ${p^^} ports by processes:"
   echo
   ops=$(ss -ln --$p|grep -Ev "(127\.|\[::\])"|grep -Po '(?<=:)(\d+)'|sort -nu | tr '\n' ' ')
-  ss -lnp --$p|tail --lines +2|grep -Ev "(127\.|\[::\])"|sed 's/users:(("//g;s/:/ /;s/"/ /'|column -d -H1,2,3,6,8 -t|(echo "Address Port Process";sort -nk3,3 -nk2)|column -t -R1
+  ss -lnp --$p|tail --lines +2|grep -Ev "(127\.|\[::\])"|sed 's/users:(("//g;s/:/ /;s/"/ /'|awk '{print $4,$5,$7}'|(echo "Address Port Process";sort -nk3,3 -nk2)|column -t -R1
   echo
   read -rp "Please enter the ${p^^} ports (v4 only) for opening outside: " -e -i "${ops}" ops
   for op in $ops
