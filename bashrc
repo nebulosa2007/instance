@@ -108,9 +108,11 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
 fi
 
 # Check if the tmux session exists, discarding output (zero for success, non-zero for failure)
-tmux has-session -t 0 2>/dev/null
-if [ $? -eq 0 ] && [ -z "$TMUX" ]; then
-    echo -ne "\n${yellow}Attaching to an existing tmux session"
-    for i in {1..3}; do echo -n "."; sleep 1; done;  echo -e "${nc}"
-    tmux attach-session -t 0
+if [ -n "$SSH_CLIENT" ]; then
+	tmux has-session -t 0 2>/dev/null
+	if [ $? -eq 0 ] && [ -z "$TMUX" ]; then
+    	echo -ne "\n${yellow}Attaching to an existing tmux session"
+    	for i in {1..3}; do echo -n "."; sleep 1; done;  echo -e "${nc}"
+    	tmux attach-session -t 0
+	fi
 fi
