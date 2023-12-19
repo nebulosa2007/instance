@@ -8,7 +8,6 @@ alias brupdate=". ~/.bashrc"
 
 # https://wiki.archlinux.org/title/Systemd#Using_units
 ## SYSTEMD MANAGEMENT
-#IsSerUser () { [ "$(systemctl --user show -pLoadError $1)" == "LoadError=" ] && echo "U"; }
 Sstatus   () { systemctl --user status --no-pager -l "$1" 2>/dev/null || systemctl status --no-pager -l "$1"; }
 Systemctl () { A="$1"; shift; (systemctl --user "$A" "$@" 2>/dev/null || sudo systemctl "$A" "$@" ) && wait3sec "Success! Wait 3 sec"; Sstatus "${!#}"; }
 Sstart    () { Systemctl start "$@"; }
@@ -43,7 +42,7 @@ alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pa
 backup  () { cp "$1"{,.backup}; }
 sbackup () { sudo cp "$1"{,.backup}; }
 cd      () { builtin cd "$@" && ls; }
-wait3sec() { echo -n "$1"; for i in \{1 2 3\}; do echo -n "."; sleep 1; done; echo; }
+wait3sec() { echo -n "$1"; for i in . . . ; do echo -n $i; sleep 1; done; echo; }
 line    () { l=$1"p"; shift; sed -n $l $@; }
 
 ## PIKAUR MANAGEMENT
