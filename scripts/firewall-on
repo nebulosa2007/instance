@@ -86,7 +86,7 @@ iptables-save -f /etc/iptables/iptables.rules
 echo " * STARTING IPTABLES v4"
 systemctl enable --now iptables
 
-ipv6gateway=$(ip -6 route ls | grep default | grep -Po '(?<=via )(\S+)' | head -1)
+ipv6gateway=$(ip -6 route ls | grep -m1 -Po '(?<=^default via )(\S+)')
 
 if  [ "$ipv6gateway" != "" ]; then
   echo " * SAVING RULES for iptables v6"
