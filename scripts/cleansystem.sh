@@ -35,6 +35,4 @@ if [ -x "$(command -v btrfs)" ]; then
   sudo btrfs scrub status /
 fi
 
-#todo https://wiki.archlinux.org/title/Btrfs#Balance
-
 df -h | grep -E "$( [ "$(mount | grep -Po '(?<= on \/ type )(\S+)')" == "btrfs" ] && echo '/$' || echo '/[s|v]da' )"
