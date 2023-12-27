@@ -12,11 +12,11 @@ ROOTDRIVE=$(mount | grep -Po '^.*(?= on \/ type btrfs)')
 [ "$ROOTDRIVE" == "" ] && echo "This script works only with BTRFS" && exit 1
 [ ! -e /etc/default/grub ] && echo "This script works only with GRUB" && exit 1
 
-#Checker if it's all already done
+#If it already done on btrfs disk?
 if [ "$(sudo btrfs subvolume list / | awk '/level 5/ && /'$SUBVOL'/ {print $NF}'| head -n1)" != "" ]
 then
-    sudo mkdir -p $FOLDER && sudo mount -o noatime,compress=zstd,space_cache=v2,discard=async,subvol=$SUBVOL $ROOTDRIVE $FOLDER
-    cd $FOLDER && curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c -- && echo "System has already latest iso image of Archlinux. Nothing to do.." && ALLDONE=1
+    sudo mkdir -p $FOLDER && sudo mount -o compress=zstd:3,subvol=$SUBVOL $ROOTDRIVE $FOLDER
+    cd $FOLDER && curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c -- && echo "The system already has latest iso image of Archlinux. Nothing to do" && ALLDONE=1
     cd / && sudo umount $FOLDER && sudo rm -r $FOLDER
     if [ $(cat /etc/grub.d/40_custom | wc -l) -eq 5 ]
     then
@@ -34,7 +34,7 @@ curl -s $MIRROR"sha256sums.txt" | grep $ISO | sha256sum -c --
 if [ $? -eq 0 ]
 then
     # make subvolume if it isn't exist and update grub entry:
-    if [ "$(sudo btrfs subvolume list / | awk '/level 5/ && /'$SUBVOL'/ {print $NF}'| head -n1)" == "" ]
+    if [ "$(mount | grep -Po '(?<= on \/ type )(\S+)')" == "btrfs" ]
     then
         sudo mount $ROOTDRIVE /mnt && cd /mnt && sudo btrfs subvolume create $SUBVOL && cd / && sudo umount /mnt
         if [ $? -eq 0 ]
@@ -46,7 +46,7 @@ then
             exit 1
         fi
     fi
-    sudo mkdir -p $FOLDER && sudo mount -o noatime,compress=zstd,space_cache=v2,discard=async,subvol=$SUBVOL $ROOTDRIVE $FOLDER
+    sudo mkdir -p $FOLDER && sudo mount -o compress=zstd:3,subvol=$SUBVOL $ROOTDRIVE $FOLDER
     if [ $? -eq 0 ]
     then
         sudo curl -o "$FOLDER/$ISO" "FILE:///home/$(whoami)/$ISO"
