@@ -21,11 +21,11 @@ menuentry 'Boot from archlinux.iso' {
     insmod part_gpt
     insmod btrfs
     insmod loopback
-    probe -u $root --set=rootuuid
-    set imgdevpath='/dev/disk/by-uuid/$rootuuid'
+    probe -u \$root --set=rootuuid
+    set imgdevpath="/dev/disk/by-uuid/\$rootuuid"
     set isofile='/@archiso/archlinux-x86_64.iso'
-    loopback loop $isofile
-    linux (loop)/arch/boot/x86_64/vmlinuz-linux img_dev=$imgdevpath img_loop=$isofile earlymodules=loop
+    loopback loop \$isofile
+    linux (loop)/arch/boot/x86_64/vmlinuz-linux img_dev=\$imgdevpath img_loop=\$isofile earlymodules=loop
     initrd (loop)/arch/boot/x86_64/initramfs-linux.img
 }
 EOF
@@ -35,6 +35,7 @@ EOF
     fi
 }
 
+writetogrub
 
 function checkiso(){
 	curl -s "https://$MIRROR/archlinux/iso/latest/sha256sums.txt" | grep $ISO | sha256sum -c --
