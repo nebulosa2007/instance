@@ -35,17 +35,16 @@ EOF
     fi
 }
 
-writetogrub
 
 function checkiso(){
-	curl -s "https://$MIRROR/archlinux/iso/latest/sha256sums.txt" | grep $ISO | sha256sum -c --
+    curl -s "https://$MIRROR/archlinux/iso/latest/sha256sums.txt" | grep $ISO | sha256sum -c --
 }
 
 
 if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$SUBVOL)" == "" ]; then
-	sudo mount $ROOTDRIVE /mnt
-	cd /mnt && sudo btrfs subvolume create $SUBVOL && cd /
-	sudo umount /mnt && writetogrub || echo "Error of creating $SUBVOL!"
+    sudo mount $ROOTDRIVE /mnt
+    cd /mnt && sudo btrfs subvolume create $SUBVOL && cd /
+    sudo umount /mnt && writetogrub || echo "Error of creating $SUBVOL!"
 fi
 
 
