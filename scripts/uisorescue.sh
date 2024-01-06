@@ -1,13 +1,13 @@
 #!/bin/bash
 
-MIRROR="mirror.ams1.nl.leaseweb.net"
-SUBVOL="@archiso"
-ISO="archlinux-x86_64.iso"
-FOLDER="/mnt/archiso"
+mirror="mirror.ams1.nl.leaseweb.net"
+subvol="@archiso"
+iso="archlinux-x86_64.iso"
+folder="/mnt/archiso"
 
-ROOTDRIVE=$(mount | grep -Po '^.*(?= on \/ type btrfs)')
+rootdrive=$(mount | grep -Po '^.*(?= on \/ type btrfs)')
 
-[ "$ROOTDRIVE" == "" ] && echo "This script works only with BTRFS" && exit 1
+[ "$rootdrive" == "" ] && echo "This script works only with BTRFS" && exit 1
 [ ! -e /etc/default/grub ] && echo "This script works only with GRUB" && exit 1
 
 
@@ -37,28 +37,28 @@ EOF
 
 
 function checkiso(){
-    curl -s "https://$MIRROR/archlinux/iso/latest/sha256sums.txt" | grep $ISO | sha256sum -c --
+    curl -s "https://$mirror/archlinux/iso/latest/sha256sums.txt" | grep $iso | sha256sum -c --
 }
 
 
-if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$SUBVOL)" == "" ]; then
-    sudo mount $ROOTDRIVE /mnt
-    cd /mnt && sudo btrfs subvolume create $SUBVOL && cd /
-    sudo umount /mnt && writetogrub || echo "Error of creating $SUBVOL!"
+if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$subvol)" == "" ]; then
+    sudo mount $rootdrive /mnt
+    cd /mnt && sudo btrfs subvolume create $subvol && cd /
+    sudo umount /mnt && writetogrub || echo "Error of creating $subvol!"
 fi
 
 
-if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$SUBVOL)" != "" ]; then
-    sudo mkdir -p $FOLDER && sudo mount -o compress=zstd:3,subvol=$SUBVOL $ROOTDRIVE $FOLDER
-    cd $FOLDER
+if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$subvol)" != "" ]; then
+    sudo mkdir -p $folder && sudo mount -o compress=zstd:3,subvol=$subvol $rootdrive $folder
+    cd $folder
     if checkiso; then
-        echo "The system already has latest iso image of Archlinux. Nothing to do"
+        echo "The latest iso image of Archlinux is already on the system. Nothing to do."
     else
-        echo "Downloading $ISO from $MIRROR ..."
+        echo "Downloading $iso from $mirror ..."
         cd /home/$(whoami)
-        curl -L -O -C - "https://$MIRROR/archlinux/iso/latest/$ISO"
-        sudo curl -o "$FOLDER/$ISO" "FILE:///home/$(whoami)/$ISO"
-        checkiso && rm /home/$(whoami)/$ISO || echo "Checksum error!"
+        curl -L -O -C - "https://$mirror/archlinux/iso/latest/$iso"
+        sudo curl -o "$folder/$iso" "FILE:///home/$(whoami)/$iso"
+        checkiso && rm /home/$(whoami)/$iso || echo "Checksum error!"
     fi
-    cd / && sudo umount $FOLDER && sudo rm -r $FOLDER
+    cd / && sudo umount $folder && sudo rm -r $folder
 fi
