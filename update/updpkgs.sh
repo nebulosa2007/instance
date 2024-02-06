@@ -25,34 +25,34 @@ host=$(uname -n)
 ## TG BOT MODULE
     if [ $COUNTUPD -lt 16 ]
     then
-	MSG="<b>Available updates:</b>
+    MSG="<b>Available updates:</b>
 $UPDATES
 
 $COUNTUPD total on <b>$host</b>"
     else
-	MSG="<b>Available updates:</b>
+    MSG="<b>Available updates:</b>
 $COUNTUPD total on <b>$host</b>"
     fi
-	[ -f $PATHINSTANCE/scripts/tgsay.sh ] && $PATHINSTANCE/scripts/tgsay.sh "$MSG"
+    [ -f $PATHINSTANCE/scripts/tgsay.sh ] && $PATHINSTANCE/scripts/tgsay.sh "$MSG"
 
 
 ## Desktop notifier: KDE MODULE
-	SESSION="plasma"
-	PID=$(pgrep $SESSION | head -1)
-	if [ -n "$PID" ]
-	then
-		DBUS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ | tr -d '\0')
-		UPDMODE=$(grep -E "(systemd|linux|grub)" /var/log/updpackages.log > /dev/null && echo "security-low" || echo "system-software-install")
-		USERKDE=$(echo $PATHINSTANCE | cut -d"/" -f3)
-		[ -n "$DBUS" ] && [ -x "$(command -v notify-send)" ] && sudo -u $USERKDE DISPLAY=:0 $DBUS notify-send --icon=$UPDMODE "Available updates ($COUNTUPD):" "$(cat /var/log/updpackages.log)"
-	fi
+    SESSION="plasma"
+    PID=$(pgrep $SESSION | head -1)
+    if [ -n "$PID" ]
+    then
+        DBUS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ | tr -d '\0')
+        UPDMODE=$(grep -E "(systemd|linux|grub)" /var/log/updpackages.log > /dev/null && echo "security-low" || echo "system-software-install")
+        USERKDE=$(echo $PATHINSTANCE | cut -d"/" -f3)
+        [ -n "$DBUS" ] && [ -x "$(command -v notify-send)" ] && sudo -u $USERKDE DISPLAY=:0 $DBUS notify-send --icon=$UPDMODE "Available updates ($COUNTUPD):" "$(cat /var/log/updpackages.log)"
+    fi
 
 
 ## Bar notifer: waybar
-	PID=$(pgrep waybar | head -1)
-	if [ -n "$PID" ]
-	then
-		pkill -RTMIN+8 waybar # '"signal": 8' in waybar config
-	fi
+    PID=$(pgrep waybar | head -1)
+    if [ -n "$PID" ]
+    then
+        pkill -RTMIN+8 waybar
+    fi
   fi
 fi
