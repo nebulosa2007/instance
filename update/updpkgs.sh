@@ -46,5 +46,13 @@ $COUNTUPD total on <b>$host</b>"
 		USERKDE=$(echo $PATHINSTANCE | cut -d"/" -f3)
 		[ -n "$DBUS" ] && [ -x "$(command -v notify-send)" ] && sudo -u $USERKDE DISPLAY=:0 $DBUS notify-send --icon=$UPDMODE "Available updates ($COUNTUPD):" "$(cat /var/log/updpackages.log)"
 	fi
+
+
+## Bar notifer: waybar
+	PID=$(pgrep waybar | head -1)
+	if [ -n "$PID" ]
+	then
+		pkill -RTMIN+8 waybar # '"signal": 8' in waybar config
+	fi
   fi
 fi
