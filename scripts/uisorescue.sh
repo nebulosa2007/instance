@@ -29,7 +29,7 @@ menuentry 'Boot from archlinux.iso' {
     initrd (loop)/arch/boot/x86_64/initramfs-linux.img
 }
 EOF
-    if [ $(cat /etc/grub.d/40_custom | wc -l) -eq 5 ]; then
+    if [ "$(wc -l < /etc/grub.d/40_custom)" -eq 5 ]; then
        cat /tmp/40_custom | sudo tee -a /etc/grub.d/40_custom > /dev/null && sudo grub-mkconfig -o /boot/grub/grub.cfg
        rm /tmp/40_custom
     fi
@@ -42,23 +42,23 @@ function checkiso(){
 
 
 if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$subvol)" == "" ]; then
-    sudo mount $rootdrive /mnt
+    sudo mount "$rootdrive" /mnt
     cd /mnt && sudo btrfs subvolume create $subvol && cd /
     sudo umount /mnt && writetogrub || echo "Error of creating $subvol!"
 fi
 
 
 if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$subvol)" != "" ]; then
-    sudo mkdir -p $folder && sudo mount -o compress=zstd:3,subvol=$subvol $rootdrive $folder
-    cd $folder
+    sudo mkdir -p $folder && sudo mount -o compress=zstd:3,subvol=$subvol "$rootdrive" $folder
+    cd $folder || exit 1
     if checkiso; then
         echo "The latest iso image of Archlinux is already on the system. Nothing to do."
     else
         echo "Downloading $iso from $mirror ..."
-        cd /home/$(whoami)
+        cd /home/"$(whoami)" || exit 1
         curl -L -O -C - "https://$mirror/archlinux/iso/latest/$iso"
         sudo curl -o "$folder/$iso" "FILE:///home/$(whoami)/$iso"
-        checkiso && rm /home/$(whoami)/$iso || echo "Checksum error!"
+        checkiso && rm /home/"$(whoami)"/$iso || echo "Checksum error!"
     fi
     cd / && sudo umount $folder && sudo rm -r $folder
 fi
