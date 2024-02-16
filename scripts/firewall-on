@@ -66,7 +66,7 @@ do
   for op in $ops
   do
     echo " * Allowing port $op"
-    iptables -A ${p^^} -p $p --dport $op -j ACCEPT
+    iptables -A "${p^^}" -p "$p" --dport "$op" -j ACCEPT
   done
   echo
 done
@@ -125,8 +125,8 @@ COMMIT
 EOF
 
   echo " * Setting ICMPv6 Neighbor Discovery Protocol"
-  echo "   Default IPv6 gateway is:" $ipv6gateway
-  sed -i 's/fd42::\/10/'$ipv6gateway'\/128/' /etc/iptables/ip6tables.rules
+  echo "   Default IPv6 gateway is:" "$ipv6gateway"
+  sed -i 's/fd42::\/10/'"$ipv6gateway"'\/128/' /etc/iptables/ip6tables.rules
 
   echo " * STARTING IPTABLES v6"
   systemctl enable --now ip6tables
