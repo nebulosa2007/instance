@@ -3,7 +3,7 @@
 source /etc/instance.conf
 
 if [ -z "$TG_BOT_CHAT_ID" ]; then
-    echo 'Please, define TG_BOT_CHAT_ID and TG_BOT_API_TOKEN first! See "chat":{"id":xxxxxxx string below from request: curl https://api.telegram.org/bot$TG_BOT_API_TOKEN/getUpdates'
+    echo "Please, define TG_BOT_CHAT_ID and TG_BOT_API_TOKEN first! See \"chat\":{\"id\":xxxxxxx string below from request: curl https://api.telegram.org/bot$TG_BOT_API_TOKEN/getUpdates"
     exit 1
 fi
 
