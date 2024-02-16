@@ -23,7 +23,7 @@ function print_snapshot_comment
 
   # Recognizing operation in pacman log:
   pacman_log_line=$(grep -E -B1 "$pacman_timestamp.*$hookfile" /var/log/pacman.log | head -1 )
-  operation=$(echo $pacman_log_line | cut -d" " -f3- | \
+  operation=$(echo "$pacman_log_line" | cut -d" " -f3- | \
   sed "s/Running //;\
        s/--color=always //;\
        s/--needed //;s/'//g;\
@@ -36,7 +36,7 @@ function print_snapshot_comment
     "-S"  | "--sync"   ) color=$green;  action="Installing";;
     "-R"* | "--remove" ) color=$red;    action="Deleting";;
     "-U"  | "starting" ) color=$yellow; action="Upgrading";;
-    "--upgrade") [[ $packages == *"->"* ]] && { color=$yellow; action="Upgrading";} || { color=$green; action="Installing";};;
+    "--upgrade") if [[ $packages == *"->"* ]]; then color=$yellow; action="Upgrading"; else color=$green; action="Installing"; fi;;
   esac
 
   # Select strings between "[ALPM] transaction started ... [ALPM] transaction completed" with the timestamp and grep info about
@@ -47,29 +47,29 @@ function print_snapshot_comment
     cut -d" " -f4-7 | sed 's/)/,/;s/(//') | sed 's/,$/ /')
 
   # Print comment for snapshot
-  echo -e "\n"${color}$action" "$packages${nc}"\n\n"
+  echo -e "\n""${color}""$action"" ""$packages""${nc}""\n\n"
 }
 
 
-if [ -z $1 ]
+if [ -z "$1" ]
 then
     # List all snapshots
     list=$(/usr/bin/ls -d -1 $SNAPDIR/$PREFIX-*/ 2>/dev/null | tr " " "\n" | sed 's/\/$//g')
-    printf "List of snapshots:${green} $(echo $list | wc -w) ${nc}\n\n"
+    printf "List of snapshots: ${green}%s${nc}\n\n" "$(echo "$list" | wc -w)"
 else
     # If script is using with fzf and $1 is yabsnap timestamp,e.g.: 20230101093014
     list=$SNAPDIR/$PREFIX-$1
 fi
 
 # Print comments for snapshosts
-echo $list | tr " " "\n" | while read snapshot
+echo "$list" | tr " " "\n" | while read -r snapshot
 do
    # Print a time of shapshot
    #echo $(basename $snapshot)": "
    t=${snapshot##*-}
    echo -n "${t:0:4}-${t:4:2}-${t:6:2} ${t:8:2}:${t:10:2}:${t:12:2}    "
    # Print info about snapshot in one line from json file
-   cat $snapshot-meta.json | echo $(tr -d '"{}')
+   cat "$snapshot-meta"".json" | tr -d '"{}'
    # If the trigger is "I" print log from /var/log/pacman.log
-   [ "$(grep -Po '(?<= \"trigger\": \")(\S)' $snapshot-meta.json)" == "I" ] && print_snapshot_comment ${snapshot:18:15}
+   [ "$(grep -Po '(?<= \"trigger\": \")(\S)' "$snapshot-meta".json)" == "I" ] && print_snapshot_comment "${snapshot:18:15}"
 done
