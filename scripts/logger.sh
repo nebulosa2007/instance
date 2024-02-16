@@ -9,17 +9,17 @@ SKIPWORDS="(TSC)"
 OLDLOG=$HOME/.cache/oldjournal.log
 NOWLOG=$HOME/.cache/journal.log
 
-[ -z $OLDLOG ] || touch $OLDLOG
+[ -z "$OLDLOG" ] || touch "$OLDLOG"
 
-JRNLLOG=$(journalctl --no-pager -b0 -p$LEVELTILL | cut -d" " -f5- | grep -Ev $SKIPWORDS)
-echo "$JRNLLOG" | sort | uniq -u > $NOWLOG
+JRNLLOG=$(journalctl --no-pager -b0 -p"$LEVELTILL" | cut -d" " -f5- | grep -Ev "$SKIPWORDS")
+echo "$JRNLLOG" | sort | uniq -u > "$NOWLOG"
 
-NOWDIFF=$(diff $OLDLOG $NOWLOG  | grep -E '^>')
+NOWDIFF=$(diff "$OLDLOG" "$NOWLOG"  | grep -E '^>')
 
 if [ "$NOWDIFF"  != "" ]
 then
 	echo -n " Changes in system journal:"
-	echo $NOWDIFF | tr ">" "\n" | sed -E 's/\[[0-9]+\]//g;s/ *$//g' | uniq
+	echo "$NOWDIFF" | tr ">" "\n" | sed -E 's/\[[0-9]+\]//g;s/ *$//g' | uniq
 	#cp $OLDLOG $OLDLOG.backup
-	echo "$JRNLLOG" | sort |uniq -u > $OLDLOG
+	echo "$JRNLLOG" | sort |uniq -u > "$OLDLOG"
 fi
