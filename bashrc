@@ -87,7 +87,9 @@ fi
 
 source /etc/instance.conf
 
-[ "$(systemctl list-units --failed | grep "listed" | cut -d" " -f1)" -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
+[ "$(systemctl list-units --failed        | grep "listed" | cut -d" " -f1)" -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
+[ "$(systemctl list-units --user --failed | grep "listed" | cut -d" " -f1)" -ne 0 ] && echo -e "\n${red} $(systemctl list-units --user --failed -q)${nc}"
+
 
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
     if [ -f /var/log/updpackages.log ] && [ "$(pacman -Qu | grep -cv "\[ignored\]")" -ne 0 ]; then
