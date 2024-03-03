@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # pikaur -Syu --needed vnstat netcat lv_sensors
-source /etc/instance.conf
+[ -z "$PATHINSTANCE" ] && { echo "Please set $PATHINSTANCE env variable!"; exit 1; }
 
 if [ "$1" == "estimated" ]
 then

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source /etc/instance.conf
+[ -z "$PATHINSTANCE" ] && { echo "Please set $PATHINSTANCE env variable!"; exit 1; }
+source "$PATHINSTANCE"/scripts/sensitive.sh
 
 if [ -z "$TG_BOT_CHAT_ID" ]; then
     echo "Please, define TG_BOT_CHAT_ID and TG_BOT_API_TOKEN first! See \"chat\":{\"id\":xxxxxxx string below from request: curl https://api.telegram.org/bot$TG_BOT_API_TOKEN/getUpdates"

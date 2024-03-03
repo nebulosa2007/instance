@@ -85,8 +85,6 @@ fi
 
 #INSTANCE PROJECT SCRIPTS:
 
-source /etc/instance.conf
-
 [ "$(systemctl list-units --failed        | grep "listed" | cut -d" " -f1)" -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
 [ "$(systemctl list-units --user --failed | grep "listed" | cut -d" " -f1)" -ne 0 ] && echo -e "\n${red} $(systemctl list-units --user --failed -q)${nc}"
 
@@ -96,6 +94,10 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
         echo -e "\n${yellow} Available updates:\n$(sed 's/^/ /' < /var/log/updpackages.log )${nc}"
     else
         echo -e "\n${green} System is up-to-date${nc}"
+    fi
+
+    if [ -z "$PATHINSTANCE" ]; then
+        echo "Please set $PATHINSTANCE env variable in /etc/profile.d/instance.sh!"
     fi
 
     if [ -f "$PATHINSTANCE"/scripts/age.sh ]; then

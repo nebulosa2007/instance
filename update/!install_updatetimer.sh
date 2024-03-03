@@ -1,7 +1,5 @@
 #Updates module of Instance project
 
-source /etc/instance.conf
-
 #IMPORTANT: Only for one partition systems. Use cp instead ln below:
 sudo ln -sf $PATHINSTANCE/update/updpkgs.sh /usr/bin/updpkgs
 

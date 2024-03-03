@@ -1,31 +1,29 @@
 # Instance project set installing:
 # IMPORTANT: See notes in .bash_aliases for installing needed packages
 
-echo "PATHINSTANCE=\"/home/"$(whoami)"/.config/instance\"" | sudo tee /etc/instance.conf
-echo "TG_BOT_API_TOKEN=''" | sudo tee -a /etc/instance.conf
-echo "TG_BOT_CHAT_ID=''"   | sudo tee -a /etc/instance.conf
-echo "LIMIT=''"            | sudo tee -a /etc/instance.conf
-source /etc/instance.conf
-ln -sf $PATHINSTANCE/bashrc       /home/$(whoami)/.bashrc
-ln -sf $PATHINSTANCE/bash_aliases /home/$(whoami)/.bash_aliases
+echo "export PATHINSTANCE=\"/home/$(whoami)/.config/instance\"" | sudo tee /etc/profile.d/instance.sh
+source /etc/profile.d/instance.sh
+printf "TG_BOT_API_TOKEN='' \n TG_BOT_CHAT_ID='' LIMIT=''" >> "$PATHINSTANCE"/scripts/sensitive.sh
+ln -sf "$PATHINSTANCE"/bashrc       /home/"$(whoami)"/.bashrc
+ln -sf "$PATHINSTANCE"/bash_aliases /home/"$(whoami)"/.bash_aliases
 # Install packages that pointed in bash_aliases
 
 # Tuning system
-sudo cp $PATHINSTANCE/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
+sudo cp "$PATHINSTANCE"/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
 
 # Tuming programs
-mkdir -p /home/$(whoami)/.config/{neofetch,tmux,yt-dlp}
-ln -sf $PATHINSTANCE/etc/neofetch.conf /home/$(whoami)/.config/neofetch/config.conf
+mkdir -p /home/"$(whoami)"/.config/{neofetch,tmux,yt-dlp}
+ln -sf "$PATHINSTANCE"/etc/neofetch.conf /home/"$(whoami)"/.config/neofetch/config.conf
 # https://wiki.archlinux.org/title/Tmux
-ln -sf $PATHINSTANCE/etc/tmux.conf /home/$(whoami)/.config/tmux/tmux.conf
+ln -sf "$PATHINSTANCE"/etc/tmux.conf /home/"$(whoami)"/.config/tmux/tmux.conf
 # https://wiki.archlinux.org/title/Yt-dlp
-ln -sf $PATHINSTANCE/etc/yt-dlp.conf /home/$(whoami)/.config/yt-dlp/config
+ln -sf "$PATHINSTANCE"/etc/yt-dlp.conf /home/"$(whoami)"/.config/yt-dlp/config
 
 
 # Tuning sshd server (in case the host is remote)
 # On client host:
 # ssh-keygen -t ed25519 && ssh-copy-id -i $HOME/.ssh/id_ed25519.pub user@ip_server
-sudo ln -sf $PATHINSTANCE/etc/sshd.conf /etc/ssh/sshd_config.d/sshd.conf
+sudo ln -sf "$PATHINSTANCE"/etc/sshd.conf /etc/ssh/sshd_config.d/sshd.conf
 sudo systemctl reload sshd
 # DOUBLE CHECK
 sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
@@ -36,8 +34,8 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 
 # Telegram server
 pikaur -S --needed  mtproxy-git
-sudo cp $PATHINSTANCE/etc/mtproxy.conf /etc/mtproxy.conf
-sudo sed -i 's/SECRET=/SECRET='$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null)'/' /etc/mtproxy.conf
+sudo cp "$PATHINSTANCE"/etc/mtproxy.conf /etc/mtproxy.conf
+sudo sed -i 's/SECRET=/SECRET='"$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null)"'/' /etc/mtproxy.conf
 sudo systemctl enable --now mtproxy mtproxy-config.timer
 # generation link: http://seriyps.ru/mtpgen.html Fake-TLS base64 link needed
 
@@ -57,14 +55,14 @@ sudo vnstat --add -i wg0
 # SSLH multiplexor
 # https://wiki.archlinux.org/title/Sslh
 pikaur -Sy --needed sslh
-sudo cp $PATHINSTANCE/etc/sslh.cfg /etc/sslh.cfg
+sudo cp "$PATHINSTANCE"/etc/sslh.cfg /etc/sslh.cfg
 sudo systemctl daemon-reload
 sudo cp /run/systemd/generator/sslh.socket /etc/systemd/system/sslh.socket
 printf "\n[Install]\nWantedBy = multi-user.target" | sudo tee -a  /etc/systemd/system/sslh.socket
 sudo systemctl enable --now sslh.socket
 
 # Firewall
-sudo $PATHINSTANCE/scripts/firewall-on
+sudo "$PATHINSTANCE"/scripts/firewall-on
 # After firewall setup
 sudo systemctl restart wg-quick@wg0
 

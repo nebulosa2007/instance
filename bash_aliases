@@ -34,7 +34,7 @@ alias boottime="systemd-analyze && systemd-analyze blame --no-pager"
 ## SHORTS: EXTERNAL PROGRAMS
 alias ls="lsd --group-directories-first -F"
 alias 0x0="curl -4 -F file=@- https://0x0.st"
-alias mc="EDITOR=micro mc"
+alias bugspaces="grep -RnE ' $' 2>/dev/null"
 # https://wiki.archlinux.org/title/Reflector
 alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
 
@@ -59,25 +59,26 @@ alias getnews="echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Se
 # https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
 alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
 
+
 ## INSTANCE SCRIPTS ##
-source /etc/instance.conf
-INSTANCESCRIPTWAY="$PATHINSTANCE/scripts"
-alias ins="cd $PATHINSTANCE"
-alias sc='echo -e "Y\nY" | $INSTANCESCRIPTWAY/cleansystem.sh'
-alias packages="$INSTANCESCRIPTWAY/packages.sh"
-alias age="$INSTANCESCRIPTWAY/age.sh"
-alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
-alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
-alias bugspaces="grep -RnE ' $' 2>/dev/null"
+if [ -n "$PATHINSTANCE" ]; then
+     INSTANCESCRIPTWAY="$PATHINSTANCE/scripts"
+     alias ins="cd $PATHINSTANCE"
+     alias sc='echo -e "Y\nY" | $INSTANCESCRIPTWAY/cleansystem.sh'
+     alias packages="$INSTANCESCRIPTWAY/packages.sh"
+     alias age="$INSTANCESCRIPTWAY/age.sh"
+     alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
+     alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
 
-if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
-    alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview '$INSTANCESCRIPTWAY/snaplist.sh {2}'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
-    alias uisorescue="$INSTANCESCRIPTWAY/uisorescue.sh"
-else
-    alias {snapctl,uisorescue}="echo 'This alias works with btrfs partitions only'"
-fi
+     if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
+          alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview '$INSTANCESCRIPTWAY/snaplist.sh {2}'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
+          alias uisorescue="$INSTANCESCRIPTWAY/uisorescue.sh"
+     else
+          alias {snapctl,uisorescue}="echo 'This alias works with btrfs partitions only'"
+     fi
 
-## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
-if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
-   source "$INSTANCESCRIPTWAY/sensitive.sh"
+     ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
+     if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
+          source "$INSTANCESCRIPTWAY/sensitive.sh"
+     fi
 fi
