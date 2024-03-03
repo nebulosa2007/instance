@@ -1,6 +1,6 @@
 #!/bin/bash
 
-df -h | grep -E "$( [ "$(mount | grep -Po '(?<= on \/ type )(\S+)')" == "btrfs" ] && echo '/$' || echo '/[s|v]da' )"
+df -h | grep -E "$( [ \"$(mount | grep -Po '(?<= on \/ type )(\S+)')\" == \"btrfs\" ] && echo '/$' || echo '/[s|v]da' )"
 
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Removing_unused_packages_(orphans)
 pacman -Qdtq | sudo pacman -Rns - 2>/dev/null
@@ -35,4 +35,4 @@ if [ -x "$(command -v btrfs)" ]; then
   sudo btrfs scrub status /
 fi
 
-df -h | grep -E "$( [ "$(mount | grep -Po '(?<= on \/ type )(\S+)')" == "btrfs" ] && echo '/$' || echo '/[s|v]da' )"
+df -h | grep -E "$( [ \"$(mount | grep -Po '(?<= on \/ type )(\S+)')\" == \"btrfs\" ] && echo '/$' || echo '/[s|v]da' )"
