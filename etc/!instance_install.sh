@@ -83,3 +83,4 @@ sudo systemctl enable --now yabsnap.timer
 # Personal notes, remote repositories
 # git remote set-url --add --push origin git@...1
 # git remote set-url --add --push origin git@...2
+# echo "export EDITOR=\"micro\"" | sudo tee -a /etc/profile.d/instance.sh
