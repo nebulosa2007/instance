@@ -24,8 +24,8 @@ sudo find /var/log -type f -regex ".*\.[0-9]$" -delete 2> /dev/null
 [ -d "/home/""$(whoami)""/.cache/pikaur/pkg" ]   && find /home/"$(whoami)"/.cache/pikaur/pkg   -type f -delete 2> /dev/null
 
 # Cleaning HOME folder
-[ -d "/home/$(whoami)/.thumbnails" ] && { find "/home/$(whoami)/.thumbnails" -type f -atime +7 -delete; find "/home/$(whoami)/.thumbnails" -empty -type d -atime +7 -delete ; }
-[ -d "/home/$(whoami)/.cache" ]      && { find "/home/$(whoami)/.cache"      -type f -atime +7 -delete; find "/home/$(whoami)/.cache"      -empty -type d -atime +7 -delete ; }
+[ -d "/home/$(whoami)/.thumbnails" ] && { find "/home/$(whoami)/.thumbnails" -type f -atime +1 -delete; find "/home/$(whoami)/.thumbnails" -empty -type d -atime +1 -delete ; }
+[ -d "/home/$(whoami)/.cache" ]      && { find "/home/$(whoami)/.cache"      -type f -atime +1 -delete; find "/home/$(whoami)/.cache"      -empty -type d -atime +1 -delete ; }
 
 # https://wiki.archlinux.org/title/Btrfs#Scrub
 if [ -x "$(command -v btrfs)" ]; then
