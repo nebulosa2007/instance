@@ -10,32 +10,36 @@ while read -r site; do ping -w 1 -c 1 "$site" &> /dev/null && ONLINE=1 && break;
 reflector -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 /usr/bin/pacman -Sy
 COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]" | /usr/bin/wc -l)
+[ -x "/usr/bin/repoctl" ] && COUNTREPOUPD=$(/usr/bin/repoctl status -a | grep "upgrade" | /usr/bin/wc -l) || COUNTREPOUPD=0
 
-if [ "$COUNTUPD" -gt 0 ]
+if [ "$COUNTUPD" -gt 0 ] || [ "$COUNTREPOUPD" -qt 0 ]
 then
-UPDATES=$(/usr/bin/pacman -Qu)
+[ "$COUNTUPD" -gt 0 ] && UPDATESLOCAL=$(/usr/bin/pacman -Qu)
+[ "$COUNTREPOUPD" -gt 0 ] && UPDATESREPO="
+
+<b>Repo updates:</b>
+"$(/usr/bin/repoctl status -a | grep "upgrade" | tr -s " " | sed 's/^ //g;s/: upgrade(/ /g;s/)//g')
+
 md5file=$(md5sum < /var/log/updpackages.log )
-md5upd=$(echo "$UPDATES"| md5sum)
+md5upd=$(echo "$UPDATESLOCAL$UPDATESREPO"| md5sum)
 host=$(uname -n)
 
   if [ "$md5file"  != "$md5upd" ]
   then
-    echo "$UPDATES">/var/log/updpackages.log
-
+    echo "$UPDATESLOCAL$UPDATESREPO">/var/log/updpackages.log
 
 ## TG BOT MODULE
     if [ "$COUNTUPD" -lt 16 ]
     then
     MSG="<b>Available updates:</b>
-$UPDATES
+$UPDATESLOCAL$UPDATESREPO
 
-$COUNTUPD total on <b>$host</b>"
+$(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     else
     MSG="<b>Available updates:</b>
-$COUNTUPD total on <b>$host</b>"
+$(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     fi
     [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$MSG"
-
 
 ## Desktop notifier: KDE MODULE
     SESSION="plasma"
