@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -z "$PATHINSTANCE" ] && source /etc/profile.d/instance.sh
-[ -z "$PATHINSTANCE" ] && { echo "Please set $PATHINSTANCE env variable!"; exit 1; }
+[ -z "$PATHINSTANCE" ] && { echo "Please set \$PATHINSTANCE env variable!"; exit 1; }
 
 ONLINE=0
 while read -r site; do ping -w 1 -c 1 "$site" &> /dev/null && ONLINE=1 && break; sleep 15; done < <(grep -Po '(?<=Server = https:\/\/)([^\/]*)' /etc/pacman.d/mirrorlist)

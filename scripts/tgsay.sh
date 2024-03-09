@@ -1,6 +1,7 @@
 #!/bin/bash
 
-[ -z "$PATHINSTANCE" ] && { echo "Please set $PATHINSTANCE env variable!"; exit 1; }
+[ -z "$PATHINSTANCE" ] && source /etc/profile.d/instance.sh
+[ -z "$PATHINSTANCE" ] && { echo "Please set \$PATHINSTANCE env variable!"; exit 1; }
 source "$PATHINSTANCE"/scripts/sensitive.sh
 
 if [ -z "$TG_BOT_CHAT_ID" ]; then
