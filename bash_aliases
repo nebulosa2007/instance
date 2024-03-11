@@ -69,6 +69,7 @@ if [ -n "$PATHINSTANCE" ]; then
      alias age="$INSTANCESCRIPTWAY/age.sh"
      alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
      alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
+     alias upgit="$INSTANCESCRIPTWAY/checkaurgits.sh"
 
      if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
           alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview '$INSTANCESCRIPTWAY/snaplist.sh {2}'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
