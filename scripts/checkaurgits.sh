@@ -2,8 +2,7 @@
 
 function checkaurgit (){
 
-    if [ "$1" == "repoctl" ] || [ "$2" == "repoctl" ]
-    then
+    if [ "$1" == "repoctl" ]; then
         mapfile -t gitpackages < <(repoctl list | grep "git")
         mapfile -t gitpackageversions < <(repoctl list -v | grep "git" | cut -d " " -f2)
     else
@@ -16,8 +15,7 @@ function checkaurgit (){
 
     pushd "$gitaurfolder" > /dev/null || exit 1
 
-    for index in ${!gitpackages[*]}
-    do
+    for index in ${!gitpackages[*]}; do
         gitpackage=${gitpackages[$index]}
         gitpackageversion=${gitpackageversions[$index]}
 
@@ -33,14 +31,17 @@ function checkaurgit (){
         git pull --quiet
         gitversion=$(set -o pipefail ; git describe --long --tags --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//' || printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)")
 
-        if [ "${gitpackageversion%-*}" != "$gitversion" ] && [[ ! "$gitpackageversion" =~ ${gitversion: -6} ]] 
-        then
-            echo "$gitpackage ${gitpackageversion%-*} -> $gitversion" 
+        if [ "${gitpackageversion%-*}" != "$gitversion" ] && [[ ! "$gitpackageversion" =~ ${gitversion: -6} ]]; then
+            echo "$gitpackage ${gitpackageversion%-*} -> $gitversion"
         else
             [ -z "$lessinfo" ] && echo "Version ${gitpackageversion%-*} is up to date"
         fi
         builtin cd "$gitaurfolder" || exit 2
     done
+    if [ -n "$clean" ]; then
+        [ -z "$lessinfo" ] && echo -e "\nCleaning cache..."
+        find "$gitaurfolder" -delete
+    fi
     popd > /dev/null || exit 1
 }
 
@@ -55,19 +56,26 @@ ${underline}Usage${nounderline}: ${0##*/} [OPTIONS] [repoctl]
 ${underline}Options${nounderline}:
        -h  Print help information
        -q  Supress info, show info about updates only
-TODO:  -c  Clean cache folder after checking
+       -c  Clean cache folder after checking
 
 ${underline}Modes${nounderline}:
            Check installed packages. Default mode.
-  repoctl  Check packages at local repository
+  repoctl  Check packages at repository
 "
 }
 
-getopts ":hq" option
+while getopts ':hqc' option; do
+    case "$option" in
+         h ) print_help; exit 0 ;;
+         q ) lessinfo="y";;
+         c ) clean="y";;
+        \? ) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; }
+    esac
+done
+shift $((OPTIND - 1))
 
-case "$option" in
-    h ) print_help;;
-    q ) lessinfo="y"; checkaurgit "$@";;
-    ? ) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; }
-        checkaurgit "$@";;
-esac
+if [ "$1" == "repoctl" ]; then
+    [ -x /usr/bin/repoctl ] && checkaurgit repoctl || echo "Repoctl not installed. Exiting..."
+else
+	checkaurgit
+fi
