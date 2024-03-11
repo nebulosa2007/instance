@@ -14,6 +14,9 @@ sudo cp "$PATHINSTANCE"/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo 
 # Tuming programs
 mkdir -p /home/"$(whoami)"/.config/{neofetch,tmux,yt-dlp}
 ln -sf "$PATHINSTANCE"/etc/neofetch.conf /home/"$(whoami)"/.config/neofetch/config.conf
+# https://wiki.archlinux.org/title/GnuPG#Searching_and_receiving_keys
+mkdir /home/"$(whoami)"/.gnupg
+ln -sf "$PATHINSTANCE"/etc/gpg.conf /home/"$(whoami)"/.gnupg/gpg.conf
 # https://wiki.archlinux.org/title/Tmux
 ln -sf "$PATHINSTANCE"/etc/tmux.conf /home/"$(whoami)"/.config/tmux/tmux.conf
 # https://wiki.archlinux.org/title/Yt-dlp
