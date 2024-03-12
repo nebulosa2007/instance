@@ -4,17 +4,18 @@ function print_help {
     underline=$(tput smul)
     nounderline=$(tput rmul)
     echo "
-Check source version for -git packages installed from AUR. Support local installed packages or repoctl.
+Check source version for -git packages installed from AUR. Support local installed packages or repoctl
 
 ${underline}Usage${nounderline}: ${0##*/} [OPTIONS] [repoctl]
 
 ${underline}Options${nounderline}:
        -h  Print help information
+       -u  Print URL source for updates
        -q  Supress info, show info about updates only
        -c  Clean cache folder after checking
 
 ${underline}Modes${nounderline}:
-        *  Check installed packages. Default mode.
+        *  Check installed packages. Default mode
   repoctl  Check packages at you own repository
 "
 }
@@ -54,9 +55,9 @@ function checkaurgit (){
             git describe --long --tags --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//' \
          || printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
             )
-
         if [[ ! "$gitpackageversion" =~ ${gitversion: -6} ]]; then
             echo "$gitpackage ${gitpackageversion%-*} -> $gitversion"
+            [ -n "$show_url" ] && [ -z "$lessinfo" ] && grep -Po '(?<=url = ).*' ../.SRCINFO
         else
             [ -z "$lessinfo" ] && echo "Version ${gitpackageversion%-*} is up to date"
         fi
@@ -69,9 +70,10 @@ function checkaurgit (){
     popd > /dev/null || exit 1
 }
 
-while getopts ':hqc' option; do
+while getopts ':huqc' option; do
     case "$option" in
          h ) print_help; exit 0;;
+         u ) show_url="y";;
          q ) lessinfo="y";;
          c ) clean="y";;
         \? ) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; }
