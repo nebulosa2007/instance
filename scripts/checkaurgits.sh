@@ -11,6 +11,7 @@ ${underline}Usage${nounderline}: ${0##*/} [OPTIONS] [repoctl]
 ${underline}Options${nounderline}:
        -h  Print help information
        -u  Print URL source for updates
+       -b  Build updates. Default option for makepkg is '-rs' or can be added, e.g. '-b rsCc'
        -q  Supress info, show info about updates only
        -c  Clean cache folder after checking
 
@@ -70,10 +71,11 @@ function checkaurgit (){
     popd > /dev/null || exit 1
 }
 
-while getopts ':huqc' option; do
+while getopts ':hub:qc' option; do
     case "$option" in
          h ) print_help; exit 0;;
          u ) show_url="y";;
+         b ) build="y"; mkpgoptions="-$OPTARG";;
          q ) lessinfo="y";;
          c ) clean="y";;
         \? ) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; }
@@ -85,4 +87,9 @@ if [ "$1" == "repoctl" ]; then
     [ -x /usr/bin/repoctl ] && checkaurgit repoctl || echo "Repoctl not installed. Exiting..."
 else
     checkaurgit
+fi
+
+if [ -n "$build" ]; then
+    [ -z "$mkpgoptions" ] && mkpgoptions="-rs"
+    echo -n "\nBuild with options $mkpgoptions"
 fi
