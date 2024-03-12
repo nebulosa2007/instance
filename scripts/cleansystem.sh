@@ -3,7 +3,7 @@
 df -h | grep -E "$( [ \"$(mount | grep -Po '(?<= on \/ type )(\S+)')\" == \"btrfs\" ] && echo '/$' || echo '/[s|v]da' )"
 
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Removing_unused_packages_(orphans)
-pacman -Qdtq | sudo pacman -Rns - 2>/dev/null
+pacman -Qdtq | sudo pacman --noconfirm -Rns - 2>/dev/null
 
 # https://wiki.archlinux.org/title/Pacman#Package_cache_directory
 # In case Cache folder is '/tmp' to do not wipe other files
