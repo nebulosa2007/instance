@@ -14,7 +14,7 @@ COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]" | /usr/bin/wc -l)
 
 if [ "$COUNTUPD" -gt 0 ] || [ "$COUNTREPOUPD" -qt 0 ]
 then
-[ "$COUNTUPD" -gt 0 ] && UPDATESLOCAL=$(/usr/bin/pacman -Qu)
+[ "$COUNTUPD" -gt 0 ] && UPDATESLOCAL=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]")
 [ "$COUNTREPOUPD" -gt 0 ] && UPDATESREPO="
 
 <b>Repo updates:</b>
