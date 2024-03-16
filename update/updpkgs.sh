@@ -12,31 +12,34 @@ reflector -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]" | /usr/bin/wc -l)
 [ -x "/usr/bin/repoctl" ] && COUNTREPOUPD=$(/usr/bin/repoctl status -a | grep "upgrade" | /usr/bin/wc -l) || COUNTREPOUPD=0
 
-if [ "$COUNTUPD" -gt 0 ] || [ "$COUNTREPOUPD" -qt 0 ]
+if [ "$COUNTUPD" -gt 0 ] || [ "$COUNTREPOUPD" -gt 0 ]
 then
-[ "$COUNTUPD" -gt 0 ] && UPDATESLOCAL=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]")
+[ "$COUNTUPD" -gt 0 ] && UPDATESLOCAL="<b>Available updates:</b>
+$(/usr/bin/pacman -Qu | grep -v '\[ignored\]')"
 [ "$COUNTREPOUPD" -gt 0 ] && UPDATESREPO="
-
 <b>Repo updates:</b>
-"$(/usr/bin/repoctl status -a | grep "upgrade" | tr -s " " | sed 's/^ //g;s/: upgrade(/ /g;s/)//g')
+$(/usr/bin/repoctl status -a | grep upgrade | tr -s ' ' | sed 's/^ //g;s/: upgrade(/ /g;s/)//g')"
 
 md5file=$(md5sum < /var/log/updpackages.log )
-md5upd=$(echo "$UPDATESLOCAL$UPDATESREPO"| md5sum)
+md5upd=$(echo -e "$UPDATESLOCAL\n$UPDATESREPO"| md5sum)
 host=$(uname -n)
 
   if [ "$md5file"  != "$md5upd" ]
   then
-    echo "$UPDATESLOCAL$UPDATESREPO">/var/log/updpackages.log
+    echo "$UPDATESLOCAL
+$UPDATESREPO">/var/log/updpackages.log
 
 ## TG BOT MODULE
-    if [ "$COUNTUPD" -lt 16 ]
+    if [ "$(( COUNTUPD + COUNTREPOUPD ))" -lt 16 ]
     then
-    MSG="<b>Available updates:</b>
-$UPDATESLOCAL$UPDATESREPO
+    MSG="$UPDATESLOCAL
+$UPDATESREPO
 
 $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     else
-    MSG="<b>Available updates:</b>
+    MSG="Available updates: $COUNTUPD
+Repo updates: $COUNTREPOUPD
+
 $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     fi
     [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$MSG"
