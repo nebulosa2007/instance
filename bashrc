@@ -91,7 +91,7 @@ fi
 
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
     if [ -f /var/log/updpackages.log ] && [ "$(pacman -Qu | grep -cv "\[ignored\]")" -ne 0 ]; then
-        echo -e "\n${yellow} Available updates:\n$(sed 's/^/ /' < /var/log/updpackages.log )${nc}"
+        echo -e "\n${yellow} Available updates:\n$(sed 's/^/ /' < /var/log/updpackages.log | tail -n+2 )${nc}"
     else
         echo -e "\n${green} System is up-to-date${nc}"
     fi
