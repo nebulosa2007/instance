@@ -91,7 +91,7 @@ fi
 
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
     if [ -f /var/log/updpackages.log ] && [ "$(pacman -Qu | grep -cv "\[ignored\]")" -ne 0 ]; then
-        echo -e "\n${yellow} Available updates:\n$(sed 's/^/ /' < /var/log/updpackages.log | tail -n+2 )${nc}"
+        echo -e "\n${yellow} Available updates:\n$(sed 's/<[^>]*>//g;s/^/ /' < /var/log/updpackages.log | tail -n+2 )${nc}"
     else
         echo -e "\n${green} System is up-to-date${nc}"
     fi
@@ -113,9 +113,9 @@ fi
 
 # Check if the tmux session exists, discarding output (zero for success, non-zero for failure)
 if [ -n "$SSH_CLIENT" ]; then
-	if tmux has-session -t 0 &>/dev/null && [ -z "$TMUX" ]; then
-    	echo -ne "\n${yellow}Attaching to an existing tmux session"
-    	for i in {1..3}; do echo -n "."; sleep 1; done;  echo -e "${nc}"
-    	tmux attach-session -t 0
-	fi
+    if tmux has-session -t 0 &>/dev/null && [ -z "$TMUX" ]; then
+        echo -ne "\n${yellow}Attaching to an existing tmux session"
+        for i in {1..3}; do echo -n "."; sleep 1; done;  echo -e "${nc}"
+        tmux attach-session -t 0
+    fi
 fi
