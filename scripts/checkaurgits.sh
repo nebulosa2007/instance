@@ -1,12 +1,12 @@
 #!/bin/bash
 
-gitaurfolder=$HOME/.cache/aurgits
+folder=$HOME/.cache/repoctl
 
 function print_help {
     underline=$(tput smul)
     nounderline=$(tput rmul)
     echo "
-Check source version for -git packages installed from AUR. Support local installed packages or repoctl
+Check updates for packages installed from AUR. Support local installed packages or repoctl
 
 ${underline}Usage${nounderline}: ${0##*/} [OPTIONS] [repoctl]
 
@@ -27,8 +27,18 @@ ${underline}Modes${nounderline}:
 function cleanfolder (){
     if [ -n "$clean" ]; then
         [ -z "$lessinfo" ] && echo -e "\nCleaning cache..."
-        find "$gitaurfolder" -delete
+        find "$folder" -delete
     fi
+}
+
+function updaterepo (){
+    [ ! -d "$folder" ] && mkdir "$folder"
+
+    pushd "$folder" > /dev/null || exit 1
+    : > build-order.txt
+    repoctl down -u -o build-order.txt 2>/dev/null
+    mapfile -t buildorder < build-order.txt
+    popd > /dev/null || exit 1
 }
 
 function checkaurgit (){
@@ -41,9 +51,9 @@ function checkaurgit (){
         mapfile -t gitpackageversions < <(pacman -Q | grep "\-git " | cut -d " " -f2)
     fi
 
-    [ ! -d "$gitaurfolder" ] && mkdir "$gitaurfolder"
+    [ ! -d "$folder" ] && mkdir "$folder"
 
-    pushd "$gitaurfolder" > /dev/null || exit 1
+    pushd "$folder" > /dev/null || exit 1
 
     for index in ${!gitpackages[*]}; do
         gitpackage=${gitpackages[$index]}
@@ -72,18 +82,18 @@ function checkaurgit (){
         else
             [ -z "$lessinfo" ] && echo "Version ${gitpackageversion%-*} is up to date"
         fi
-        builtin cd "$gitaurfolder" || exit 2
+        builtin cd "$folder" || exit 2
     done
     popd > /dev/null || exit 1
 }
 
 function addtopero (){
 if [ -x /usr/bin/repoctl ]; then
-    read -n 1 -p "Add package to repository? [Y/n] " -r reply
-    [ "$reply" != "" ] && echo
-    if [ "$reply" = "${reply#[Nn]}" ]; then
+    #read -n 1 -p "Add package to repository? [Y/n] " -r reply
+    #[ "$reply" != "" ] && echo
+    #if [ "$reply" = "${reply#[Nn]}" ]; then
         find ! -name '*debug*' -name '*.pkg.tar.zst' -exec repoctl add {} \;
-    fi
+    #fi
 fi
 }
 
@@ -102,16 +112,16 @@ done
 shift $((OPTIND - 1))
 
 if [ "$1" == "repoctl" ] || [ "$mkpgoptions" == "-repoctl" ]; then
-    [ -x /usr/bin/repoctl ] && checkaurgit repoctl || echo "Repoctl not installed. Exiting..."
+    [ -x /usr/bin/repoctl ] && updaterepo && checkaurgit repoctl || echo "Repoctl not installed. Exiting..."
 else
     checkaurgit
 fi
 
-for package in "${updpackages[@]}" ; do
-    pushd "$gitaurfolder/$package" > /dev/null || exit 1
+for package in "${buildorder[@]}" "${updpackages[@]}"; do
+    pushd "$folder/$package" > /dev/null || exit 1
     if [ -n "$mkpgoptions" ] && [ -x /usr/bin/makepkg ]; then
-        echo -e "\nBuild $package with options $mkpgoptions"
         [ "$mkpgoptions" == "-repoctl" ] && mkpgoptions="-rfs"
+        echo -e "\nBuild $package with options $mkpgoptions"
         makepkg "$mkpgoptions" && addtopero
     elif [ -n "$pkgctl" ] && [ -x /usr/bin/pkgctl ]; then
         echo -e "\nBuild $package in a clean chroot"
