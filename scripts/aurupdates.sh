@@ -122,10 +122,10 @@ for package in "${buildorder[@]}" "${updpackages[@]}"; do
     if [ -n "$mkpgoptions" ] && [ -x /usr/bin/makepkg ]; then
         [ "$mkpgoptions" == "-repoctl" ] && mkpgoptions="-rfs"
         echo -e "\nBuild $package with options $mkpgoptions"
-        makepkg "$mkpgoptions" && addtopero
+        makepkg "$mkpgoptions" && addtopero && find . -maxdepth 1 -name '*.pkg.tar.zst' -delete
     elif [ -n "$pkgctl" ] && [ -x /usr/bin/pkgctl ]; then
         echo -e "\nBuild $package in a clean chroot"
-        pkgctl build && addtopero
+        pkgctl build && addtopero && find . -maxdepth 1 -name '*.pkg.tar.zst' -delete
     fi
     popd > /dev/null || exit 1
 done
