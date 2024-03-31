@@ -36,7 +36,7 @@ function updaterepo (){
 
     pushd "$folder" > /dev/null || exit 1
     : > build-order.txt
-    repoctl down -u -o build-order.txt 2>/dev/null
+    repoctl down -ul -o build-order.txt 2>/dev/null
     mapfile -t buildorder < build-order.txt
     popd > /dev/null || exit 1
 }
@@ -117,7 +117,7 @@ else
     checkaurgit
 fi
 
-for package in "${buildorder[@]}" "${updpackages[@]}"; do
+for package in $(echo "${buildorder[@]}" "${updpackages[@]}" | tr ' ' '\n' | uniq); do
     pushd "$folder/$package" > /dev/null || exit 1
     if [ -n "$mkpgoptions" ] && [ -x /usr/bin/makepkg ]; then
         [ "$mkpgoptions" == "-repoctl" ] && mkpgoptions="-rfs"
