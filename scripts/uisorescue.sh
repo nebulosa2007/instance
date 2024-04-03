@@ -44,7 +44,7 @@ EOF
 
 
 function checkiso(){
-    curl -s "https://$mirror/archlinux/iso/latest/sha256sums.txt" | grep $iso | sha256sum -c -- || exit 5
+    curl -s "https://$mirror/archlinux/iso/latest/sha256sums.txt" | grep $iso | sha256sum -c --
 }
 
 
