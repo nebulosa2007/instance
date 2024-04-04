@@ -1,6 +1,8 @@
 # Program packages:
 # pikaur -Syu --needed bash_completion fzf git tmux
 
+case $- in
+  *i*)
 # https://wiki.archlinux.org/title/Bash#Common_programs_and_options
 if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -119,3 +121,5 @@ if [ -n "$SSH_CLIENT" ]; then
         tmux attach-session -t 0
     fi
 fi
+;;
+esac
