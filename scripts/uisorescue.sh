@@ -50,8 +50,8 @@ function checkiso(){
 
 if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$subvol)" == "" ]; then
     sudo mount "$rootdrive" /mnt
-    pushd "/mnt" > /dev/null && sudo btrfs subvolume create $subvol && popd > /dev/null /
-    sudo umount /mnt && writetogrub || echo "Error of creating $subvol!"
+    pushd "/mnt" > /dev/null && sudo btrfs subvolume create $subvol && popd > /dev/null
+    sudo umount /mnt && writetogrub || exit 1
 fi
 
 
