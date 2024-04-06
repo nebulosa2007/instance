@@ -1,4 +1,5 @@
 #!/bin/bash
+#shellcheck disable=1091
 
 [ -z "$PATHINSTANCE" ] && source /etc/profile.d/instance.sh
 [ -z "$PATHINSTANCE" ] && { echo "Please set \$PATHINSTANCE env variable!"; exit 1; }
@@ -20,6 +21,7 @@ $(/usr/bin/pacman -Qu | grep -v '\[ignored\]')"
 <b>Repo updates:</b>
 $(/usr/bin/repoctl status -a | grep upgrade | tr -s ' ' | sed 's/^ //g;s/: upgrade(/ /g;s/)//g')"
 
+[ ! -f /var/log/updpackages.log ] && touch /var/log/updpackages.log
 md5file=$(md5sum < /var/log/updpackages.log )
 md5upd=$(echo -e "$UPDATESLOCAL\n$UPDATESREPO"| md5sum)
 host=$(uname -n)
@@ -27,9 +29,10 @@ host=$(uname -n)
   if [ "$md5file"  != "$md5upd" ]
   then
     echo "$UPDATESLOCAL
-$UPDATESREPO">/var/log/updpackages.log
+$UPDATESREPO" > /var/log/updpackages.log
 
-## TG BOT MODULE
+
+## Telegram notifier: BOT MODULE
     if [ "$(( COUNTUPD + COUNTREPOUPD ))" -lt 16 ]
     then
     MSG="$UPDATESLOCAL
@@ -44,6 +47,7 @@ $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     fi
     [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$MSG"
 
+
 ## Desktop notifier: KDE MODULE
     SESSION="plasma"
     PID=$(pgrep $SESSION | head -1)
@@ -56,11 +60,9 @@ $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     fi
 
 
-## Bar notifer: waybar
-    PID=$(pgrep waybar | head -1)
-    if [ -n "$PID" ]
-    then
-        pkill -RTMIN+8 waybar
-    fi
+## Bar notifer: WAYBAR MODULE
+    [ -n "$(pgrep waybar | head -1)" ] && pkill -RTMIN+8 waybar
+
+
   fi
 fi

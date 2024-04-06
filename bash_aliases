@@ -32,7 +32,7 @@ alias gethash="tr -dc 'a-z0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null && 
 alias boottime="systemd-analyze && systemd-analyze blame --no-pager"
 
 ## SHORTS: EXTERNAL PROGRAMS
-alias ls="lsd --group-directories-first -F"
+alias ls="lsd --group-directories-first -F --icon-theme unicode"
 alias 0x0="curl -4 -F file=@- https://0x0.st"
 alias bugspaces="grep -RnE ' $' 2>/dev/null"
 # https://wiki.archlinux.org/title/Reflector
@@ -47,7 +47,7 @@ line    () { l=$1"p"; shift; sed -n "$l" "$@"; }
 
 ## PIKAUR MANAGEMENT
 # https://wiki.archlinux.org/title/Fzf#Pacman
-Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)> <only>" && return; [ $# -eq 2 ] && [ $2 == "only" ] && { pikaur -S --needed --noedit $1; return; }; if [ $# -eq 1 ]; then np=$(pikaur -Sslq $1 | sort -u | fzf -q $1 -i -m --reverse --preview 'pikaur -Sii {1}' --preview-window right:60%:wrap); [ -n "$np" ] && pikaur -S --needed --noedit $np; else pikaur -S --needed --noedit $@; fi; }
+Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)> <only>" && return; [ $# -eq 2 ] && [ $2 == "only" ] && { pikaur -S --needed --noedit $1; return; }; if [ $# -eq 1 ]; then np=$(pikaur -Ssq $1 | sort -u | fzf -q $1 -i -m --reverse --preview 'pikaur -Sii {1}' --preview-window right:60%:wrap); [ -n "$np" ] && pikaur -S --needed --noedit $np; else pikaur -S --needed --noedit $@; fi; }
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Packages_and_dependencies
 Purge	() { if [ "$#" -eq 0 ]; then np=$(comm -23 <((pacman -Qqen; pacman -Qqm)| sort) <((expac -l '\n' '%E' base-devel; expac -l '\n' '%E' base) | sort -u) | sort -u | fzf -i -m --reverse --preview 'pikaur -Qii {1}' --preview-window right:80%:wrap); [ -n "$np" ] && pikaur -Rsc $np; else pikaur -Rsc $@; fi; }
 alias Update="pikaur -Su --noedit"

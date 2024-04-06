@@ -1,4 +1,5 @@
 #!/bin/bash
+#shellcheck disable=1091
 
 [ -z "$PATHINSTANCE" ] && source /etc/profile.d/instance.sh
 [ -z "$PATHINSTANCE" ] && { echo "Please set \$PATHINSTANCE env variable!"; exit 1; }
