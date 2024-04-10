@@ -47,7 +47,6 @@ $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     fi
     [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$MSG"
 
-
 ## Desktop notifier: KDE MODULE
     SESSION="plasma"
     PID=$(pgrep $SESSION | head -1)
@@ -61,8 +60,9 @@ $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
 
 
 ## Bar notifer: WAYBAR MODULE
-    [ -n "$(pgrep waybar | head -1)" ] && pkill -RTMIN+8 waybar
-
-
+    if [ -n "$(pgrep waybar | head -1)" ]
+    then
+        pkill -RTMIN+8 waybar
+    fi
   fi
 fi
