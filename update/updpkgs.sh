@@ -11,7 +11,13 @@ while read -r site; do ping -w 1 -c 1 "$site" &> /dev/null && ONLINE=1 && break;
 reflector -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 /usr/bin/pacman -Sy
 COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]" | /usr/bin/wc -l)
-[ -x "/usr/bin/repoctl" ] && COUNTREPOUPD=$(/usr/bin/repoctl status -a | grep "upgrade" | /usr/bin/wc -l) || COUNTREPOUPD=0
+if [ -x "/usr/bin/repoctl" ]
+then
+    REPOUPD=$(/usr/bin/repoctl status -a | grep "upgrade")
+    COUNTREPOUPD=$(echo "$REPOUPD" | /usr/bin/wc -l)
+else
+    COUNTREPOUPD=0
+fi
 
 if [ "$COUNTUPD" -gt 0 ] || [ "$COUNTREPOUPD" -gt 0 ]
 then
@@ -19,7 +25,7 @@ then
 $(/usr/bin/pacman -Qu | grep -v '\[ignored\]')"
 [ "$COUNTREPOUPD" -gt 0 ] && UPDATESREPO="
 <b>Repo updates:</b>
-$(/usr/bin/repoctl status -a | grep upgrade | tr -s ' ' | sed 's/^ //g;s/: upgrade(/ /g;s/)//g')"
+$(echo "$REPOUPD" | tr -s ' ' | sed 's/^ //g;s/: upgrade(/ /g;s/)//g')"
 
 [ ! -f /var/log/updpackages.log ] && touch /var/log/updpackages.log
 md5file=$(md5sum < /var/log/updpackages.log )
