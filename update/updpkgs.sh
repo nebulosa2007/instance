@@ -11,7 +11,7 @@ while read -r site; do ping -w 1 -c 1 "$site" &> /dev/null && ONLINE=1 && break;
 reflector -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 /usr/bin/pacman -Sy
 COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]" | /usr/bin/wc -l)
-[ -x "/usr/bin/repoctl" ] && COUNTREPOUPD=$(/usr/bin/repoctl status -a | grep "upgrade" | /usr/bin/wc -l)
+COUNTREPOUPD=$([ -x "/usr/bin/repoctl" ] && /usr/bin/repoctl status -a | grep "upgrade" | /usr/bin/wc -l || echo "0")
 if [ "$COUNTUPD" -gt 0 ] || [ "$COUNTREPOUPD" -gt 0 ]
 then
 [ "$COUNTUPD" -gt 0 ] && UPDATESLOCAL="<b>Available updates:</b>
