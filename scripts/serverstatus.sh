@@ -24,9 +24,9 @@ else
         then
                 echo "Available updates:"
                 if [ "$COUNTUPD" -lt 16 ]
-	            then
+                then
                      cat /var/log/updpackages.log
-	            fi
+                fi
                 echo "$COUNTUPD total"
                 echo
         fi
