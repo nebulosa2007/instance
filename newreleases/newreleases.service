@@ -1,0 +1,10 @@
+[Unit]
+Description=Git releases Watchdog
+Wants=network-online.target
+After=network-online.target nss-lookup.target
+
+[Service]
+ExecStart=/usr/bin/newreleases
+
+[Install]
+WantedBy=multi-user.target
