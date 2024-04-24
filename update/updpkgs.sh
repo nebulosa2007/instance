@@ -39,8 +39,10 @@ $UPDATESREPO
 
 $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     else
-    MSG="Available updates: $COUNTUPD
-Repo updates: $COUNTREPOUPD
+    MSG="Available updates: $COUNTUPD"
+[ "$COUNTREPOUPD" -gt 0 ] MSG=$MSG"
+Repo updates: $COUNTREPOUPD"
+MSG=$MSG"
 
 $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
     fi
