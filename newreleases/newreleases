@@ -1,7 +1,6 @@
 #!/bin/bash
 #shellcheck disable=1091
 
-cache=$HOME/.cache/newrelease
 config=$HOME/.config/newrelease
 
 [ -z "$PATHINSTANCE" ] && source /etc/profile.d/instance.sh
@@ -11,12 +10,13 @@ function print_help {
     underline=$(tput smul)
     nounderline=$(tput rmul)
     echo "
-New release watchdog.
+New release watchdog from git sources.
 
 ${underline}Usage${nounderline}: ${0##*/} [OPTIONS]
 
 ${underline}Options${nounderline}:
   [-a <giturl>] Add new git source for watchdog
+  [-e]          Edit main list/config
 "
 }
 
@@ -27,17 +27,15 @@ function addgitpath {
     sort -uo "$config/gitlist"{,}
 }
 
-while getopts ':ha:' option; do
+while getopts ':ha:e' option; do
     case "$option" in
          h ) print_help; exit 0;;
          a ) addgitpath "$OPTARG";;
+         e ) [ -n "$EDITOR" ] && $EDITOR "$config/gitlist" || echo "Please set \$EDITOR variable first!"; exit 0;;
         \? ) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; }
     esac
 done
 shift $((OPTIND - 1))
-
-mkdir -p "$cache"
-builtin cd "$cache" || exit 2
 
 cp "$config/gitlist" "/tmp/gitlist"
 
@@ -49,7 +47,7 @@ do
     if [ "${git[2]}" != "$remotetag" ]
     then
         rel=$([ "${git[2]}" != "init" ] && echo "New" || echo "Init")
-        [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$rel release <u>${git[1]}</u> - <b>$remotetag</b>"
+        [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$rel release <u>${git[1]}</u> - <b>${git[2]} -> $remotetag</b>"
         sed -i "/${git[1]}/d" /tmp/gitlist
         echo "${git[0]} ${git[1]} $remotetag" >> /tmp/gitlist
     fi
