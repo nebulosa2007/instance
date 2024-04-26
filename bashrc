@@ -40,9 +40,9 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
 fi
 
 PS1='\n \
-$([ -n "$SSH_CLIENT" ] && echo "\[\033[00;34m\]SSH \h\[\033[00;37m\]: ")\
-\[\033[00;3$([[ $(stat --printf="%U%a" "$(pwd)") == *$(whoami)7* ]] && echo 2 || echo 1)m\]\w\[\033[00m\]\
+$([ -n "$SSH_CLIENT" ] && echo "\[\033[00;34m\]SSH\[\033[00;37m\]")\
 $(__git_ps1 " (%s)") \
+\[\033[00;3$([[ $(stat --printf="%U%a" "$(pwd)") == *$(whoami)7* ]] && echo 2 || echo 1)m\]\w\[\033[00m\] \
 $ '
 
 if [ -f ~/.bash_aliases ]; then

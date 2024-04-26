@@ -21,6 +21,8 @@ ln -sf "$PATHINSTANCE"/etc/gpg.conf /home/"$(whoami)"/.gnupg/gpg.conf
 ln -sf "$PATHINSTANCE"/etc/tmux.conf /home/"$(whoami)"/.config/tmux/tmux.conf
 # https://wiki.archlinux.org/title/Yt-dlp
 ln -sf "$PATHINSTANCE"/etc/yt-dlp.conf /home/"$(whoami)"/.config/yt-dlp/config
+# https://wiki.archlinux.org/title/Mpv
+ln -sf "$PATHINSTANCE"/etc/mpv.conf /home/"$(whoami)"/.config/mpv/mpv.conf
 
 
 # Tuning sshd server (in case the host is remote)
