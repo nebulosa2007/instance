@@ -1,0 +1,11 @@
+[user]
+    email = 
+    name = 
+[alias]
+    bugspaces = !git diff-tree --check $(git hash-object -t tree /dev/null) HEAD
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+    whitespace = trailing-space,space-before-tab,tab-in-indent,cr-at-eo
