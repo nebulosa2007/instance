@@ -24,6 +24,8 @@ ln -sf "$PATHINSTANCE"/etc/yt-dlp.conf /home/"$(whoami)"/.config/yt-dlp/config
 # https://wiki.archlinux.org/title/Mpv
 ln -sf "$PATHINSTANCE"/etc/mpv.conf /home/"$(whoami)"/.config/mpv/mpv.conf
 
+# Optinal for micro
+ln -sf "$PATHINSTANCE"/etc/micro.json /home/"$(whoami)"/.config/micro/settings.json
 
 # Tuning sshd server (in case the host is remote)
 # On client host:
