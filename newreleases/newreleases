@@ -23,7 +23,7 @@ ${underline}Options${nounderline}:
 function addgitpath {
     mkdir -p "$config"
     pkgfolder=$(basename "$1" ".git" )
-    echo "$1 $pkgfolder init" >> "$config/gitlist"
+    echo "$1 $pkgfolder /releases/tag/ init" >> "$config/gitlist"
     sort -uo "$config/gitlist"{,}
 }
 
@@ -42,14 +42,16 @@ cp "$config/gitlist" "/tmp/gitlist"
 while read -r string
 do
     IFS=" " read -r -a git <<< "$string"
-    remotetag=$(git ls-remote --refs --sort='v:refname' --tags "${git[0]}" | tail -1 | cut -d/ -f3)
-    [ "$remotetag" == "" ] && remotetag="noreleasesyet"
-    if [ "${git[2]}" != "$remotetag" ]
+    remotetag=$(git -c 'versionsort.suffix=+' -c 'versionsort.suffix=-' ls-remote --refs --sort='-v:refname' --tags "${git[0]}" | head -1 | cut -d/ -f3)
+    [ "$remotetag" == "" ] && remotetag="notagsyet"
+    if [ "${git[3]}" != "$remotetag" ]
     then
-        rel=$([ "${git[2]}" != "init" ] && echo "New" || echo "Init")
-        [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$rel release <u>${git[1]}</u> - <b>${git[2]} -> $remotetag</b>"
+        rel=$([ "${git[3]}" != "init" ] && echo "New" || echo "Init")
+        [ "$remotetag" != "notagsyet" ] && viewurl="
+${git[0]/\.git/}${git[2]}$remotetag"
+        [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$rel release <u>${git[1]}</u> - <b>${git[3]} -> $remotetag</b>$viewurl"
         sed -i "/${git[1]}/d" /tmp/gitlist
-        echo "${git[0]} ${git[1]} $remotetag" >> /tmp/gitlist
+        echo "${git[0]} ${git[1]} ${git[2]} $remotetag" >> /tmp/gitlist
     fi
 done < "$config/gitlist"
 
