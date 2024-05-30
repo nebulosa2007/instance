@@ -63,7 +63,7 @@ $(( COUNTUPD + COUNTREPOUPD )) total on <b>$host</b>"
 ## Bar notifer: WAYBAR MODULE
     if [ -n "$(pgrep waybar | head -1)" ]
     then
-        pkill -RTMIN+8 waybar
+        pkill -RTMIN+9 waybar
     fi
   fi
 fi
