@@ -63,7 +63,7 @@ function checkaurgit (){
 
         [ ! -d "$gitpackage" ] && git clone --quiet "https://aur.archlinux.org/$gitpackage.git" 2> /dev/null
         builtin cd "$gitpackage" || exit 2
-        mapfile -t giturl < <(grep -Po '(?<=git\+)http.*' .SRCINFO | sed 's|#branch=| -b |')
+        mapfile -t giturl < <(grep -Pom1 '(?<=git\+)http.*' .SRCINFO | sed 's|#branch=| -b |')
         # shellcheck disable=SC2068
         [ ! -d "${gitpackage%-git}" ] && git clone --quiet ${giturl[@]} "${gitpackage%-git}" 2> /dev/null
 
