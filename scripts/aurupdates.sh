@@ -72,7 +72,7 @@ function checkaurgit (){
 
         gitversion=$(
             set -euo pipefail;
-            git describe --long --tags --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//' \
+            git describe --long --tags --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^ver.//;s/^v//' \
          || printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
             )
 
