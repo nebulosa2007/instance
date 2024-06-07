@@ -1,3 +1,6 @@
+#!/bin/false
+# shellcheck shell=bash
+
 #Updates module of Instance project
 
 #IMPORTANT: Only for one partition systems. Use cp instead ln below:

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Packages_and_dependencies
 ## sudo pacman -Syu --needed expac

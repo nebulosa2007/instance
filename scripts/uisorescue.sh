@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 # This script makes a BTRFS subvolume with latest Archlinux iso image and sets a new entry in GRUB menu
 # which allows you to boot from iso image directly. Some kind of RescueDisk that hard to broke

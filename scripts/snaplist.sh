@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 SNAPDIR="/.snapshots"
 PREFIX="@root"

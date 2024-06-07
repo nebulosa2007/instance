@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 top=${1:-10}
 

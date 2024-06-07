@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 #shellcheck disable=1091
 
 [ -z "$PATHINSTANCE" ] && source /etc/profile.d/instance.sh

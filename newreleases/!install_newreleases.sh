@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/false
+# shellcheck shell=bash
 
 sudo pacman -S --needed git
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 # pikaur -Syu --needed vnstat netcat lv_sensors
 [ -z "$PATHINSTANCE" ] && { echo "Please set $PATHINSTANCE env variable!"; exit 1; }

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 DATE=$(/usr/bin/ls -ctl --time-style +"%Y-%m-%d" /etc | tail -1 | grep -Po "[0-9]+-[0-9]+-[0-9]+")
 #or

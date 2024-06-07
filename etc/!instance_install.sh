@@ -1,3 +1,6 @@
+#!/bin/false
+# shellcheck shell=bash
+
 # Instance project set installing:
 # IMPORTANT: See notes in .bash_aliases for installing needed packages
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 df -h | grep -E "$( [ \"$(mount | grep -Po '(?<= on \/ type )(\S+)')\" == \"btrfs\" ] && echo '/$' || echo '/[s|v]da' )"
 
