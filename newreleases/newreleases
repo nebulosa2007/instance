@@ -23,6 +23,10 @@ ${underline}Options${nounderline}:
 function addgitpath {
     mkdir -p "$config"
     pkgfolder=$(basename "$1" ".git" )
+    #TODO: make releases way different for git sources:
+    # github -  /releases/tag/
+    # gitlab -  /-/releases/
+    # etc..
     echo "$pkgfolder $1 /releases/tag/ init" >> "$config/gitlist"
     sort -uo "$config/gitlist"{,}
 }
