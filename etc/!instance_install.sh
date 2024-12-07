@@ -64,29 +64,29 @@ sudo vnstat --add -i wg0
 
 
 # Nginx server
-pikaur -Sy --needed nginx
+pikaur -Sy --needed nginx-mainline
 sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
 sudo cp "$PATHINSTANCE"/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 sudo mkdir -p /etc/nginx/sites-enabled/
 sudo mkdir -p /home/http/ && sudo chown "$(whoami)":"$(whoami)" /home/http/
 # Wireguard UI
-sudo cp "$PATHINSTANCE"/etc/nginx/80_04_wireguard-ui.conf /etc/nginx/80_04_wireguard-ui.conf
+sudo cp "$PATHINSTANCE"/etc/nginx/80_04_wireguard-ui.conf /etc/nginx/sites-enabled/80_04_wireguard-ui.conf
 # Telegram proxy link generator
-sudo cp "$PATHINSTANCE"/etc/nginx/80_01_mtproxy.conf /etc/nginx/80_01_mtproxy.conf
+sudo cp "$PATHINSTANCE"/etc/nginx/80_01_mtproxy.conf /etc/nginx/sites-enabled/80_01_mtproxy.conf
 mkdir -p /home/http/mtproto
 cp "$PATHINSTANCE"/etc/nginx/mtpgen.html /home/http/mtproto/index.html
 # Optional: Own arch repository
-# sudo cp "$PATHINSTANCE"/etc/nginx/80_02_repoctl.conf /etc/nginx/80_02_repoctl.conf
-# mkdir -p /home/http/mtproto/archrepo
-# cp "$PATHINSTANCE"/etc/nginx/index.html /home/http/mtproto/archrepo/index.html
-# cp "$PATHINSTANCE"/etc/nginx/autoindex.html /home/http/mtproto/archrepo/autoindex.html
-# mkdir -p /home/http/mtproto/archrepo/archive
+# sudo cp "$PATHINSTANCE"/etc/nginx/80_02_repoctl.conf /etc/nginx/sites-enabled/80_02_repoctl.conf
+# mkdir -p /home/http/archrepo
+# mkdir -p /home/http/archrepo/archive
+# cp "$PATHINSTANCE"/etc/nginx/index.html /home/http/archrepo/index.html
+# cp "$PATHINSTANCE"/etc/nginx/autoindex.html /home/http/archrepo/autoindex.html
 
 # Optional: some other panel
-# sudo cp "$PATHINSTANCE"/etc/nginx/80_03_ppanel.conf /etc/nginx/80_03_ppanel.conf
+# sudo cp "$PATHINSTANCE"/etc/nginx/80_03_ppanel.conf /etc/nginx/sites-enabled/80_03_ppanel.conf
 
 # Optional: NGINX as multiplexer OR use SSLH multiplexer below
-# sudo cp "$PATHINSTANCE"/etc/nginx/443_01_multiplexer.conf /etc/nginx/443_01_multiplexer.conf
+# sudo cp "$PATHINSTANCE"/etc/nginx/443_01_multiplexer.conf /etc/nginx/sites-enabled/443_01_multiplexer.conf
 
 sudo nginx -t && sudo systemctl enable --now nginx 
 
