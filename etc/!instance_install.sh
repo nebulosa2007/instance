@@ -65,7 +65,7 @@ sudo vnstat --add -i wg0
 
 # Nginx server
 pikaur -Sy --needed nginx-mainline
-sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
+sudo cp /etc/nginx/nginx.conf{,.backup}
 sudo cp "$PATHINSTANCE"/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 sudo mkdir -p /etc/nginx/sites-enabled/
 sudo mkdir -p /home/http/ && sudo chown "$(whoami)":"$(whoami)" /home/http/
@@ -98,10 +98,18 @@ sudo cp "$PATHINSTANCE"/etc/sslh.cfg /etc/sslh.cfg
 sudo systemctl daemon-reload
 sudo systemctl enable --now sslh-fork.service
 
+
 # Firewall
 sudo "$PATHINSTANCE"/scripts/firewall-on
 # After firewall setup
 sudo systemctl restart wg-quick@wg0
+
+
+# Install repoctl
+pikaur -Sy --needed repoctl
+sudo cp /etc/xdg/repoctl/config.toml{,.backup}
+sudo cp "$PATHINSTANCE"/etc/repoctl.toml /etc/xdg/repoctl/config.toml
+
 
 # Snapshots
 # https://wiki.archlinux.org/title/Yabsnap
@@ -112,6 +120,7 @@ pikaur -Sy --needed yabsnap
 sudo yabsnap create-config root   #for root partittion
 sudo sed -i 's/source=/source=\//' /etc/yabsnap/configs/root.conf
 sudo systemctl enable --now yabsnap.timer
+
 
 # Install update timer
 # See instructions in update/install_updatetimer.sh

@@ -1,0 +1,15 @@
+columnate = false
+color = "auto"
+quiet = false
+default_profile = "default"
+[profiles.default]
+  repo = "/home/http/archrepo/archrepo.db.tar.zst"
+  add_params = []
+  rm_params = []
+  ignore_aur = []
+  require_signature = false
+  backup = true
+  backup_dir = "archive/"
+  interactive = false
+  pre_action = ""
+  post_action = ""
