@@ -1,22 +1,30 @@
 #!/bin/env bash
 
-PUBLIC_IP=$(curl -qs "https://checkip.amazonaws.com")
-PORT=65535
-[ -x /usr/bin/nc ] && sudo pacman -Sy netcat
+publicip=$(curl -qs "https://checkip.amazonaws.com")
+port=65535
+comment="TEMPORARY FOR SSH KEY RECEIVING"
+pubfile="/tmp/key.pub"
+[ ! -x /usr/bin/nc ] && sudo pacman -Sy netcat
 
-echo " *  Openning port $PORT for a while.."
-sudo iptables -A INPUT -p tcp --dport $PORT -j ACCEPT || exit 1
+echo " *  Openning port $port for a while.."
+sudo iptables -A INPUT -p tcp --dport $port -m comment --comment "$comment" -j ACCEPT || exit 1
+
 
 echo "For sending your ssh key, you should do:
-cat \"~.ssh/id_ed25519.pub\" | nc $PUBLIC_IP $PORT"
+cat \"\$HOME/.ssh/id_ed25519.pub\" | nc -cvv $publicip $port"
 
-nc -l -vv -p $PORT > /tmp/key.pub
+nc -l -vv -p $port > "$pubfile"
 
-echo " *  Closing port $PORT"
-sudo iptables -A INPUT -p tcp --dport $PORT -j DROP || exit 3
+echo " *  Closing port $port"
+sudo iptables-save | grep -v "$comment" | sudo iptables-restore
 
-echo "Your key now is located at /tmp/key.pub:"
-cat /tmp/key.pub || exit 4
-echo "If anything looks good, so put this key to your keys:
-cat /tmp/key.pub >> ~/.ssh/authorized_keys"
-echo "Good luck!"
+if [ -f "$pubfile" ]; then
+    echo -e "
+    Your key is now located at /tmp/key.pub:
+    $(cat $pubfile)\n
+    If anything looks good, put this key to your keys:
+    cat $pubfile >> ~/.ssh/authorized_keys && rm $pubfile\n
+    Good luck!"
+else
+    echo "No received key file found! Please try again"
+fi
