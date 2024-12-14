@@ -55,7 +55,7 @@ alias Upgrade="pikaur -Syu --noedit"
 alias Ccache="pikaur -Sc"
 
 #SYSTEM MAINTAINING
-getnews () { echo -ne '\033[0;34m:: \033[0m\033[1mRequired by: '; echo -e '\033[0m'; max=$(pacman -Qqu | wc -L); for pkg in $(pacman -Qqu); do printf "%*s:%s\n" $max $pkg "$(pacman -Qi "$pkg" | grep Req | sed -e 's/Required By     : //g')" | column -c80 -s: -t -W2; done; echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 Server /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; pikaur -Syu --noedit; }
+getnews () { echo -ne '\033[0;34m:: \033[0m\033[1mRequired by: '; echo -e '\033[0m'; max=$(pacman -Qqu | wc -L); for pkg in $(pacman -Qqu); do printf "%*s:%s\n" $max $pkg "$(pacman -Qi "$pkg" | grep Req | sed -e 's/Required By     : //g')" | column -c80 -s: -t -W2; done; echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 '^[^#]*Server.*=' /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; pikaur -Syu --noedit; }
 # https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
 alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
 
