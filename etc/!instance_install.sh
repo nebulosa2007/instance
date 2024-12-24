@@ -43,7 +43,7 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 
 
 # Telegram server
-pikaur -S --needed  mtproxy-git
+paru -S --needed  mtproxy-git
 sudo cp "$PATHINSTANCE"/etc/mtproxy.conf /etc/mtproxy.conf
 sudo sed -i 's/SECRET=/SECRET='"$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null)"'/' /etc/mtproxy.conf
 sudo systemctl enable --now mtproxy mtproxy-config.timer
@@ -51,7 +51,7 @@ sudo systemctl enable --now mtproxy mtproxy-config.timer
 
 
 # Wireguard server
-pikaur -Sy --needed wireguard-ui
+paru -Sy --needed wireguard-ui
 sudo systemctl enable --now wireguard-ui
 # Read notes after install
 # IPv6 config:
@@ -64,7 +64,7 @@ sudo vnstat --add -i wg0
 
 
 # Nginx server
-pikaur -Sy --needed nginx-mainline
+paru -Sy --needed nginx-mainline
 sudo cp /etc/nginx/nginx.conf{,.backup}
 sudo cp "$PATHINSTANCE"/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 sudo mkdir -p /etc/nginx/sites-enabled/
@@ -93,7 +93,7 @@ sudo nginx -t && sudo systemctl enable --now nginx
 
 # SSLH multiplexer
 # https://wiki.archlinux.org/title/Sslh
-pikaur -Sy --needed sslh
+paru -Sy --needed sslh
 sudo cp "$PATHINSTANCE"/etc/sslh.cfg /etc/sslh.cfg
 sudo systemctl daemon-reload
 sudo systemctl enable --now sslh-fork.service
@@ -106,7 +106,7 @@ sudo systemctl restart wg-quick@wg0
 
 
 # Install repoctl
-pikaur -Sy --needed repoctl
+paru -Sy --needed repoctl
 sudo cp /etc/xdg/repoctl/config.toml{,.backup}
 sudo cp "$PATHINSTANCE"/etc/repoctl.toml /etc/xdg/repoctl/config.toml
 
@@ -116,7 +116,7 @@ sudo cp "$PATHINSTANCE"/etc/repoctl.toml /etc/xdg/repoctl/config.toml
 #For minimizing size of snapshots
 sudo rm -f /var/cache/pacman/pkg/*
 sudo sed -i 's/#CacheDir    = \/var\/cache\/pacman\/pkg\//CacheDir     = \/tmp\//' /etc/pacman.conf
-pikaur -Sy --needed yabsnap
+paru -Sy --needed yabsnap
 sudo yabsnap create-config root   #for root partittion
 sudo sed -i 's/source=/source=\//' /etc/yabsnap/configs/root.conf
 sudo systemctl enable --now yabsnap.timer

@@ -1,6 +1,6 @@
 #!/bin/env bash
 
-# pikaur -Syu --needed vnstat netcat lv_sensors
+# sudo pacman -Syu --needed vnstat netcat lv_sensors
 [ -z "$PATHINSTANCE" ] && { echo "Please set $PATHINSTANCE env variable!"; exit 1; }
 
 if [ "$1" == "estimated" ]

@@ -1,5 +1,5 @@
 # Program packages:
-# pikaur -Syu --needed bash_completion fzf git tmux
+# paru -Syu --needed bash_completion fzf git tmux
 
 case $- in
   *i*)
