@@ -86,6 +86,7 @@ cp "$PATHINSTANCE"/etc/nginx/mtpgen.html /home/http/mtproto/index.html
 # sudo cp "$PATHINSTANCE"/etc/nginx/80_03_ppanel.conf /etc/nginx/sites-enabled/80_03_ppanel.conf
 
 # Optional: NGINX as multiplexer OR use SSLH multiplexer below
+# paru -Sy --needed nginx-mainline-mod-stream
 # sudo cp "$PATHINSTANCE"/etc/nginx/443_01_multiplexer.conf /etc/nginx/sites-enabled/443_01_multiplexer.conf
 
 sudo nginx -t && sudo systemctl enable --now nginx 
