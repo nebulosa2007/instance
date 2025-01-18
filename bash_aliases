@@ -70,12 +70,21 @@ getnews () {
     mirror=$(grep -m1 '^[^#]*Server.*=' /etc/pacman.d/mirrorlist | cut  -d'/' -f3)
     echo -ne '\033[0;34m:: \033[0m\033[1mMirror:'; echo -n " $mirror"; echo -e '\033[0m';
     # Arch news block
-    NEWS=$HOME/.cache/archlinux.news; [ -z "$NEWS" ] || touch "$NEWS"
-    latestnews=$(curl -s https://archlinux.org/feeds/news/ | grep -Eo "<lastBuildDate>.*</title>" | sed -e 's/<[^>]*>/ /g;s/+0000  //g')
-    if [ "$(cat "$NEWS")" != "$latestnews" ]
+    NEWS=$HOME/.cache/archlinux.news; [ -r "$NEWS" ] || touch "$NEWS"
+    rss_url="https://archlinux.org/feeds/news/"
+    last_modified=$(curl -sIm3 "$rss_url" | grep -oP "^last-modified: \K[0-9A-Za-z,: ]+")
+    if [ -n "$last_modified" ]
     then
-        echo "$latestnews" > "$NEWS"
-        echo -e '\033[0;34m:: \033[0m\033[1mLatest news...\033[0m'; echo "$latestnews"
+        if [ "$(grep -c "$last_modified" "$NEWS")" -eq 0 ]
+        then
+            latestnews=$(curl -sm3 "$rss_url" | grep -Eo "<lastBuildDate>.*</title>" | sed -e 's/<[^>]*>/ /g;s/+0000  /GMT /g')
+            if [ -n "$latestnews" ]
+            then
+                echo "$latestnews" > "$NEWS"
+                echo -e '\033[0;34m:: \033[0m\033[1mLatest news...\033[0m'
+                echo "    $latestnews"
+            fi
+        fi
     fi
     # Working with updates
     paru -Syu
