@@ -55,7 +55,31 @@ alias Upgrade="paru -Syu"
 alias Ccache="paru -Sc"
 
 #SYSTEM MAINTAINING
-getnews () { echo -ne '\033[0;34m:: \033[0m\033[1mRequired by: '; echo -e '\033[0m'; max=$(pacman -Qqu | wc -L); for pkg in $(pacman -Qqu); do printf "%*s:%s\n" $max $pkg "$(pacman -Qi "$pkg" | grep Req | sed -e 's/Required By     : //g')" | column -c80 -s: -t -W2; done; echo; echo -ne '\033[0;34m:: \033[0m\033[1mMirror: '; grep -m1 '^[^#]*Server.*=' /etc/pacman.d/mirrorlist | cut  -d'/' -f3; echo -e '\033[0m'; paru -Syu; }
+getnews () {
+    # Required by block
+    max=$(pacman -Qqu | wc -L)
+    if [ "$max" -gt 0 ]
+    then
+        echo -e '\033[0;34m:: \033[0m\033[1mRequired by: \033[0m'
+        for pkg in $(pacman -Qqu)
+        do
+            printf "%*s:%s\n" "$max" "$pkg" "$(pacman -Qi "$pkg" | grep Req | sed -e 's/Required By     : //g')" | column -c80 -s: -t -W2
+        done
+    fi
+    # Mirror block
+    mirror=$(grep -m1 '^[^#]*Server.*=' /etc/pacman.d/mirrorlist | cut  -d'/' -f3)
+    echo -ne '\033[0;34m:: \033[0m\033[1mMirror:'; echo -n " $mirror"; echo -e '\033[0m';
+    # Arch news block
+    NEWS=$HOME/.cache/archlinux.news; [ -z "$NEWS" ] || touch "$NEWS"
+    latestnews=$(curl -s https://archlinux.org/feeds/news/ | grep -Eo "<lastBuildDate>.*</title>" | sed -e 's/<[^>]*>/ /g;s/+0000  //g')
+    if [ "$(cat "$NEWS")" != "$latestnews" ]
+    then
+        echo "$latestnews" > "$NEWS"
+        echo -e '\033[0;34m:: \033[0m\033[1mLatest news...\033[0m'; echo "$latestnews"
+    fi
+    # Working with updates
+    paru -Syu
+}
 # https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
 alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
 
