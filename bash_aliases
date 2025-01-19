@@ -88,24 +88,41 @@ alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf -
 
 ## INSTANCE SCRIPTS ##
 if [ -n "$PATHINSTANCE" ]; then
-     INSTANCESCRIPTWAY="$PATHINSTANCE/scripts"
-     alias ins="cd $PATHINSTANCE"
-     alias sc='echo -e "Y\nY" | $INSTANCESCRIPTWAY/cleansystem.sh'
-     alias packages="$INSTANCESCRIPTWAY/packages.sh"
-     alias age="$INSTANCESCRIPTWAY/age.sh"
-     alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
-     alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
-     alias aurupd="$INSTANCESCRIPTWAY/aurupdates.sh"
+    INSTANCESCRIPTWAY="$PATHINSTANCE/scripts"
+    alias ins="cd $PATHINSTANCE"
+    alias sc='echo -e "Y\nY" | $INSTANCESCRIPTWAY/cleansystem.sh'
+    alias packages="$INSTANCESCRIPTWAY/packages.sh"
+    alias age="$INSTANCESCRIPTWAY/age.sh"
+    alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
+    alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
+    alias aurupd="$INSTANCESCRIPTWAY/aurupdates.sh"
 
-     if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
-          alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview '$INSTANCESCRIPTWAY/snaplist.sh {2}'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
-          alias uisorescue="$INSTANCESCRIPTWAY/uisorescue.sh"
-     else
-          alias {snapctl,uisorescue}="echo 'This alias works with btrfs partitions only'"
-     fi
+    if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
+        alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview '$INSTANCESCRIPTWAY/snaplist.sh {2}'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
+        alias uisorescue="$INSTANCESCRIPTWAY/uisorescue.sh"
+    else
+        alias {snapctl,uisorescue}="echo 'This alias works with btrfs partitions only'"
+    fi
 
-     ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
-     if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
-          source "$INSTANCESCRIPTWAY/sensitive.sh"
-     fi
+    ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
+    if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
+        source "$INSTANCESCRIPTWAY/sensitive.sh"
+    fi
+
+    # FOR DEVTOOLS, SET e.g.:
+    # checkcustomrepository=yes
+    # CONF=/usr/share/devtools/pacman.conf.d/extra.conf
+    # repositoryname=myrepo
+    # server=http://mydomain.ip or file:///home/custompkgs
+    # IN sensitive.sh file above
+    if [ -n "$checkcustomrepository" ]; then
+        pkgctl () {
+            if [ -n "$checkcustomrepository" ] && ! grep -q "$repositoryname" "$CONF"; then
+                echo "Please update devtools config file and add custom repository by running: add_custom_repository"
+            else
+                /usr/bin/pkgctl "$@"
+            fi
+        }
+        add_custom_repository () { printf "\n[%s]\nSigLevel = Never\nServer = %s/\$repo/os/\$arch\n" "$repositoryname" "$server" | sudo tee -a $CONF; }
+    fi
 fi
