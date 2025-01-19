@@ -37,6 +37,7 @@ alias boottime="systemd-analyze && systemd-analyze blame --no-pager"
 ## SHORTS: EXTERNAL PROGRAMS
 alias ls="lsd --group-directories-first -F --icon-theme unicode"
 alias 0x0="curl -4 -F file=@- https://0x0.st"
+alias tb="(exec 3<>/dev/tcp/termbin.com/9999; cat >&3; cat <&3; exec 3<&-)"
 alias bugspaces="grep -RnE ' $' 2>/dev/null"
 # https://wiki.archlinux.org/title/Reflector
 alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
@@ -117,6 +118,7 @@ if [ -n "$PATHINSTANCE" ]; then
     # repositoryname=myrepo
     # server=http://mydomain.ip or file:///home/custompkgs
     # IN sensitive.sh file above
+    # https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
     if [ -n "$checkcustomrepository" ]; then
         pkgctl () {
             if [ -n "$checkcustomrepository" ] && ! grep -q "${repositoryname:?}" "${CONF:?}"; then
