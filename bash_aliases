@@ -1,5 +1,5 @@
 # Program packages:
-# paru -Syu --needed lsd mc reflector expac fzf bash-completion etc-update less jq
+# paru -Syu --needed lsd mc reflector expac fzf bash-completion etc-update less jq bat
 
 # https://wiki.archlinux.org/title/Bash#Aliases
 ## ALIASES MANAGEMENT
@@ -24,6 +24,8 @@ alias cp="cp -iv"
 alias mv="mv -iv"
 alias rm="rm -iv"
 alias grep="grep --color=auto"
+alias less="bat -p"
+alias cat="bat -pp"
 
 ## SHORTS
 alias openports="sudo ss -ntulp"
