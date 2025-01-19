@@ -1,4 +1,5 @@
-# Program packages:
+#!/usr/bin/env bash
+# Install packages:
 # paru -Syu --needed lsd mc reflector expac fzf bash-completion etc-update less jq bat
 
 # https://wiki.archlinux.org/title/Bash#Aliases
@@ -42,16 +43,16 @@ alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pa
 
 ## OTHER FUNCTIONS
 backup  () { cp "$1"{,.backup}; }
-sbackup () { sudo cp "$1"{,.backup}; }
+sbackup () { sudo /usr/bin/cp -iv "$1"{,.backup}; }
 cd      () { builtin cd "$@" && ls; }
 wait3sec() { echo -n "$1"; for i in . . . ; do echo -n $i; sleep 1; done; echo; }
 line    () { l=$1"p"; shift; sed -n "$l" "$@"; }
 
 ## PARU MANAGEMENT
 # https://wiki.archlinux.org/title/Fzf#Pacman
-Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)> <only>" && return; [ $# -eq 2 ] && [ $2 == "only" ] && { paru -S --needed $1; return; }; if [ $# -eq 1 ]; then np=$(paru -Ssq $1 | sort -u | fzf -q $1 -i -m --reverse --preview 'paru -Sii {1}' --preview-window right:60%:wrap); [ -n "$np" ] && paru -S --needed $np; else paru -S --needed $@; fi; }
+Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)> <only>" && return; [ $# -eq 2 ] && [ "$2" == "only" ] && { paru -S --needed "$1"; return; }; if [ $# -eq 1 ]; then np=$(paru -Ssq "$1" | sort -u | fzf -q "$1" -i -m --reverse --preview 'paru -Sii {1}' --preview-window right:60%:wrap); [ -n "$np" ] && paru -S --needed "$np"; else paru -S --needed "$@"; fi; }
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Packages_and_dependencies
-Purge () { if [ "$#" -eq 0 ]; then np=$(comm -23 <((pacman -Qqen; pacman -Qqm)| sort) <((expac -l '\n' '%E' base-devel; expac -l '\n' '%E' base) | sort -u) | sort -u | fzf -i -m --reverse --preview 'paru -Qii {1}' --preview-window right:80%:wrap); [ -n "$np" ] && paru -Rsc $np; else paru -Rsc $@; fi; }
+Purge () { if [ "$#" -eq 0 ]; then np=$(comm -23 <((pacman -Qqen; pacman -Qqm)| sort) <((expac -l '\n' '%E' base-devel; expac -l '\n' '%E' base) | sort -u) | sort -u | fzf -i -m --reverse --preview 'paru -Qii {1}' --preview-window right:80%:wrap); [ -n "$np" ] && paru -Rsc "$np"; else paru -Rsc "$@"; fi; }
 alias Update="paru -Su"
 alias Upgrade="paru -Syu"
 alias Ccache="paru -Sc"
@@ -87,25 +88,26 @@ alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf -
 
 
 ## INSTANCE SCRIPTS ##
+# PATHINSTANCE SHOULD BE SET IN /etc/profile/instance.sh
 if [ -n "$PATHINSTANCE" ]; then
     INSTANCESCRIPTWAY="$PATHINSTANCE/scripts"
-    alias ins="cd $PATHINSTANCE"
+    alias ins='cd $PATHINSTANCE'
     alias sc='echo -e "Y\nY" | $INSTANCESCRIPTWAY/cleansystem.sh'
-    alias packages="$INSTANCESCRIPTWAY/packages.sh"
-    alias age="$INSTANCESCRIPTWAY/age.sh"
-    alias ustat="watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh"
-    alias topmem="$INSTANCESCRIPTWAY/topmem.sh"
-    alias aurupd="$INSTANCESCRIPTWAY/aurupdates.sh"
+    alias packages='$INSTANCESCRIPTWAY/packages.sh'
+    alias age='$INSTANCESCRIPTWAY/age.sh'
+    alias ustat='watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh'
+    alias topmem='$INSTANCESCRIPTWAY/topmem.sh'
+    alias aurupd='$INSTANCESCRIPTWAY/aurupdates.sh'
 
     if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
-        alias snapctl="yabsnap list-json | jq -r '.trigger+\" \"+.file.timestamp' | fzf -m --reverse --preview '$INSTANCESCRIPTWAY/snaplist.sh {2}'  --preview-window right:70%:wrap | xargs -I{} echo {} | cut -d' ' -f2 | xargs -I{} sudo yabsnap delete {}"
-        alias uisorescue="$INSTANCESCRIPTWAY/uisorescue.sh"
+        alias uisorescue='$INSTANCESCRIPTWAY/uisorescue.sh'
     else
-        alias {snapctl,uisorescue}="echo 'This alias works with btrfs partitions only'"
+        alias uisorescue="echo 'This alias works with btrfs partitions only'"
     fi
 
     ## SENSITIVE DATAS: LOGINS, ADDRESSES ETC.
     if [ -f "$INSTANCESCRIPTWAY/sensitive.sh" ]; then
+        # shellcheck source=/dev/null
         source "$INSTANCESCRIPTWAY/sensitive.sh"
     fi
 
@@ -117,12 +119,12 @@ if [ -n "$PATHINSTANCE" ]; then
     # IN sensitive.sh file above
     if [ -n "$checkcustomrepository" ]; then
         pkgctl () {
-            if [ -n "$checkcustomrepository" ] && ! grep -q "$repositoryname" "$CONF"; then
+            if [ -n "$checkcustomrepository" ] && ! grep -q "${repositoryname:?}" "${CONF:?}"; then
                 echo "Please update devtools config file and add custom repository by running: add_custom_repository"
             else
                 /usr/bin/pkgctl "$@"
             fi
         }
-        add_custom_repository () { printf "\n[%s]\nSigLevel = Never\nServer = %s/\$repo/os/\$arch\n" "$repositoryname" "$server" | sudo tee -a $CONF; }
+        add_custom_repository () { printf "\n[%s]\nSigLevel = Never\nServer = %s/\$repo/os/\$arch\n" "${repositoryname:?}" "${server:?}" | sudo tee -a "${CONF:?}"; }
     fi
 fi
