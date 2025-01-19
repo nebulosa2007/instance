@@ -51,9 +51,9 @@ line    () { l=$1"p"; shift; sed -n "$l" "$@"; }
 
 ## PARU MANAGEMENT
 # https://wiki.archlinux.org/title/Fzf#Pacman
-Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)> <only>" && return; [ $# -eq 2 ] && [ "$2" == "only" ] && { paru -S --needed "$1"; return; }; if [ $# -eq 1 ]; then np=$(paru -Ssq "$1" | sort -u | fzf -q "$1" -i -m --reverse --preview 'paru -Sii {1}' --preview-window right:60%:wrap); [ -n "$np" ] && paru -S --needed "$np"; else paru -S --needed "$@"; fi; }
+Install () { [ "$#" -eq 0 ] && echo "Usage: Install <keyword or package(s)> <only>" && return; [ $# -eq 2 ] && [ "$2" == "only" ] && { paru -S --needed "$1"; return; }; if [ $# -eq 1 ]; then np=$(paru -Ssq "$1" | sort -u | fzf -q "$1" -i -m --reverse --preview 'paru -Sii {1}' --preview-window right:60%:wrap); [ -n "$np" ] && paru -S --needed $np ; else paru -S --needed "$@"; fi; }
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Packages_and_dependencies
-Purge () { if [ "$#" -eq 0 ]; then np=$(comm -23 <((pacman -Qqen; pacman -Qqm)| sort) <((expac -l '\n' '%E' base-devel; expac -l '\n' '%E' base) | sort -u) | sort -u | fzf -i -m --reverse --preview 'paru -Qii {1}' --preview-window right:80%:wrap); [ -n "$np" ] && paru -Rsc "$np"; else paru -Rsc "$@"; fi; }
+Purge () { if [ "$#" -eq 0 ]; then np=$(comm -23 <((pacman -Qqen; pacman -Qqm)| sort) <((expac -l '\n' '%E' base-devel; expac -l '\n' '%E' base) | sort -u) | sort -u | fzf -i -m --reverse --preview 'paru -Qii {1}' --preview-window right:80%:wrap); [ -n "$np" ] && paru -Rsc $np; else paru -Rsc "$@"; fi; }
 alias Update="paru -Su"
 alias Upgrade="paru -Syu"
 alias Ccache="paru -Sc"
