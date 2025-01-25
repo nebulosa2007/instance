@@ -72,7 +72,11 @@ SYSTEMD_LESS=FRXMK
 red='\033[0;31m';
 yellow='\033[1;33m';
 green='\033[0;32m';
+blue='\033[0;34m';
 nc='\033[0m';
+
+## Adding date and time of execution in bash history
+export HISTTIMEFORMAT=`echo -e "${blue}%F %T ${nc}"`
 
 ## Quick server status for SSH conection
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
