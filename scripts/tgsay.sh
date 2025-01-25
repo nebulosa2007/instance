@@ -1,9 +1,11 @@
 #!/bin/env bash
-#shellcheck disable=1091
 
-[ -z "$PATHINSTANCE" ] && source /etc/profile.d/instance.sh
-[ -z "$PATHINSTANCE" ] && { echo "Please set \$PATHINSTANCE env variable!"; exit 1; }
-source "$PATHINSTANCE"/scripts/sensitive.sh
+# shellcheck source=/dev/null
+source /etc/profile.d/instance.sh 2>/dev/null
+: "${PATHINSTANCE:?Please set \$PATHINSTANCE env variable!}"
+
+# shellcheck source=/dev/null
+source "$PATHINSTANCE"/scripts/sensitive.sh 2>/dev/null
 
 if [ -z "$TG_BOT_CHAT_ID" ]; then
     echo "Please, define TG_BOT_CHAT_ID and TG_BOT_API_TOKEN first! See \"chat\":{\"id\":xxxxxxx string below from request: curl https://api.telegram.org/bot$TG_BOT_API_TOKEN/getUpdates"

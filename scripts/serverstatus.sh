@@ -1,42 +1,31 @@
 #!/bin/env bash
 
-# sudo pacman -Syu --needed vnstat netcat lv_sensors
-[ -z "$PATHINSTANCE" ] && { echo "Please set $PATHINSTANCE env variable!"; exit 1; }
+# sudo pacman -Syu --needed vnstat
+: "${PATHINSTANCE:?Please set \$PATHINSTANCE env variable!}"
 
-if [ "$1" == "estimated" ]
-then
-        [ -x "$(command -v vnstat)"       ] && { echo -n "Expected month traffic: "; vnstat -m 1 | grep estimated | cut -d"|" -f3 | sed 's/  //;s/\n\r//'; echo "Limit is: ""$LIMIT"; }
+show_estimated_traffic() {
+    if command -v vnstat &>/dev/null; then
+        echo -n "Expected month traffic: "
+        vnstat -m 1 | sed -n '/estimated/ s/.*| *\(.*\)|.*/\1/p'
+        echo "Limit is: ${LIMIT:-"not set"}"
+    fi
+}
+
+if [ "$1" == "estimated" ]; then
+    show_estimated_traffic
 else
-        uptime
-        if [ "$(who | wc -l)" -gt 0 ]
-        then
-                echo
-                echo Logins:
-                who -H
-        fi
-        echo
-        free -m
-        echo
-        df -h | grep -E "$( [ "$(mount | grep -Po '(?<= on \/ type )(\S+)')" == "btrfs" ] && echo '/$' || echo '/[s|v]da' )"
-        echo
-        COUNTUPD=$(pacman -Qu | grep -cv "ignored")
-        if [ "$COUNTUPD" -gt 0 ]
-        then
-                echo "Available updates:"
-                if [ "$COUNTUPD" -lt 16 ]
-                then
-                     cat /var/log/updpackages.log
-                fi
-                echo "$COUNTUPD total"
-                echo
-        fi
-        echo
-        echo "Total packages: $(/usr/bin/pacman -Q | wc -l)"
-        echo
-        [ -x "$(command -v vnstat)"         ] && { vnstat --oneline | cut -d";" -f 8,9,10,11| sed 's/;/   RX: /;s/;/   TX: /;s/;/   Total: /'; echo -n "Expected month traffic: "; vnstat -m 1 | grep estimated | cut -d"|" -f3 | sed 's/  //'; echo; }
-        [ -x "$(command -v nc)"             ] && { nc localhost 7634 |sed 's/|//m' | sed 's/||/ \n/g' | awk -F'|' '{print $1 " " $3 " " $4}'; }
-        [ -x "$(command -v sensors)"        ] && { sensors | grep -E '(temp1|fan1)' | awk '{print $1 " " $2}'; }
-        [ -x "$(command -v nvidia-smi)"     ] && { nvidia-smi -q -d temperature | grep Current | awk '{print $1 " " $5 " " $6}'; }
-        [ -f "$PATHINSTANCE"/scripts/age.sh ] && source "$PATHINSTANCE"/scripts/age.sh
-        echo
+    uptime; echo
+    [ "$(who | wc -l)" -gt 0 ] && echo "Logins: $(who -H)"; echo
+    free -m; echo
+    df -h | grep -E "$(mount | grep -q ' on / type btrfs' && echo '/$' || echo '/[s|v]da')"; echo
+    COUNTUPD=$(pacman -Qu | grep -cv "ignored")
+    if [ "$COUNTUPD" -gt 0 ]; then
+        echo "Available updates:"
+        [ "$COUNTUPD" -lt 16 ] && grep -v "<b>" /var/log/updpackages.log
+        echo "$COUNTUPD total"; echo
+    fi
+    echo "Total packages: $(pacman -Q | wc -l)"; echo
+    command -v vnstat &>/dev/null && vnstat --oneline | sed 's/^\([^;]*;\)\{7\}//;s/;/   RX: /;s/;/   TX: /;s/;/   Total: /;s/;.*//'
+    show_estimated_traffic; echo
+    [ -f "$PATHINSTANCE"/scripts/age.sh ] && "$PATHINSTANCE"/scripts/age.sh
 fi

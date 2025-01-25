@@ -31,7 +31,6 @@ echo '----------------'
 echo '3. Text Processing:'
 echo '   grep <pattern> <file> - Search text'
 echo '   sed -i "s/old/new/g" <file> - Replace text'
-echo '   awk "{print $1}" <file> - Process columns'
 echo '----------------'
 echo '4. System Info:'
 echo '   uname -a        - Show system info'
@@ -41,14 +40,13 @@ echo '   top             - Process monitor'
 echo '----------------'
 echo '5. Scripting:'
 echo '   #!/bin/bash     - Shebang for Bash scripts'
-echo '   $1, $2, ...     - Script arguments'
 echo '   $#              - Number of arguments'
 echo '   $?              - Exit status of last command'
 echo '   if [ ]; then    - Conditional statement'
 echo '   for i in; do    - Loop'
 echo '   while [ ]; do   - While loop'
 echo '----------------'
-echo 'Press any key to exit...'
 
-read -srn1
+# Show cheat sheet while pressing
+read -rsn1 -t 0.7 && while read -rsn1 -t 0.1; do :; done
 exit

@@ -37,7 +37,7 @@ menuentry 'Boot from archlinux.iso' {
 }
 EOF
     if [ "$(wc -l < /etc/grub.d/40_custom)" -eq 5 ]; then
-       cat /tmp/40_custom | sudo tee -a /etc/grub.d/40_custom > /dev/null && sudo grub-mkconfig -o /boot/grub/grub.cfg
+       sudo cat /tmp/40_custom | sudo tee -a /etc/grub.d/40_custom > /dev/null && sudo grub-mkconfig -o /boot/grub/grub.cfg
        find /tmp/40_custom -delete
     fi
 }
@@ -50,7 +50,7 @@ function checkiso(){
 
 if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$subvol)" == "" ]; then
     sudo mount "$rootdrive" /mnt
-    pushd "/mnt" > /dev/null && sudo btrfs subvolume create $subvol && popd > /dev/null
+    pushd "/mnt" > /dev/null || exit 4 && sudo btrfs subvolume create $subvol && popd > /dev/null || exit 4
     sudo umount /mnt && writetogrub || exit 1
 fi
 

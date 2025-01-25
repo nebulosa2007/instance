@@ -89,7 +89,7 @@ cp "$PATHINSTANCE"/etc/nginx/mtpgen.html /home/http/mtproto/index.html
 # paru -Sy --needed nginx-mainline-mod-stream
 # sudo cp "$PATHINSTANCE"/etc/nginx/443_01_multiplexer.conf /etc/nginx/sites-enabled/443_01_multiplexer.conf
 
-sudo nginx -t && sudo systemctl enable --now nginx 
+sudo nginx -t && sudo systemctl enable --now nginx
 
 
 # SSLH multiplexer

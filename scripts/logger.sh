@@ -16,10 +16,10 @@ echo "$JRNLLOG" | sort | uniq -u > "$NOWLOG"
 
 NOWDIFF=$(diff "$OLDLOG" "$NOWLOG"  | grep -E '^>')
 
-if [ "$NOWDIFF"  != "" ]
+if [ "$NOWDIFF" ]
 then
     echo -n " Changes in system journal:"
-    echo "$NOWDIFF" | tr ">" "\n" | sed -E 's/\[[0-9]+\]//g;s/ *$//g' | sort | uniq
+    echo "$NOWDIFF" | tr ">" "\n" | sed -E 's/\[[0-9]+\]//g; s/ *$//g' | sort -u
     #cp $OLDLOG $OLDLOG.backup
-    echo "$JRNLLOG" | sort |uniq -u > "$OLDLOG"
+    echo "$JRNLLOG" | sort | uniq -u > "$OLDLOG"
 fi

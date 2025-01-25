@@ -1,3 +1,5 @@
+#!/bin/env bash
+
 # Program packages:
 # paru -Syu --needed bash_completion fzf git tmux
 
@@ -5,19 +7,23 @@ case $- in
   *i*)
 # https://wiki.archlinux.org/title/Bash#Common_programs_and_options
 if [ -f /usr/share/bash-completion/bash_completion ]; then
+    # shellcheck source=/dev/null
     . /usr/share/bash-completion/bash_completion
 fi
 
 # https://wiki.archlinux.org/title/Fzf#Bash
 if [ -f /usr/share/fzf/completion.bash ]; then
+    # shellcheck source=/dev/null
     . /usr/share/fzf/completion.bash
 fi
 if [ -f /usr/share/fzf/key-bindings.bash ]; then
+    # shellcheck source=/dev/null
     . /usr/share/fzf/key-bindings.bash
 fi
 
 # https://wiki.archlinux.org/title/Git#Bash_completion
 if [ -f /usr/share/git/completion/git-completion.bash ]; then
+    # shellcheck source=/dev/null
     . /usr/share/git/completion/git-completion.bash
 fi
 
@@ -36,6 +42,7 @@ if [ -f /usr/share/git/completion/git-prompt.sh ]; then
     export GIT_PS1_STATESEPARATOR=" "       # separator between branch name and state symbols
     export GIT_PS1_DESCRIBE_STYLE="default" # show commit relative to tag or branch, when detached HEAD
     export GIT_PS1_SHOWCOLORHINTS=on        # any nonempty value. display in color
+    # shellcheck source=/dev/null
     . /usr/share/git/completion/git-prompt.sh
 fi
 
@@ -46,7 +53,8 @@ $(__git_ps1 " (%s)") \
 $ '
 
 if [ -f ~/.bash_aliases ]; then
-        . ~/.bash_aliases
+    # shellcheck source=/dev/null
+    . ~/.bash_aliases
 fi
 
 # https://wiki.archlinux.org/title/bash#History
@@ -65,6 +73,7 @@ shopt -s autocd
 shopt -s checkwinsize
 
 # https://wiki.archlinux.org/title/Systemd/Journal#Filtering_output
+# shellcheck disable=SC2034
 SYSTEMD_LESS=FRXMK
 
 # https://wiki.archlinux.org/title/Bash/Prompt_customization#Colors
@@ -76,7 +85,8 @@ blue='\033[0;34m';
 nc='\033[0m';
 
 ## Adding date and time of execution in bash history
-export HISTTIMEFORMAT=`echo -e "${blue}%F %T ${nc}"`
+HISTTIMEFORMAT=$(echo -e "${blue}%F %T ${nc}")
+export HISTTIMEFORMAT
 
 ## Quick server status for SSH conection
 if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
@@ -118,7 +128,8 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
 
     if [ -f "$PATHINSTANCE"/scripts/cheatsheet.sh ]; then
         # Show a cheat sheet on CTRL+h press
-        bind -x '"\C-h":"$PATHINSTANCE/scripts/cheatsheet.sh"'
+        # shellcheck disable=SC2016
+        bind -x '"\C-h": "$PATHINSTANCE/scripts/cheatsheet.sh"'
     fi
 fi
 
@@ -126,7 +137,7 @@ fi
 if [ -n "$SSH_CLIENT" ]; then
     if tmux has-session -t 0 &>/dev/null && [ -z "$TMUX" ]; then
         echo -ne "\n${yellow}Attaching to an existing tmux session"
-        for i in {1..3}; do echo -n "."; sleep 1; done;  echo -e "${nc}"
+        for i in . . .; do echo -n $i; sleep 1; done; echo -e "${nc}"
         tmux attach-session -t 0
     fi
 fi
