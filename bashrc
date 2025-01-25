@@ -115,6 +115,11 @@ if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
         echo -ne "\n";
         "$PATHINSTANCE"/scripts/logger.sh
     fi
+
+    if [ -f "$PATHINSTANCE"/scripts/cheatsheet.sh ]; then
+        # Show a cheat sheet on CTRL+h press
+        bind -x '"\C-h":"$PATHINSTANCE/scripts/cheatsheet.sh"'
+    fi
 fi
 
 # Check if the tmux session exists, discarding output (zero for success, non-zero for failure)
