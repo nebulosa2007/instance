@@ -31,7 +31,7 @@ sudo find /var/log -type f -regex ".*\.[0-9]$" -delete 2> /dev/null
 if command -v btrfs &>/dev/null; then
   sudo btrfs scrub start /
   for i in . . . . .; do echo -n $i; sleep 1; done
-  while sudo btrfs scrub status / | grep 'running'; do echo -n "." ; sleep 1; done; echo
+  while sudo btrfs scrub status / | grep -q 'running'; do echo -n "." ; sleep 1; done; echo
   sudo btrfs scrub status /
 fi
 df -h | grep -E "$(mount | grep -q ' on / type btrfs' && echo '/$' || echo '/[s|v]da')"
