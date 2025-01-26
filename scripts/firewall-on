@@ -90,7 +90,7 @@ ipv6gateway=$(ip -6 route | grep -Pom1 '^default via \K\S+')
 
 if [ "$ipv6gateway" ]; then
     echo " * SAVING RULES for iptables v6"
-    cat <<EOF >/etc/iptables/ip6tables.rules
+    sed 's/^ *//' <<EOF >/etc/iptables/ip6tables.rules
         *raw
         :PREROUTING ACCEPT [0:0]
         :OUTPUT ACCEPT [22:2432]
@@ -123,7 +123,6 @@ if [ "$ipv6gateway" ]; then
         -A FORWARD -j REJECT
         COMMIT
 EOF
-    sed 's/ *//' -i /etc/iptables/ip6tables.rules
 
     echo " * Setting ICMPv6 Neighbor Discovery Protocol"
     echo "   Default IPv6 gateway is:" "$ipv6gateway"
