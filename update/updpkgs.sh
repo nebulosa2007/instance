@@ -53,6 +53,6 @@ $total total on <b>$(uname -n)</b>"
         fi
 
         ## Bar notifer: WAYBAR MODULE
-        pgrep waybar &>/dev/null && pkill -RTMIN+9 waybar
+        pgrep waybar &>/dev/null && pkill -RTMIN+9 waybar || :
     fi
 fi
