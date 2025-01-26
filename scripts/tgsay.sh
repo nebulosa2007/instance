@@ -7,10 +7,7 @@ source /etc/profile.d/instance.sh 2>/dev/null
 # shellcheck source=/dev/null
 source "$PATHINSTANCE"/scripts/sensitive.sh 2>/dev/null
 
-if [ -z "$TG_BOT_CHAT_ID" ]; then
-    echo "Please, define TG_BOT_CHAT_ID and TG_BOT_API_TOKEN first! See \"chat\":{\"id\":xxxxxxx string below from request: curl https://api.telegram.org/bot$TG_BOT_API_TOKEN/getUpdates"
-    exit 1
-fi
+: "${TG_BOT_CHAT_ID:?Please, define TG_BOT_CHAT_ID and TG_BOT_API_TOKEN first! To get TG_BOT_CHAT_ID, run the following command and look for the \"chat\":{\"id\":xxxxxxx string: curl -s https://api.telegram.org/bot$TG_BOT_API_TOKEN/getUpdates}"
 
 MSG=$(echo "$@" | tr '\n' '[' | sed 's/ /%20/g;s/\[/%0A/g;s/\]/%5D/g;s/+/%2B/g') #Urlencoding some symbols for curl
 

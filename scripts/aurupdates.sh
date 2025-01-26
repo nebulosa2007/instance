@@ -24,24 +24,24 @@ ${underline}Modes${nounderline}:
 "
 }
 
-function cleanfolder (){
+function cleanfolder() {
     if [ -n "$clean" ]; then
         [ -z "$lessinfo" ] && echo -e "\nCleaning cache..."
         find "$folder" -delete
     fi
 }
 
-function updaterepo (){
+function updaterepo() {
     [ ! -d "$folder" ] && mkdir "$folder"
 
-    pushd "$folder" > /dev/null || exit 1
-    : > build-order.txt
+    pushd "$folder" >/dev/null || exit 1
+    : >build-order.txt
     repoctl down -ul -o build-order.txt 2>/dev/null
-    mapfile -t buildorder < build-order.txt
-    popd > /dev/null || exit 1
+    mapfile -t buildorder <build-order.txt
+    popd >/dev/null || exit 1
 }
 
-function checkaurgit (){
+function checkaurgit() {
 
     if [ "$1" == "repoctl" ]; then
         mapfile -t gitpackages < <(repoctl list | grep "git")
@@ -53,7 +53,7 @@ function checkaurgit (){
 
     [ ! -d "$folder" ] && mkdir "$folder"
 
-    pushd "$folder" > /dev/null || exit 1
+    pushd "$folder" >/dev/null || exit 1
 
     for index in ${!gitpackages[*]}; do
         gitpackage=${gitpackages[$index]}
@@ -61,20 +61,20 @@ function checkaurgit (){
 
         [ -z "$lessinfo" ] && echo -e "\nChecking package: $gitpackage"
 
-        [ ! -d "$gitpackage" ] && git clone --quiet "https://aur.archlinux.org/$gitpackage.git" 2> /dev/null
+        [ ! -d "$gitpackage" ] && git clone --quiet "https://aur.archlinux.org/$gitpackage.git" 2>/dev/null
         builtin cd "$gitpackage" || exit 2
         mapfile -t giturl < <(grep -Pom1 '(?<=git\+)http.*' .SRCINFO | sed 's|#branch=| -b |')
         # shellcheck disable=SC2068
-        [ ! -d "${gitpackage%-git}" ] && git clone --quiet ${giturl[@]} "${gitpackage%-git}" 2> /dev/null
+        [ ! -d "${gitpackage%-git}" ] && git clone --quiet ${giturl[@]} "${gitpackage%-git}" 2>/dev/null
 
         builtin cd "${gitpackage%-git}" || exit 3
         git pull --quiet
 
         gitversion=$(
-            set -euo pipefail;
-            git describe --long --tags --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^ver.//;s/^v//' \
-         || printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-            )
+            set -euo pipefail
+            git describe --long --tags --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^ver.//;s/^v//' ||
+                printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+        )
 
         if [[ ! "$gitpackageversion" =~ ${gitversion: -6} ]]; then
             echo "$gitpackage ${gitpackageversion%-*} -> $gitversion"
@@ -85,29 +85,32 @@ function checkaurgit (){
         fi
         builtin cd "$folder" || exit 2
     done
-    popd > /dev/null || exit 1
+    popd >/dev/null || exit 1
 }
 
-function addtopero (){
-if [ -x /usr/bin/repoctl ]; then
-    #read -n 1 -p "Add package to repository? [Y/n] " -r reply
-    #[ "$reply" != "" ] && echo
-    #if [ "$reply" = "${reply#[Nn]}" ]; then
+function addtopero() {
+    if [ -x /usr/bin/repoctl ]; then
+        #read -n 1 -p "Add package to repository? [Y/n] " -r reply
+        #[ "$reply" != "" ] && echo
+        #if [ "$reply" = "${reply#[Nn]}" ]; then
         find ! -name '*debug*' -name '*.pkg.tar.zst' -exec repoctl add {} \;
-    #fi
-fi
+        #fi
+    fi
 }
 
 while getopts ':hupm:qc' option; do
     case "$option" in
-         h ) print_help; exit 0;;
-         u ) show_url="y";;
-         p ) pkgctl="y";;
-         m ) mkpgoptions="-$OPTARG";;
-         q ) lessinfo="y";;
-         c ) clean="y";;
-         : ) mkpgoptions="-rfs";;
-        \? ) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; }
+    h)
+        print_help
+        exit 0
+        ;;
+    u) show_url="y" ;;
+    p) pkgctl="y" ;;
+    m) mkpgoptions="-$OPTARG" ;;
+    q) lessinfo="y" ;;
+    c) clean="y" ;;
+    :) mkpgoptions="-rfs" ;;
+    \?) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; } ;;
     esac
 done
 shift $((OPTIND - 1))
@@ -119,7 +122,7 @@ else
 fi
 
 for package in $(echo "${buildorder[@]}" "${updpackages[@]}" | tr ' ' '\n' | uniq); do
-    pushd "$folder/$package" > /dev/null || exit 1
+    pushd "$folder/$package" >/dev/null || exit 1
     if [ -n "$mkpgoptions" ] && [ -x /usr/bin/makepkg ]; then
         [ "$mkpgoptions" == "-repoctl" ] && mkpgoptions="-rfs"
         echo -e "\nBuild $package with options $mkpgoptions"
@@ -128,7 +131,7 @@ for package in $(echo "${buildorder[@]}" "${updpackages[@]}" | tr ' ' '\n' | uni
         echo -e "\nBuild $package in a clean chroot"
         pkgctl build && addtopero && find . -maxdepth 1 -name '*.pkg.tar.zst' -delete
     fi
-    popd > /dev/null || exit 1
+    popd >/dev/null || exit 1
 done
 
 cleanfolder

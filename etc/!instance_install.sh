@@ -5,9 +5,10 @@
 # IMPORTANT: See notes in .bash_aliases for installing needed packages
 
 echo "export PATHINSTANCE=\"/home/$(whoami)/.config/instance\"" | sudo tee /etc/profile.d/instance.sh
+# shellcheck source=/dev/null
 source /etc/profile.d/instance.sh
-printf "TG_BOT_API_TOKEN='' \n TG_BOT_CHAT_ID='' LIMIT=''" >> "$PATHINSTANCE"/scripts/sensitive.sh
-ln -sf "$PATHINSTANCE"/bashrc       /home/"$(whoami)"/.bashrc
+printf "TG_BOT_API_TOKEN='' \n TG_BOT_CHAT_ID='' LIMIT=''" >>"$PATHINSTANCE"/scripts/sensitive.sh
+ln -sf "$PATHINSTANCE"/bashrc /home/"$(whoami)"/.bashrc
 ln -sf "$PATHINSTANCE"/bash_aliases /home/"$(whoami)"/.bash_aliases
 # Install packages that pointed in bash_aliases
 
@@ -41,14 +42,12 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 # ssh root@ip_server  - should be: Permission denied (publickey).
 # ssh -o PubkeyAuthentication=no user@ip_server - should be: Permission denied (publickey).
 
-
 # Telegram server
-paru -S --needed  mtproxy-git
+paru -S --needed mtproxy-git
 sudo cp "$PATHINSTANCE"/etc/mtproxy.conf /etc/mtproxy.conf
-sudo sed -i 's/SECRET=/SECRET='"$(tr -dc 'a-f0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null)"'/' /etc/mtproxy.conf
+sudo sed -i 's/SECRET=/SECRET='"$(tr -dc 'a-f0-9' </dev/urandom | dd bs=1 count=32 2>/dev/null)"'/' /etc/mtproxy.conf
 sudo systemctl enable --now mtproxy mtproxy-config.timer
 # generation link: http://seriyps.ru/mtpgen.html Fake-TLS base64 link needed
-
 
 # Wireguard server
 paru -Sy --needed wireguard-ui
@@ -61,7 +60,6 @@ sudo systemctl enable --now wireguard-ui
 # Test your WG connection here: https://ipv6-test.com - ISPs for IPv4 and IPv6 will be the same
 sudo systemctl enable --now wgui.{service,path}
 sudo vnstat --add -i wg0
-
 
 # Nginx server
 paru -Sy --needed nginx-mainline
@@ -91,7 +89,6 @@ cp "$PATHINSTANCE"/etc/nginx/mtpgen.html /home/http/mtproto/index.html
 
 sudo nginx -t && sudo systemctl enable --now nginx
 
-
 # SSLH multiplexer
 # https://wiki.archlinux.org/title/Sslh
 paru -Sy --needed sslh
@@ -99,18 +96,15 @@ sudo cp "$PATHINSTANCE"/etc/sslh.cfg /etc/sslh.cfg
 sudo systemctl daemon-reload
 sudo systemctl enable --now sslh-fork.service
 
-
 # Firewall
 sudo "$PATHINSTANCE"/scripts/firewall-on
 # After firewall setup
 sudo systemctl restart wg-quick@wg0
 
-
 # Install repoctl
 paru -Sy --needed repoctl
 sudo cp /etc/xdg/repoctl/config.toml{,.backup}
 sudo cp "$PATHINSTANCE"/etc/repoctl.toml /etc/xdg/repoctl/config.toml
-
 
 # Snapshots
 # https://wiki.archlinux.org/title/Yabsnap
@@ -118,14 +112,12 @@ sudo cp "$PATHINSTANCE"/etc/repoctl.toml /etc/xdg/repoctl/config.toml
 sudo rm -f /var/cache/pacman/pkg/*
 sudo sed -i 's/#CacheDir    = \/var\/cache\/pacman\/pkg\//CacheDir     = \/tmp\//' /etc/pacman.conf
 paru -Sy --needed yabsnap
-sudo yabsnap create-config root   #for root partittion
+sudo yabsnap create-config root #for root partittion
 sudo sed -i 's/source=/source=\//' /etc/yabsnap/configs/root.conf
 sudo systemctl enable --now yabsnap.timer
 
-
 # Install update timer
 # See instructions in update/install_updatetimer.sh
-
 
 # Personal notes, remote repositories
 # git remote set-url --add --push origin git@...1

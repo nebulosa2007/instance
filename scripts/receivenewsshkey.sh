@@ -8,11 +8,10 @@ pubfile="/tmp/key.pub"
 echo " *  Openning port $port for a while.."
 sudo iptables -I INPUT -p tcp --dport $port -j ACCEPT || exit 1
 
-
 echo "For sending your ssh key, you should do:
 cat \"\$HOME/.ssh/id_ed25519.pub\" | nc -cvv $publicip $port"
 
-nc -l -vv -p $port > "$pubfile"
+nc -l -vv -p $port >"$pubfile"
 
 echo " *  Closing port $port"
 sudo iptables -D INPUT -p tcp --dport $port -j ACCEPT

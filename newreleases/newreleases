@@ -1,10 +1,11 @@
 #!/bin/env bash
 #shellcheck disable=1091
 
-config=$HOME/.config/newrelease
+# shellcheck source=/dev/null
+source /etc/profile.d/instance.sh 2>/dev/null
+: "${PATHINSTANCE:?Please set \$PATHINSTANCE env variable!}"
 
-[ -z "$PATHINSTANCE" ] && source /etc/profile.d/instance.sh
-[ -z "$PATHINSTANCE" ] && { echo "Please set \$PATHINSTANCE env variable!"; exit 1; }
+config=$HOME/.config/newrelease
 
 function print_help {
     underline=$(tput smul)
@@ -22,46 +23,49 @@ ${underline}Options${nounderline}:
 
 function addgitpath {
     mkdir -p "$config"
-    pkgfolder=$(basename "$1" ".git" )
+    pkgfolder=$(basename "$1" ".git")
     case $1 in
-      *gitlab*    ) releases="/-/releases/"   ;;
-      *           ) releases="/releases/tag/" ;;
+    *gitlab*) releases="/-/releases/" ;;
+    *) releases="/releases/tag/" ;;
     esac
-    echo "$pkgfolder $1 $releases init" >> "$config/gitlist"
+    echo "$pkgfolder $1 $releases init" >>"$config/gitlist"
     sort -uo "$config/gitlist"{,}
 }
 
 while getopts ':ha:e' option; do
     case "$option" in
-         h ) print_help; exit 0;;
-         a ) addgitpath "$OPTARG";;
-         e ) [ -n "$EDITOR" ] && $EDITOR "$config/gitlist" || echo "Please set \$EDITOR variable first!"; exit 0;;
-        \? ) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; }
+    h)
+        print_help
+        exit 0
+        ;;
+    a) addgitpath "$OPTARG" ;;
+    e)
+        [ -n "$EDITOR" ] && $EDITOR "$config/gitlist" || echo "Please set \$EDITOR variable first!"
+        exit 0
+        ;;
+    \?) [ -n "$OPTARG" ] && { echo "Option not found, try -h" && exit 1; } ;;
     esac
 done
 shift $((OPTIND - 1))
 
 cp "$config/gitlist" "/tmp/gitlist"
 
-while read -r string
-do
-    IFS=" " read -r -a git <<< "$string"
+while read -r string; do
+    IFS=" " read -r -a git <<<"$string"
     remotetag=$(git -c 'versionsort.suffix=+' -c 'versionsort.suffix=-' ls-remote --refs --sort='-v:refname' --tags "${git[1]}" | head -1 | cut -d/ -f3)
     [ "$remotetag" == "" ] && remotetag="notagsyet"
-    if [ "${git[3]}" != "$remotetag" ]
-    then
+    if [ "${git[3]}" != "$remotetag" ]; then
         rel=$([ "${git[3]}" != "init" ] && echo "New" || echo "Init")
         viewurl=""
         [ "$remotetag" != "notagsyet" ] && viewurl="
 ${git[1]/\.git/}${git[2]}$remotetag"
         [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$rel release <u>${git[0]}</u> - <b>${git[3]} -> $remotetag</b>$viewurl"
         sed -i "/${git[0]}/d" /tmp/gitlist
-        echo "${git[0]} ${git[1]} ${git[2]} $remotetag" >> /tmp/gitlist
+        echo "${git[0]} ${git[1]} ${git[2]} $remotetag" >>/tmp/gitlist
     fi
-done < "$config/gitlist"
+done <"$config/gitlist"
 
-if cmp -s "/tmp/gitlist" "$config/gitlist"
-then
+if cmp -s "/tmp/gitlist" "$config/gitlist"; then
     rm "/tmp/gitlist"
 else
     mv "/tmp/gitlist" "$config/gitlist"
