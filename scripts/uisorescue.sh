@@ -7,6 +7,8 @@
 
 # Requires: BTFRS, GRUB, curl, grep, sed, sha256sum, tee, cat, find
 
+set -euo pipefail
+
 mirror="mirror.ams1.nl.leaseweb.net" # More mirrors can be found here: https://archlinux.org/download/
 subvol="@archiso"
 iso="archlinux-x86_64.iso"
@@ -14,8 +16,8 @@ folder="/mnt/archiso"
 
 rootdrive=$(mount | grep -Po '^.*(?= on \/ type btrfs)')
 
-[ "$rootdrive" == "" ] && echo "This script works only with BTRFS" && exit 1
-[ ! -e /etc/default/grub ] && echo "This script works only with GRUB" && exit 1
+[[ -z "$rootdrive" ]] && { echo "This script works only with BTRFS"; exit 1; }
+[[ ! -e /etc/default/grub ]] && { echo "This script works only with GRUB";  exit 1; }
 
 function writetogrub() {
     sudo sed -i 's/GRUB_TIMEOUT=0/GRUB_TIMEOUT=1/' /etc/default/grub # At least one second needed
@@ -35,8 +37,9 @@ menuentry 'Boot from archlinux.iso' {
     initrd (loop)/arch/boot/x86_64/initramfs-linux.img
 }
 EOF
-    if [ "$(wc -l </etc/grub.d/40_custom)" -eq 5 ]; then
-        sudo cat /tmp/40_custom | sudo tee -a /etc/grub.d/40_custom >/dev/null && sudo grub-mkconfig -o /boot/grub/grub.cfg
+    if [[ "$(wc -l </etc/grub.d/40_custom)" -eq 5 ]]; then
+        sudo cat /tmp/40_custom | sudo tee -a /etc/grub.d/40_custom >/dev/null &&
+        sudo grub-mkconfig -o /boot/grub/grub.cfg &&
         find /tmp/40_custom -delete
     fi
 }
@@ -45,24 +48,28 @@ function checkiso() {
     curl -s "https://$mirror/archlinux/iso/latest/sha256sums.txt" | grep $iso | sha256sum -c --
 }
 
-if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$subvol)" == "" ]; then
-    sudo mount "$rootdrive" /mnt
-    pushd "/mnt" >/dev/null || exit 4 && sudo btrfs subvolume create $subvol && popd >/dev/null || exit 4
+if ! sudo btrfs subvolume list / | grep -q "top level [0-9] path $subvol"; then
+    sudo mount "$rootdrive" /mnt || exit 4
+    (
+        builtin cd /mnt || exit 4
+        sudo btrfs subvolume create "$subvol" || exit 4
+    )
     sudo umount /mnt && writetogrub || exit 1
 fi
 
-if [ "$(sudo btrfs subvolume list / | grep 'top level [0-9] path '$subvol)" != "" ]; then
-    sudo mkdir -p $folder && sudo mount -o compress=zstd:3,subvol=$subvol "$rootdrive" $folder
-    pushd "$folder" >/dev/null || exit 2
-    if checkiso; then
-        echo "The latest Archlinux iso image already exists on the system. Nothing to do."
-    else
-        echo "Downloading $iso from $mirror to $HOME..."
-        builtin cd "$HOME" || exit 3
-        curl -L -O -C - "https://$mirror/archlinux/iso/latest/$iso"
-        sudo curl -o "$folder/$iso" "FILE:///home/$(whoami)/$iso"
-        checkiso && find "$HOME"/$iso -delete || echo "Checksum error!"
-    fi
-    builtin cd / && sudo umount $folder && sudo find $folder -delete
-    popd >/dev/null || exit 2
+if ! sudo btrfs subvolume list / | grep -q "top level [0-9] path $subvol"; then
+    sudo mkdir -p "$folder" && sudo mount -o compress=zstd:3,subvol="$subvol" "$rootdrive" "$folder" || exit 2
+    (
+        builtin cd "$folder" || exit 2
+        if checkiso; then
+            echo "The latest Archlinux iso image already exists on the system. Nothing to do."
+        else
+            echo "Downloading $iso from $mirror to $HOME..."
+            builtin cd "$HOME" || exit 3
+            curl -L -O -C - "https://$mirror/archlinux/iso/latest/$iso" || exit 3
+            sudo curl -o "$folder/$iso" "FILE:///home/$(whoami)/$iso" || exit 3
+            checkiso && find "$HOME"/$iso -delete || echo "Checksum error!"
+        fi
+    )
+    sudo umount $folder && sudo find $folder -delete
 fi
