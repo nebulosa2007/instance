@@ -13,6 +13,7 @@ ln -sf "$PATHINSTANCE"/bash_aliases /home/"$(whoami)"/.bash_aliases
 # Install packages that pointed in bash_aliases
 
 # Tuning system
+sudo cp "$PATHINSTANCE"/etc/50-coredump.conf /etc/sysctl.d/50-coredump.conf && sudo sysctl --system
 sudo cp "$PATHINSTANCE"/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
 
 # Tuming programs
