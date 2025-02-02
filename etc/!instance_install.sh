@@ -17,7 +17,7 @@ sudo cp "$PATHINSTANCE"/etc/50-coredump.conf /etc/sysctl.d/50-coredump.conf && s
 sudo cp "$PATHINSTANCE"/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
 
 # Tuming programs
-mkdir -p /home/"$(whoami)"/.config/{neofetch,tmux,yt-dlp}
+mkdir -p /home/"$(whoami)"/.config/{neofetch,tmux,yt-dlp,mpv,aria2}
 ln -sf "$PATHINSTANCE"/etc/neofetch.conf /home/"$(whoami)"/.config/neofetch/config.conf
 # https://wiki.archlinux.org/title/GnuPG#Searching_and_receiving_keys
 mkdir /home/"$(whoami)"/.gnupg
@@ -28,6 +28,8 @@ ln -sf "$PATHINSTANCE"/etc/tmux.conf /home/"$(whoami)"/.config/tmux/tmux.conf
 ln -sf "$PATHINSTANCE"/etc/yt-dlp.conf /home/"$(whoami)"/.config/yt-dlp/config
 # https://wiki.archlinux.org/title/Mpv
 ln -sf "$PATHINSTANCE"/etc/mpv.conf /home/"$(whoami)"/.config/mpv/mpv.conf
+# https://wiki.archlinux.org/title/Aria2
+ln -sf "$PATHINSTANCE"/etc/aria2.conf /home/"$(whoami)"/.config/aria2/aria2.conf
 
 # Optinal for micro
 ln -sf "$PATHINSTANCE"/etc/micro.json /home/"$(whoami)"/.config/micro/settings.json
