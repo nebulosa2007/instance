@@ -17,8 +17,7 @@ sudo cp "$PATHINSTANCE"/etc/50-coredump.conf /etc/sysctl.d/50-coredump.conf && s
 sudo cp "$PATHINSTANCE"/etc/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf && sudo sysctl --system
 
 # Tuming programs
-mkdir -p /home/"$(whoami)"/.config/{neofetch,tmux,yt-dlp,mpv,aria2}
-ln -sf "$PATHINSTANCE"/etc/neofetch.conf /home/"$(whoami)"/.config/neofetch/config.conf
+mkdir -p /home/"$(whoami)"/.config/{tmux,yt-dlp,mpv,aria2}
 # https://wiki.archlinux.org/title/GnuPG#Searching_and_receiving_keys
 mkdir /home/"$(whoami)"/.gnupg
 ln -sf "$PATHINSTANCE"/etc/gpg.conf /home/"$(whoami)"/.gnupg/gpg.conf
