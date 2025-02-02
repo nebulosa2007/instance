@@ -57,7 +57,7 @@ if ! sudo btrfs subvolume list / | grep -q "top level [0-9] path $subvol"; then
     sudo umount /mnt && writetogrub || exit 1
 fi
 
-if ! sudo btrfs subvolume list / | grep -q "top level [0-9] path $subvol"; then
+if sudo btrfs subvolume list / | grep -q "top level [0-9] path $subvol"; then
     sudo mkdir -p "$folder" && sudo mount -o compress=zstd:3,subvol="$subvol" "$rootdrive" "$folder" || exit 2
     (
         builtin cd "$folder" || exit 2

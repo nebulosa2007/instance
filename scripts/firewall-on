@@ -2,7 +2,7 @@
 #https://wiki.archlinux.org/title/Simple_stateful_firewall
 
 #isRoot
-[ "$EUID" -ne 0 ] && {
+[[ "$EUID" != 0 ]] && {
     echo "You need to run this script as root"
     exit 1
 }

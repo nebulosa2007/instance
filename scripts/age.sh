@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+set -euo pipefail
+
 DATE=$(/usr/bin/ls -ctl --time-style +"%Y-%m-%d" /etc | tail -1 | grep -Po "[0-9]+-[0-9]+-[0-9]+")
 #or
 #DATE=$(stat /etc | tail -1 | cut -d" " -f3)
@@ -7,7 +9,7 @@ DATE=$(/usr/bin/ls -ctl --time-style +"%Y-%m-%d" /etc | tail -1 | grep -Po "[0-9
 #DATE=$(head -1 /var/log/pacman.log | cut -c 2-11)
 
 LOCALE=$(date -d "$DATE" +"%d.%m.%Y")
-DAYSBETWEEN=$(( ($(date +%s) - $(date -d "$DATE" +%s)) / 86400 ))
+DAYSBETWEEN=$((($(date +%s) - $(date -d "$DATE" +%s)) / 86400))
 
 YEARSCALC=$((DAYSBETWEEN / 365))
 MONTHSCALC=$(((DAYSBETWEEN - (YEARSCALC * 365)) / 30))
