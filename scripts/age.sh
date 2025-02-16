@@ -15,8 +15,8 @@ YEARSCALC=$((DAYSBETWEEN / 365))
 MONTHSCALC=$(((DAYSBETWEEN - (YEARSCALC * 365)) / 30))
 DAYSCALC=$((DAYSBETWEEN - (YEARSCALC * 365) - (MONTHSCALC * 30)))
 
-YEARS=$([[ "$YEARSCALC" -gt 0 ]] && echo "${YEARSCALC}y ")
-MONTHS=$([[ "$MONTHSCALC" -gt 0 ]] && echo "${MONTHSCALC}m ")
-DAYS=$([[ "$DAYSCALC" -gt 0 ]] && echo "${DAYSCALC}d")
+YEARS=$(if [[ "$YEARSCALC" -gt 0 ]]; then echo "${YEARSCALC}y "; fi)
+MONTHS=$(if [[ "$MONTHSCALC" -gt 0 ]]; then echo "${MONTHSCALC}m "; fi)
+DAYS=$(if [[ "$DAYSCALC" -gt 0 ]]; then echo "${DAYSCALC}d"; fi)
 
-echo "System age: $YEARS$MONTHS$DAYS (since $LOCALE)"
+echo "System age: ${YEARS:-}${MONTHS:-}${DAYS:-} (since ${LOCALE:-})"
