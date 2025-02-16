@@ -5,7 +5,7 @@ Wants=network-online.target
 After=network-online.target nss-lookup.target
 
 [Service]
-ExecStart=/usr/bin/updpkgs
+ExecStart=/usr/local/bin/updpkgs
 
 [Install]
 WantedBy=multi-user.target

@@ -4,7 +4,7 @@
 #Updates module of Instance project
 
 #IMPORTANT: Only for one partition systems. Use cp instead ln below:
-sudo ln -sf "$PATHINSTANCE"/update/updpkgs.sh /usr/bin/updpkgs
+sudo ln -sf "$PATHINSTANCE"/update/updpkgs.sh /usr/local/bin/updpkgs
 
 sudo cp "$PATHINSTANCE"/update/update.{service,timer} -t /etc/systemd/system
 sudo systemctl daemon-reload
