@@ -4,7 +4,7 @@ Wants=network-online.target
 After=network-online.target nss-lookup.target
 
 [Service]
-ExecStart=/usr/bin/newreleases
+ExecStart=/usr/local/bin/newreleases
 
 [Install]
 WantedBy=multi-user.target
