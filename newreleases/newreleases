@@ -52,7 +52,7 @@ cp "$config/gitlist" "/tmp/gitlist"
 
 while read -r string; do
     IFS=" " read -r -a git <<<"$string"
-    remotetag=$(git -c 'versionsort.suffix=+' -c 'versionsort.suffix=-' ls-remote --refs --sort='-v:refname' --tags "${git[1]}" | head -1 | cut -d/ -f3)
+    remotetag=$(git -c 'versionsort.suffix=+' -c 'versionsort.suffix=-' ls-remote --refs --sort='-v:refname' --tags "${git[1]}" | grep -v "ver-" | head -1 | cut -d/ -f3)
     [ "$remotetag" == "" ] && remotetag="notagsyet"
     if [ "${git[3]}" != "$remotetag" ]; then
         rel=$([ "${git[3]}" != "init" ] && echo "New" || echo "Init")
