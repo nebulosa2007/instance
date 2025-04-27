@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+ 
+# See:
+# https://www.reddit.com/r/MiniPCs/comments/18icusg/t9_plus_n100_how_to_control_led/
+# https://github.com/thekief/s1t-ledcontrol
+# https://minipcunion.com/viewtopic.php?t=4424
+ 
+import argparse
+import serial
+import sys
+import time
+ 
+__author__ = "Niccolo Rigacci"
+__copyright__ = "Copyright 2024 Niccolo Rigacci <niccolo@rigacci.org>"
+__license__ = "GPLv3-or-later"
+__email__ = "niccolo@rigacci.org"
+__version__ = "0.1.0"
+ 
+# Define dictionaries for mode, brightness, and speed mappings
+modes = {
+    "Off": 0x04,
+    "Auto": 0x05,
+    "Rainbow": 0x01,
+    "Breathing": 0x02,
+    "Cycle": 0x03
+}
+ 
+brightness = {
+    1: 0x05,
+    2: 0x04,
+    3: 0x03,
+    4: 0x02,
+    5: 0x01
+}
+ 
+speed = {
+    1: 0x05,
+    2: 0x04,
+    3: 0x03,
+    4: 0x02,
+    5: 0x01
+}
+ 
+def calculate_check_digit(mode, brightness, speed):
+    return (0xfa + mode + brightness + speed) & 0xff
+ 
+def send_led_status(serial_port, baud_rate, mode, brightness, speed):
+    try:
+        # Open serial port
+        s = serial.Serial(serial_port, baud_rate)
+ 
+        # Send data with delays
+        for b in (0xfa, mode, brightness, speed, calculate_check_digit(mode, brightness, speed)):
+            s.write(bytes([b]))
+            time.sleep(0.005)
+ 
+        # Close serial port
+        s.close()
+        print("LED status sent successfully.")
+    except Exception as e:
+        print("An error occurred:", str(e))
+ 
+ 
+def main():
+ 
+    modes_help = 'available modes: %s' % (', '.join(modes.keys()),)
+    parser = argparse.ArgumentParser(description='Set the working mode of the RGB LEDs on T9 Plus and S1 Mini PC.')
+    parser.add_argument('-d', '--device', type=str, default='/dev/ttyUSB0', metavar='DEV', help='the device the data is written to (default: /dev/ttyUSB0)')
+    parser.add_argument('-r', '--rate', type=int, default=10000, metavar='BAUD', help='set the baud rate (default: 10000)')
+    parser.add_argument('-m', '--mode', type=str, required=True, help=modes_help)
+    parser.add_argument('-b', '--brightness', type=int, default=1, metavar='B', help='brightness value: from 1 to 5 (default: 1)')
+    parser.add_argument('-s', '--speed', type=int, default=1, metavar='S', help='speed value: from 1 to 5 (default: 1)')
+    args = parser.parse_args()
+ 
+    mode_key = args.mode.lower().capitalize()
+    if mode_key not in modes.keys():
+        print("Invalid mode")
+        return
+    if args.brightness not in brightness.keys():
+        print("Invalid brightness")
+        return
+    if args.speed not in speed.keys():
+        print("Invalid speed")
+        return
+ 
+    mode_input = modes[mode_key]
+    brightness_input = brightness[args.brightness]
+    speed_input = speed[args.speed]
+ 
+    serial_port = args.device
+    baud_rate = args.rate
+ 
+    # Send LED status
+    print('Setting codes Mode: %s, Brightness: %d, Speed: %d' % (mode_input, brightness_input, speed_input))
+    send_led_status(serial_port, baud_rate, mode_input, brightness_input, speed_input)
+ 
+ 
+if __name__ == "__main__":
+    main()
