@@ -2,7 +2,7 @@
 Description=Git releases Watchdog
 
 [Timer]
-OnCalendar=7..21/2:0
+OnCalendar=7..22/3:0
 Persistent=true
 
 [Install]
