@@ -36,7 +36,7 @@ alias cat="bat -pp"
 ## SHORTS
 alias openports="sudo ss -ntulp"
 alias x="exit"
-alias gethash="tr -dc 'a-z0-9' < /dev/urandom | dd bs=1 count=32 2>/dev/null && echo"
+alias gethash="head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n'"
 alias boottime="systemd-analyze && systemd-analyze blame --no-pager"
 
 ## SHORTS: EXTERNAL PROGRAMS
