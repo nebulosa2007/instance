@@ -39,7 +39,13 @@ echo " * Drop all traffic with an INVALID state match"
 iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 
 echo " * Allowing ping responses"
-iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+#iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+#Recommendations from AI
+iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type destination-unreachable -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type time-exceeded -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type parameter-problem -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -m limit --limit 1/second --limit-burst 5 -j ACCEPT
 
 echo " * Setting TCP and UDP chains"
 iptables -A INPUT -p udp -m conntrack --ctstate NEW -j UDP
