@@ -1,0 +1,1 @@
+wireguard-ui ALL=(ALL:ALL) NOPASSWD: /usr/share/wireguard-tools/examples/json/wg-json
