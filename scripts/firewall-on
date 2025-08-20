@@ -74,7 +74,7 @@ for p in tcp udp; do
         echo "Address Port Process"
         sort -nk3,3 -nk2
     ) | column -t -R1
-    read -rp $'\nPlease enter the ${p^^} ports (IPv4 only) for opening outside: ' -e -i "$ops" ops
+    read -rp $'\nPlease enter the '"${p^^}"$' ports (IPv4 only) for opening outside: ' -e -i "$ops" ops
     for op in $ops; do
         echo " * Allowing port $op"
         iptables -A "${p^^}" -p "$p" --dport "$op" -j ACCEPT
