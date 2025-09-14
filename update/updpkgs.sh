@@ -19,7 +19,7 @@ if [ "$COUNTUPD" -gt 0 ] || [ "$COUNTREPOUPD" -gt 0 ]; then
 $(/usr/bin/pacman -Qu | grep -v '\[ignored\]')"
     [ "$COUNTREPOUPD" -gt 0 ] && UPDATESREPO="
 <b>Repo updates:</b>
-$(/usr/bin/repoctl status -a | grep upgrade | tr -s ' ' | sed 's/^ //g;s/: upgrade(/ /g;s/)//g')"
+$(/usr/bin/repoctl status -a | sed -n 's/^[[:space:]]*\([^:]*\): upgrade(\([^ ]*\) -> \([^)]*\)).*/\1 \2 -> \3/p')"
 
     : "${LOG:=/var/log/updpackages.log}"
     touch "$LOG"
