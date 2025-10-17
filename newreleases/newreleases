@@ -68,7 +68,7 @@ while read -r string; do
         viewurl=""
         [ "$remotetag" != "notagsyet" ] && viewurl="
 ${git[1]/\.git/}${git[2]}$remotetag"
-        [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$rel release <u>${git[0]}</u> - <b>${git[3]} -> $remotetag</b>$viewurl"
+        [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$rel release <u>${git[0]}</u> - <b>${git[3]} -> $remotetag</b>$viewurl" false
         sed -i "/${git[0]}/d" /tmp/gitlist
         echo "${git[0]} ${git[1]} ${git[2]} $remotetag" >>/tmp/gitlist
     fi
