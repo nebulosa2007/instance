@@ -125,7 +125,7 @@ getnews() {
     rss_url="https://archlinux.org/feeds/news/"
     last_modified=$(curl -sIm3 "$rss_url" | grep -oP "^last-modified: \K[0-9A-Za-z,: ]+")
     if [ -n "$last_modified" ] && ! grep -q "$last_modified" "$NEWS"; then
-        latestnews=$(curl -sm3 "$rss_url" | grep -Eo "<lastBuildDate>.*</title>" | sed -e 's/<[^>]*>/ /g;s/+0000  /GMT /g')
+        latestnews=$(curl -sm3 "$rss_url" | grep -Eo "<lastBuildDate>.*</title>" | sed -e 's/<[^>]*>/ /g;s/+0000  /GMT /g;s/&gt;/>/g')
         [ -n "$latestnews" ] && (
             echo "$latestnews" >"$NEWS"
             echo -e '\033[0;34m:: \033[0m\033[1mLatest news...\033[0m'
