@@ -3,7 +3,6 @@ Description=Refresh pacman and AUR updates twice a day with Update
 
 [Timer]
 OnCalendar=12,23:00
-OnBootSec=2min
 Persistent=true
 
 [Install]
