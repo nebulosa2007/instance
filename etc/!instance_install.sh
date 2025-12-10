@@ -125,3 +125,11 @@ sudo systemctl enable --now yabsnap.timer
 # git remote set-url --add --push origin git@...1
 # git remote set-url --add --push origin git@...2
 # echo "export EDITOR=\"micro\"" | sudo tee -a /etc/profile.d/instance.sh
+
+# For fail2ban
+sudo pacman -Syu fail2ban ipset
+sudo cp "$PATHINSTANCE"/etc/fail2ban/jail.local           /etc/fail2ban/jail.local
+sudo cp "$PATHINSTANCE"/etc/fail2ban/telegram-notify.conf /etc/fail2ban/action.d/telegram-notify.conf
+sudo cp "$PATHINSTANCE"/etc/fail2ban/iptables-ipset.local /etc/fail2ban/action.d/iptables-ipset.local
+sudo cp "$PATHINSTANCE"/etc/fail2ban/jailtgsay            /usr/local/bin/jailtgsay
+sudo systemctl enable --now fail2ban

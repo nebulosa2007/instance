@@ -1,0 +1,34 @@
+[DEFAULT]
+ignoreip = 127.0.0.1/8 192.168.1.0/24 10.252.0.0/24
+
+[nginx-444]
+enabled   = true
+filter    = nginx-444
+backend   = auto
+logpath   = /var/log/nginx/access.log
+banaction = iptables-ipset-proto6
+
+port      = 0:65535
+protocol  = tcp,udp
+
+action = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+         telegram-notify[norestored=1]
+
+maxretry  = 1
+bantime   = 1d
+findtime  = 10m
+
+
+[recidive]
+enabled   = true
+filter    = recidive
+backend   = auto
+logpath   = /var/log/fail2ban.log
+banaction = iptables-ipset-proto6
+
+port      = 0:65535
+protocol  = tcp,udp
+
+maxretry  = 2
+findtime  = 30d
+bantime   = 30d
