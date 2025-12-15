@@ -17,7 +17,7 @@ sudo journalctl --disk-usage
 
 # Remove old log files
 sudo find /var/log -type f -regex ".*\.gz$" -delete 2>/dev/null
-sudo find /var/log -type f -regex ".*\.[0-9]$" -delete 2>/dev/null
+sudo find /var/log -type f -regex ".*\.[0-9]+$" -delete 2>/dev/null
 
 # Cleaning pikaur cache
 [ -d "/home/$(whoami)/.cache/pikaur/build" ] && find "/home/$(whoami)/.cache/pikaur/build" -type f -delete 2>/dev/null
