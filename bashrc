@@ -105,8 +105,8 @@ $ '
     [ "$(systemctl list-units --user --failed | grep "listed" | cut -d" " -f1)" -ne 0 ] && echo -e "\n${red} $(systemctl list-units --user --failed -q)${nc}"
 
     if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
-        if [ -f /var/log/updpackages.log ] && [ "$(pacman -Qu | grep -cv "\[ignored\]")" -ne 0 ]; then
-            echo -e "\n${yellow} Available updates:\n$(sed 's/<[^>]*>//g;s/^/ /' </var/log/updpackages.log | tail -n+2)${nc}"
+        if [ -f /var/tmp/updpackages.state ] && [ "$(pacman -Qu | grep -cv "\[ignored\]")" -ne 0 ]; then
+            echo -e "\n${yellow} Available updates:\n$(sed 's/<[^>]*>//g;s/^/ /' </var/tmp/updpackages.state | tail -n+2)${nc}"
         else
             echo -e "\n${green} System is up-to-date${nc}"
         fi

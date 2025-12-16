@@ -21,7 +21,7 @@ $(/usr/bin/pacman -Qu | grep -v '\[ignored\]')"
 <b>Repo updates:</b>
 $(/usr/bin/repoctl status -a | sed -n 's/^[[:space:]]*\([^:]*\): upgrade(\([^ ]*\) -> \([^)]*\)).*/\1 \2 -> \3/p')"
 
-    : "${LOG:=/var/log/updpackages.log}"
+    : "${LOG:=/var/tmp/updpackages.state}"
     touch "$LOG"
     if [ "$(md5sum <"$LOG")" != "$(echo -e "$UPDATESLOCAL\n$UPDATESREPO" | md5sum)" ]; then
         echo "$UPDATESLOCAL
