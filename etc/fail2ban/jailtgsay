@@ -1,7 +1,0 @@
-#!/bin/env bash
-
-# shellcheck source=/dev/null
-source /etc/profile.d/instance.sh 2>/dev/null
-: "${PATHINSTANCE:?Please set \$PATHINSTANCE env variable!}"
-
-[ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$1"
