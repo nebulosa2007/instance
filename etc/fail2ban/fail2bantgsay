@@ -2,12 +2,51 @@
 
 # shellcheck source=/dev/null
 source /etc/profile.d/instance.sh 2>/dev/null
-: "${PATHINSTANCE:?Please set \$PATHINSTANCE env variable!}"
 
-MSG=$(echo "$1" | awk '
-/202[0-9]-/ {
-    if (/nginx:/) { split($0,a,"\""); print "<pre>"a[2]"\n"a[4]"\n"a[6]"</pre>"; next }
-    if (/sshd/)   { sub(/^.*]: /,""); print "<pre>"$0; next }
-}1')
+# shellcheck source=/dev/null
+source "$PATHINSTANCE"/scripts/sensitive.sh 2>/dev/null
+
+: "${PATHINSTANCE:?Please set \$PATHINSTANCE env variable!}" "${IPREGISTRY_KEY:?Set \$IPREGISTRY_KEY}"
+
+# Unban IP
+[[ "$1" =~ unbanned ]] && { [[ -f "$PATHINSTANCE/scripts/tgsay.sh" ]] && "$PATHINSTANCE/scripts/tgsay.sh" "$1"; exit 0; }
+
+# Ban IP
+IP=$(grep -oP '(?<=<code>)[^<]+' <<<"$1" | head -1)
+[[ -n "$IP" ]] && {
+    IFS=',' read -r cc country city asn isp < <(curl -sm3 "http://ip-api.com/csv/$IP?fields=countryCode,country,city,as,isp")
+    flag=$(perl -C -e "print map{chr(ord(\$_)+127397)}split//,shift" "$country" 2>/dev/null)
+    net=${asn:-$isp}
+    info="${flag:- } ${cc:-??}, ${city:-?} / ${net//\"/}"
+
+    sec_json=$(curl -sm3 --get "https://api.ipregistry.co/$IP" \
+        -H "Authorization: ApiKey $IPREGISTRY_KEY" \
+        --data "fields=security.is_proxy,security.is_vpn,security.is_tor_exit,security.is_relay,security.is_anonymous,security.is_threat,security.is_cloud_provider")
+
+    jget() { grep -oP "\"$1\":\K(true|false)" <<<"$sec_json"; }
+
+    [[ $(jget is_cloud_provider) == true ]] && hits+=("Server 🚩")
+
+   privacy=()
+   [[ $(jget is_proxy) == true ]]     && privacy+=("Proxy")
+   [[ $(jget is_vpn) == true ]]       && privacy+=("VPN")
+   [[ $(jget is_tor_exit) == true ]]  && privacy+=("Tor")
+   [[ $(jget is_anonymous) == true ]] && privacy+=("Anonymous")
+   [[ $(jget is_relay) == true ]]     && privacy+=("Relay")
+
+   ((${#privacy[@]})) && hits+=("$(IFS=,; echo "${privacy[*]}" | sed 's/,/, /g') 🚩")
+
+   [[ $(jget is_threat) == true ]] && hits+=("Abuser 🚩")
+
+   ip_line=$( ((${#hits[@]})) && { IFS='|'; echo "${hits[*]}" | sed 's/|/ | /g'; } || echo "<code>-</code>")
+}
+
+MSG=$(awk -v info="${info:-}" -v ip_line="${ip_line:-}" '
+    NR==1 && /IP banned/ { print "\n"$0"\n" info "\n" ip_line; next }
+    /202[0-9]-/ {
+        if (/nginx:/) { split($0,a,"\""); print "<pre><code class=\"language-log\">"a[2]"\n"a[4]"\n"a[6]"</code></pre>"; next }
+        if (/sshd/)   { sub(/^.*]: /,""); gsub("</pre>","</code></pre>"); print "<pre><code class=\"language-log\">"$0; next }
+    }1
+' <<<"$1")
 
 [ -f "$PATHINSTANCE"/scripts/tgsay.sh ] && "$PATHINSTANCE"/scripts/tgsay.sh "$MSG"
