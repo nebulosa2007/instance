@@ -7,6 +7,19 @@
     exit 1
 }
 
+[[ "$1" != "off" ]] && {
+    for p in tcp udp; do
+        echo -e "\nOpen ${p^^} ports by processes:\n"
+        ops=$(ss -ln --$p | grep -Ev "(127\.|\[::\])" | grep -Po '(?<=:)(\d+)' | sort -nu | tr '\n' ' ')
+        ss -lnp --$p | tail -n +2 | grep -Ev "(127\.|\[::\])" | sed 's/users:(("//g;s/:/ /;s/"/ /' | awk '{print $4, $5, $7}' | (
+            echo "Address Port Process"
+            sort -nk3,3 -nk2
+        ) | column -t -R1
+        declare -n ops_ref="ops_$p"
+        read -rp $'\nPlease enter the '"${p^^}"$' ports (IPv4 only) for opening outside: ' -e -i "$ops" ops_ref
+    done
+}
+
 echo " * Flushing all rules"
 iptables -F                && ip6tables -F
 iptables -X                && ip6tables -X
@@ -79,16 +92,9 @@ iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset              # TCP �
 iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable  # UDP → ICMP Port Unreachable
 iptables -A INPUT -j REJECT --reject-with icmp-port-unreachable         # Other → Host Unreachable
 
-
 for p in tcp udp; do
-    echo -e "\nOpen ${p^^} ports by processes:\n"
-    ops=$(ss -ln --$p | grep -Ev "(127\.|\[::\])" | grep -Po '(?<=:)(\d+)' | sort -nu | tr '\n' ' ')
-    ss -lnp --$p | tail -n +2 | grep -Ev "(127\.|\[::\])" | sed 's/users:(("//g;s/:/ /;s/"/ /' | awk '{print $4, $5, $7}' | (
-        echo "Address Port Process"
-        sort -nk3,3 -nk2
-    ) | column -t -R1
-    read -rp $'\nPlease enter the '"${p^^}"$' ports (IPv4 only) for opening outside: ' -e -i "$ops" ops
-    for op in $ops; do
+    declare -n ops_ref="ops_$p"
+    for op in $ops_ref; do
         echo " * Allowing port $op"
         iptables -A "${p^^}" -p "$p" --dport "$op" -j ACCEPT
     done
