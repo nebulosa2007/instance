@@ -128,9 +128,10 @@ sudo systemctl enable --now yabsnap.timer
 
 # For fail2ban
 sudo pacman -Syu fail2ban ipset
-sudo cp "$PATHINSTANCE"/etc/fail2ban/jail.local            /etc/fail2ban/jail.local
-sudo cp "$PATHINSTANCE"/etc/fail2ban/fail2ban.local        /etc/fail2ban/fail2ban.local
-sudo cp "$PATHINSTANCE"/etc/fail2ban/telegram-notify.local /etc/fail2ban/action.d/telegram-notify.local
-sudo cp "$PATHINSTANCE"/etc/fail2ban/iptables-ipset.local  /etc/fail2ban/action.d/iptables-ipset.local
-sudo cp "$PATHINSTANCE"/etc/fail2ban/jail2bantgsay         /usr/local/bin/jail2bantgsay
+sudo cp "$PATHINSTANCE"/etc/fail2ban/jail.local              /etc/fail2ban/jail.local
+sudo cp "$PATHINSTANCE"/etc/fail2ban/fail2ban.local          /etc/fail2ban/fail2ban.local
+sudo cp "$PATHINSTANCE"/etc/fail2ban/telegram-notify.local   /etc/fail2ban/action.d/telegram-notify.local
+sudo cp "$PATHINSTANCE"/etc/fail2ban/iptables-ipset.local    /etc/fail2ban/action.d/iptables-ipset.local
+sudo cp "$PATHINSTANCE"/etc/fail2ban/nginx-bad-request.local /etc/fail2ban/filter.d/nginx-bad-request.local
+sudo cp "$PATHINSTANCE"/etc/fail2ban/jail2bantgsay           /usr/local/bin/jail2bantgsay
 sudo systemctl enable --now fail2ban

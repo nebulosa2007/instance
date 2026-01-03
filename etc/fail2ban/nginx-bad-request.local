@@ -1,0 +1,2 @@
+[Definition]
+failregex = ^.*nginx: <HOST> - - \[[^\]]+\] ".*" (400|444).*$

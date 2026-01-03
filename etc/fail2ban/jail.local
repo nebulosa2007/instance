@@ -1,12 +1,11 @@
 [DEFAULT]
-ignoreip = 127.0.0.1/8 192.168.1.0/24 10.252.0.0/24
+ignoreip = 127.0.0.1/8 192.168.1.0/24 10.252.1.0/24
 
 
-[nginx-444]
+[nginx-bad-request]
 enabled   = true
-filter    = nginx-444
+filter    = nginx-bad-request
 backend   = systemd
-journalmatch = _SYSTEMD_UNIT=nginx.service
 banaction = iptables-ipset-proto6
 
 port      = 0:65535
@@ -29,19 +28,18 @@ banaction = iptables-ipset-proto6
 port      = 0:65535
 protocol  = tcp,udp
 
+action    = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+            telegram-notify[norestored=1]
+
 maxretry  = 1
 bantime   = 1d
 findtime  = 10m
-
-action    = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-            telegram-notify[norestored=1]
 
 
 [recidive]
 enabled   = true
 filter    = recidive
 backend   = systemd
-journalmatch = _SYSTEMD_UNIT=fail2ban.service
 banaction = iptables-ipset-proto6
 
 port      = 0:65535
