@@ -1,5 +1,5 @@
 #!/bin/env bash
-#shellcheck disable=1091
+# shellcheck disable=1091
 
 # shellcheck source=/dev/null
 source /etc/profile.d/instance.sh 2>/dev/null
@@ -58,10 +58,14 @@ cp "$config/gitlist" "/tmp/gitlist"
 
 while read -r string; do
     IFS=" " read -r -a git <<<"$string"
-    remotetag=$(git -c 'versionsort.suffix=+' -c 'versionsort.suffix=-' ls-remote --refs --tags "${git[1]}" | \
-        awk '{sub("refs/tags/", "", $2); tag=$2; sub(/^v/, "", tag); print tag, $2}' | \
-        grep -Ev -f <(grep -Ev '^\s*$|^\s*#' "$config/exclude.tags") | \
-        sort -k1 -V | awk 'END {print $2}')
+    if ! tags=$(git -c 'versionsort.suffix=+' -c 'versionsort.suffix=-' ls-remote --refs --tags "${git[1]}" 2>/dev/null); then
+        continue
+    else
+        remotetag=$(echo "$tags" | \
+            awk '{sub("refs/tags/", "", $2); tag=$2; sub(/^v/, "", tag); print tag, $2}' | \
+            grep -Ev -f <(grep -Ev '^\s*$|^\s*#' "$config/exclude.tags") | \
+            sort -k1 -V | awk 'END {print $2}')
+    fi
     [ "$remotetag" == "" ] && remotetag="notagsyet"
     if [ "${git[3]}" != "$remotetag" ]; then
         rel=$([ "${git[3]}" != "init" ] && echo "New" || echo "Init")
