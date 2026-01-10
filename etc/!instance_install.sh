@@ -44,13 +44,6 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 # ssh root@ip_server  - should be: Permission denied (publickey).
 # ssh -o PubkeyAuthentication=no user@ip_server - should be: Permission denied (publickey).
 
-# Telegram server
-paru -S --needed mtproxy-git
-sudo cp "$PATHINSTANCE"/etc/mtproxy.conf /etc/mtproxy.conf
-sudo sed -i 's/SECRET=/SECRET='"$(tr -dc 'a-f0-9' </dev/urandom | dd bs=1 count=32 2>/dev/null)"'/' /etc/mtproxy.conf
-sudo systemctl enable --now mtproxy mtproxy-config.timer
-# generation link: http://seriyps.ru/mtpgen.html Fake-TLS base64 link needed
-
 # Wireguard server
 paru -Sy --needed wireguard-ui
 sudo systemctl enable --now wireguard-ui
