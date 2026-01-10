@@ -1,1 +1,0 @@
-/dev/zram0 none swap defaults,discard,pri=100 0 0
