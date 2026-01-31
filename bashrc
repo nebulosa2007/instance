@@ -144,5 +144,12 @@ $ '
             tmux attach-session -t 0
         fi
     fi
+
+    if [ "$VSCODE_INJECTION" = "1" ]; then
+      CODE_PATH="$(which code)"
+      if [ -n "$CODE_PATH" ]; then
+        export EDITOR="$CODE_PATH --wait"
+      fi
+    fi
     ;;
 esac
