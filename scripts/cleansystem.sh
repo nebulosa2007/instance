@@ -11,7 +11,7 @@ sudo find "$(grep -Po '(?<=CacheDir) *= *\K(\S+)' /etc/pacman.conf)" -type f -na
 
 # https://wiki.archlinux.org/title/Systemd/Journal#Clean_journal_files_manually
 sudo journalctl --disk-usage
-sudo journalctl --vacuum-size=5M
+sudo journalctl --vacuum-time=2d
 sudo journalctl --verify
 sudo journalctl --disk-usage
 
@@ -33,18 +33,4 @@ sudo find /var/log -type f -regex ".*\.[0-9]+$" -delete 2>/dev/null
     find "/home/$(whoami)/.cache" -empty -type d -atime +1 -delete
 }
 
-# https://wiki.archlinux.org/title/Btrfs#Scrub
-if command -v btrfs &>/dev/null; then
-    sudo btrfs scrub start /
-    for i in . . . . .; do
-        echo -n $i
-        sleep 1
-    done
-    while sudo btrfs scrub status / | grep -q 'running'; do
-        echo -n "."
-        sleep 1
-    done
-    echo
-    sudo btrfs scrub status /
-fi
 df -h | grep -E "$(mount | grep -q ' on / type btrfs' && echo '/$' || echo '/[s|v]da')"
