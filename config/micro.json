@@ -2,5 +2,6 @@
     "colorcolumn": 80,
     "diffgutter": true,
     "indentchar": "⇥",
+    "showchars": "space=.,tab=>,ispace=|,itab=|>",
     "tabstospaces": true
 }
