@@ -1,7 +1,7 @@
 #!/bin/env bash
 
 # Program packages:
-# paru -Syu --needed bash_completion fzf git tmux
+# sudo pacman -Syu --needed bash-completion fzf git tmux
 
 case $- in
 *i*)
