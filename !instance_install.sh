@@ -47,8 +47,8 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 
 # Install a clean build root
 # https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
-pacman -Sy --needed devtools
-sudo cp "$PATHINSTANCE"/etc/sudoers.d/pkgctl /etc/sudoers.d/pkgctl && chmod -c 0440 /etc/sudoers.d/pkgctl && visudo -c
+sudo pacman -Sy --needed devtools
+sudo cp "$PATHINSTANCE"/etc/sudoers.d/pkgctl /etc/sudoers.d/pkgctl && sudo chmod -c 0440 /etc/sudoers.d/pkgctl && sudo visudo -c
 
 # Wireguard
 # https://wiki.archlinux.org/title/WireGuard#wg-quick
