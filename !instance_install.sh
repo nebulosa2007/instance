@@ -100,8 +100,10 @@ sudo systemctl enable --now fail2ban
 
 # Install repoctl
 paru -Sy --needed repoctl
-sudo cp /etc/xdg/repoctl/config.toml{,.backup}
+sudo mkdir -p /etc/xdg/repoctl
 sudo cp "$PATHINSTANCE"/etc/repoctl.toml /etc/xdg/repoctl/config.toml
+sudo mkdir -p /home/http/archrepo
+sudo chown -R $USER:$USER /home/http/archrepo
 
 # Install update timer
 # See instructions in etc/update/install_updatetimer.sh
