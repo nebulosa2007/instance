@@ -139,16 +139,17 @@ getnews() {
 alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
 
 gen_ssh_key() {
-    if [ -z "$1" ] || [ -z "$2" ]; then echo -e "Usage: gen_ssh_key <key_name> <host>\nExample: gen_ssh_key project1 github.com" ; return 1; fi
-    local KEY="id_ed25519_$1" PATH_K="$HOME/.ssh/$KEY" HOST="$2" CONF="$HOME/.ssh/config"
+    if [ -z "$1" ] || [ -z "$2" ]; then echo "Usage: gen_ssh_key <key_name> <host>" ; echo "Example: gen_ssh_key project1 github.com" ; return 1; fi
+    local KEY="id_ed25519_${1}"
+    local PATH_K="${HOME}/.ssh/${KEY}"
+    local HOST="$2"
+    local CONF="${HOME}/.ssh/config"
     mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
-    [ -f "$PATH_K" ] && echo "Key $KEY already exists. Skipping." || ssh-keygen -t ed25519 -f "$PATH_K" -N ""
-    echo -e "\nHost $HOST\n    HostName $HOST\n    User git\n    IdentityFile ~/.ssh/$KEY\n    IdentitiesOnly yes" >> "$CONF" && chmod 600 "$CONF"
+    [ -f "${PATH_K}" ] && echo "Key $KEY already exists. Skipping." || ssh-keygen -t ed25519 -f "${PATH_K}" -N ""
+    echo -e "\nHost $HOST\n    HostName $HOST\n    User git\n    IdentityFile ~/.ssh/$KEY\n    IdentitiesOnly yes" >> "$CONF" && chmod 600 "$CONF"
     [ -f "$HOME/.ssh/known_hosts" ] && ssh-keygen -R "$HOST" &>/dev/null
     cat "${PATH_K}.pub"
 }
-
-Тут нет критических ошибок?
 
 ## INSTANCE SCRIPTS ##
 # PATHINSTANCE SHOULD BE SET IN /etc/profile/instance.sh
