@@ -190,6 +190,13 @@ if [ -n "$PATHINSTANCE" ]; then
                 /usr/bin/pkgctl "$@"
             fi
         }
-        add_custom_repository() { printf "\n[%s]\nSigLevel = Never\nServer = %s/\$repo/os/\$arch\n" "${repositoryname:?}" "${server:?}" | sudo tee -a "${CONF:?}"; }
+        add_custom_repository() {
+            local FORMAT
+            case "${server:?}" in
+                file://*) FORMAT="\n[%s]\nSigLevel = Never\nServer = %s\n" ;;
+                *)        FORMAT="\n[%s]\nSigLevel = Never\nServer = %s/\$repo/os/\$arch\n" ;;
+            esac
+            printf "$FORMAT" "${repositoryname:?}" "${server}" | sudo tee -a "${CONF:?}"
+        }
     fi
 fi
