@@ -5,25 +5,26 @@
 source /etc/profile.d/instance.sh 2>/dev/null
 : "${PATHINSTANCE:?Please set \$PATHINSTANCE env variable!}"
 
-config=$HOME/.config/newrelease
+config=$HOME/.config/newreleases
+
+function init {
+    mkdir -p "$config"
+    [ -f "$config/exclude.tags" ] || printf "# Set tags (or part of) that need to be pass from watching, one in line\n# Comments and empty lines are allowed\n\n" > "$config/exclude.tags"
+    echo "Please add at least one git source!"
+    print_help
+    exit 0
+}
 
 function print_help {
-    underline=$(tput smul)
-    nounderline=$(tput rmul)
-    echo "
-New release watchdog from git sources.
-
-${underline}Usage${nounderline}: ${0##*/} [OPTIONS]
-
-${underline}Options${nounderline}:
-  [-a <giturl>] Add new git source for watchdog
-  [-e]          Edit main list/config
-  [-t]          Edit exclide tags list
-"
+    printf '\nNew release watchdog from git sources.\n\n'
+    printf '\033[4mUsage\033[0m: %s [OPTIONS]\n\n' "${0##*/}"
+    printf '\033[4mOptions\033[0m:\n'
+    printf '  [-a <giturl>] Add new git source for watchdog\n'
+    printf '  [-e]          Edit main list/config\n'
+    printf '  [-t]          Edit exclude tags list\n'
 }
 
 function addgitpath {
-    mkdir -p "$config"
     pkgfolder=$(basename "$1" ".git")
     case $1 in
     *gitlab*) releases="/-/releases/" ;;
@@ -53,8 +54,7 @@ while getopts ':ha:et' option; do
 done
 shift $((OPTIND - 1))
 
-cp "$config/gitlist" "/tmp/gitlist"
-[ -f "$config/exclude.tags" ] || printf "# Set tags (or part of) that need to be pass from watching, one in line\n# Comments and empty lines are allowed\n\n" > "$config/exclude.tags"
+cp "$config/gitlist" "/tmp/gitlist" 2>/dev/null || init
 
 while read -r string; do
     IFS=" " read -r -a git <<<"$string"
