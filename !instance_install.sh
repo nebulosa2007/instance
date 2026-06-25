@@ -113,6 +113,7 @@ sudo chown -R $USER:$USER /home/http/archrepo
 # See instructions in config/newreleases/install_newreleases.sh
 
 # Personal notes, remote repositories
+# ssh-keygen -t ed25519 -C $HOSTNAME -N "" -q -f ~/.ssh/id_ed25519_github
 # git remote set-url --add --push origin git@...1
 # git remote set-url --add --push origin git@...2
 # echo "export EDITOR=\"micro\"" | sudo tee -a /etc/profile.d/instance.sh
