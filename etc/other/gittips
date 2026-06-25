@@ -3,6 +3,7 @@
     name =
 [alias]
     bugspaces = !git diff-tree --check $(git hash-object -t tree /dev/null) HEAD
+    aurinit = !git -c init.defaultBranch=master clone ssh://aur@aur.archlinux.org/$1.git
 [core]
     repositoryformatversion = 0
     filemode = true
