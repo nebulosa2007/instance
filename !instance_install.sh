@@ -49,6 +49,7 @@ sudo sshd -T | grep -E -i 'PasswordAuthentication|PermitRootLogin|MaxAuthTries'
 # https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
 sudo pacman -Sy --needed devtools
 sudo cp "$PATHINSTANCE"/etc/sudoers.d/pkgctl /etc/sudoers.d/pkgctl && sudo chmod -c 0440 /etc/sudoers.d/pkgctl && sudo visudo -c
+sudo cp "$PATHINSTANCE"/etc/other/x86_64.conf /usr/share/devtools/makepkg.conf.d/x86_64.conf
 
 # Wireguard
 # https://wiki.archlinux.org/title/WireGuard#wg-quick
@@ -66,7 +67,7 @@ sudo mkdir -p /etc/nginx/sites-enabled/
 sudo mkdir -p /home/http/ && sudo chown "$(whoami)":"$(whoami)" /home/http/
 
 # Optional: Own arch repository
-# sudo cp "$PATHINSTANCE"/etc/nginx/static_02_repoctl.conf /etc/nginx/sites-enabled/static_02_repoctl.conf
+# sudo cp "$PATHINSTANCE"/etc/nginx/sites-enabled/static_02_repoctl.conf /etc/nginx/sites-enabled/static_02_repoctl.conf
 # mkdir -p /home/http/archrepo/archive
 # cp "$PATHINSTANCE"/etc/nginx/index.html /home/http/archrepo/index.html
 # cp "$PATHINSTANCE"/etc/nginx/autoindex.html /home/http/archrepo/autoindex.html
