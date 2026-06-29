@@ -40,6 +40,8 @@ ipv6gateway=$(ip -6 route | grep -Pom1 '^default via \K\S+')
 cat > /etc/nftables.conf <<'NFTEOF'
 #!/usr/sbin/nft -f
 
+flush ruleset
+
 table inet filter {
     chain TCP {
     }
@@ -81,10 +83,6 @@ table inet filter {
         meta l4proto udp ct state new jump UDP
         tcp flags syn ct state new jump TCP
 
-        # Reject everything else with appropriate response
-        meta l4proto tcp reject with tcp reset
-        meta l4proto udp reject with icmpx type port-unreachable
-        reject with icmpx type port-unreachable
     }
 
     chain forward {
@@ -93,7 +91,6 @@ table inet filter {
         ct state related,established accept
         jump fw-interfaces
         jump fw-open
-        reject with icmpx type host-unreachable
     }
 
     chain output {
