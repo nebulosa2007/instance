@@ -1,8 +1,0 @@
-[Definition]
-actionban = /usr/local/bin/fail2bantgsay "🚫 IP banned <name>: <code><ip></code>
-                                          <pre><matches></pre>"
-actionstart =
-actionstop =
-actioncheck =
-actionflush =
-actionunban = /usr/local/bin/fail2bantgsay "♻️ IP unbanned <name>: <code><ip></code>"

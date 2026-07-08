@@ -1,50 +1,25 @@
 [DEFAULT]
-ignoreip = 127.0.0.1/8 192.168.1.0/24 10.252.1.0/24
-
-
-[nginx-bad-request]
-enabled   = true
-filter    = nginx-bad-request
-backend   = systemd
-banaction = iptables-ipset-proto6
-
-port      = 0:65535
-protocol  = tcp,udp
-
-action    = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-            telegram-notify[norestored=1]
-
+ignoreip  = 127.0.0.1/8 192.168.1.0/24
 maxretry  = 1
-bantime   = 1d
 findtime  = 10m
+bantime   = 1d
+banaction = nftables[type=allports]
+backend   = auto
 
+action = %(action_)s
+         telegram-geo[name=%(__name__)s, logpath="%(logpath)s"]
 
-[sshd]
+[nginx-444]
 enabled   = true
-filter    = sshd[mode=aggressive]
-backend   = systemd
-banaction = iptables-ipset-proto6
-
-port      = 0:65535
-protocol  = tcp,udp
-
-action    = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-            telegram-notify[norestored=1]
-
-maxretry  = 1
-bantime   = 1d
-findtime  = 10m
-
+filter    = nginx-444
+port      = http,https
+logpath   = /var/log/nginx/fallback_access.log
 
 [recidive]
 enabled   = true
 filter    = recidive
 backend   = systemd
-banaction = iptables-ipset-proto6
-
-port      = 0:65535
-protocol  = tcp,udp
-
+banaction = nftables[type=allports]
 maxretry  = 2
 findtime  = 30d
 bantime   = 30d

@@ -1,0 +1,3 @@
+[Definition]
+actionban = /usr/local/bin/fail2bantgsay ban "<name>" "<ip>" "<matches>"
+actionunban = /usr/local/bin/fail2bantgsay unban "<name>" "<ip>"
