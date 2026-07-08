@@ -1,0 +1,7 @@
+[Unit]
+Description=Run daily at 9:00 MSK
+[Timer]
+OnCalendar=*-*-* 09:00:00
+Persistent=true
+[Install]
+WantedBy=timers.target

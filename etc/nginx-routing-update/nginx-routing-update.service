@@ -1,0 +1,6 @@
+[Unit]
+Description=Update Nginx Routing
+After=network-online.target
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'DATA=$(curl -sSL https://raw.githubusercontent.com/hydraponique/roscomvpn-routing/refs/heads/main/HAPP/DEFAULT.DEEPLINK); if [ -n "$DATA" ]; then echo "add_header routing \"$DATA\";" > /etc/nginx/routing.conf && nginx -t && nginx -s reload; fi'
