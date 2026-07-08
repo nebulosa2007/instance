@@ -5,12 +5,13 @@ source /etc/profile.d/instance.sh 2>/dev/null
 : "${PATHINSTANCE:?Please set \$PATHINSTANCE env variable!}"
 
 while read -r site; do
-    ping -w 1 -c 1 "$site" &>/dev/null && ONLINE=1 && break
+    { ping -w 1 -c 1 "$site" || ping -4 -w 1 -c 1 "$site"; } &>/dev/null && ONLINE=1 && break
     sleep 15
 done < <(grep -Po '(?<=Server = https:\/\/)([^\/]*)' /etc/pacman.d/mirrorlist)
 : "${ONLINE:?failed. Exiting...}"
 
-reflector -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
+ping -6 -c 1 -w 1 2606:4700:4700::1111 &>/dev/null && IPv="" || IPv="--ipv4"
+reflector "$IPv" -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 /usr/bin/pacman -Sy
 COUNTUPD=$(/usr/bin/pacman -Qu | grep -v "\[ignored\]" | /usr/bin/wc -l)
 COUNTREPOUPD=$([ -x "/usr/bin/repoctl" ] && /usr/bin/repoctl status -a | grep "upgrade" | /usr/bin/wc -l || echo "0")
