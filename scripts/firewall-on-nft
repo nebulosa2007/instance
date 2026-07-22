@@ -72,9 +72,9 @@ table inet filter {
         ip protocol igmp accept
 
         # ICMPv6 (IPv6 neighbor discovery and essential messages)
-        ip6 nexthdr icmpv6 icmpv6 type { nd-neighbor-solicit, nd-router-advert, nd-neighbor-advert } ip6 saddr fe80::/10 accept
+        ip6 nexthdr icmpv6 icmpv6 type { nd-neighbor-solicit, nd-router-advert, nd-neighbor-advert } accept
         ip6 nexthdr icmpv6 icmpv6 type echo-request limit rate 1/second burst 5 packets ct state new accept
-        ip6 nexthdr icmpv6 ip6 saddr fe80::/10 accept
+        ip6 nexthdr icmpv6 accept
 
         # DHCPv6 client
         udp sport 547 udp dport 546 accept
