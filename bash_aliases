@@ -18,6 +18,7 @@ Systemctl() {
 }
 Sstart() { Systemctl start "$@"; }
 Sstop() { Systemctl stop "$@"; }
+Sreload() { Systemctl reload "$@"; }
 Srestart() { Systemctl restart "$@"; }
 Sdisable() { Systemctl disable "$@"; }
 
