@@ -1,0 +1,7 @@
+[Unit]
+Description=Send Daily Traffic Report to Telegram
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/tgdailystat.sh
