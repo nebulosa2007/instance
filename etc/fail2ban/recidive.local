@@ -1,2 +1,2 @@
 [Definition]
-failregex = ^.*?\\[.*\\] Ban <HOST>.*$
+failregex = ^.*?\[.*\] Ban <HOST>.*$

@@ -1,25 +1,28 @@
 [DEFAULT]
 ignoreip  = 127.0.0.1/8 192.168.1.0/24
+dbpurgeage = 32d
+
 maxretry  = 1
 findtime  = 10m
 bantime   = 1d
-banaction = nftables[type=allports]
+
+# banaction = ufw
+# banaction = nftables[type=allports] 
 backend   = auto
 
 action = %(action_)s
-         telegram-geo[name=%(__name__)s, logpath="%(logpath)s"]
+         telegram-geo[name=%(__name__)s]
 
 [nginx-444]
 enabled   = true
-filter    = nginx-444
-port      = http,https
 logpath   = /var/log/nginx/fallback_access.log
+port      = http,https
 
 [recidive]
 enabled   = true
-filter    = recidive
-backend   = systemd
-banaction = nftables[type=allports]
+logpath   = /var/log/fail2ban.log
+# journalmatch =
+# banaction = nftables[type=allports]
 maxretry  = 2
 findtime  = 30d
 bantime   = 30d
