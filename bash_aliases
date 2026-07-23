@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-# Install packages:
+# Install packages Arch:
 # sudo pacman -Syu --needed lsd mc reflector expac fzf bash-completion etc-update less jq bat
+
+# Install packages Ubuntu:
+# sudo apt update && sudo apt upgrade -y && sudo apt install -y lsd mc fzf bash-completion less jq bat
 
 # https://wiki.archlinux.org/title/Bash#Aliases
 ## ALIASES MANAGEMENT
@@ -31,8 +34,13 @@ alias cp="cp -iv"
 alias mv="mv -iv"
 alias rm="rm -iv"
 alias grep="grep --color=auto"
-alias less="bat -p"
-alias cat="bat -pp"
+if command -v batcat >/dev/null 2>&1; then
+    alias less="batcat -p"
+    alias cat="batcat -pp"
+else
+    alias less="bat -p"
+    alias cat="bat -pp"
+fi
 
 ## SHORTS
 alias openports="sudo ss -ntulp"
@@ -46,7 +54,9 @@ alias 0x0="curl -4 -F file=@- https://0x0.st"
 alias tb="(exec 3<>/dev/tcp/termbin.com/9999; cat >&3; cat <&3; exec 3<&-)"
 alias bugspaces="grep -RnP '\s$' 2>/dev/null"
 # https://wiki.archlinux.org/title/Reflector
-alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
+if command -v reflector >/dev/null 2>&1; then
+    alias umirror="sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist"
+fi
 
 ## OTHER FUNCTIONS
 backup() { cp "$1"{,.backup}; }
@@ -69,75 +79,120 @@ line() {
 ## PARU MANAGEMENT
 # https://wiki.archlinux.org/title/Fzf#Pacman
 Install() {
-    case "$#" in
-    0)
-        echo "Usage: Install <keyword or package(s)> <only>"
-        ;;
-    1)
-        mapfile -t np < <(paru -Ssq "$1" | sort -u | fzf -q "$1" -i -m --reverse --preview 'paru -Sii {1}' --preview-window right:60%:wrap)
-        [ -n "${np[*]}" ] && paru -S --needed "${np[@]}"
-        ;;
-    2)
-        [ "$2" = "only" ] && np=("$1") || np=("$@")
-        paru -S --needed "${np[@]}"
-        ;;
-    *)
-        paru -S --needed "$@"
-        ;;
-    esac
+    if command -v apt >/dev/null 2>&1; then
+        case "$#" in
+        0)
+            echo "Usage: Install <keyword or package(s)> <only>"
+            ;;
+        1)
+            mapfile -t np < <(apt-cache search "$1" | awk '{print $1}' | sort -u | fzf -q "$1" -i -m --reverse --preview 'apt-cache show {1}' --preview-window right:60%:wrap)
+            [ -n "${np[*]}" ] && sudo apt install "${np[@]}"
+            ;;
+        2)
+            [ "$2" = "only" ] && np=("$1") || np=("$@")
+            sudo apt install "${np[@]}"
+            ;;
+        *)
+            sudo apt install "$@"
+            ;;
+        esac
+    else
+        case "$#" in
+        0)
+            echo "Usage: Install <keyword or package(s)> <only>"
+            ;;
+        1)
+            mapfile -t np < <(paru -Ssq "$1" | sort -u | fzf -q "$1" -i -m --reverse --preview 'paru -Sii {1}' --preview-window right:60%:wrap)
+            [ -n "${np[*]}" ] && paru -S --needed "${np[@]}"
+            ;;
+        2)
+            [ "$2" = "only" ] && np=("$1") || np=("$@")
+            paru -S --needed "${np[@]}"
+            ;;
+        *)
+            paru -S --needed "$@"
+            ;;
+        esac
+    fi
 }
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Packages_and_dependencies
 Purge() {
-    if [ "$#" -eq 0 ]; then
-        mapfile -t np < <(comm -23 <((
-            pacman -Qqen
-            pacman -Qqm
-        ) | sort) <((
-            expac -l '\n' '%E' base-devel
-            expac -l '\n' '%E' base
-        ) | sort -u) | sort -u | fzf -i -m --reverse --preview 'paru -Qii {1}' --preview-window right:80%:wrap)
-        [ -n "${np[*]}" ] && paru -Rsc "${np[@]}"
+    if command -v apt >/dev/null 2>&1; then
+        if [ "$#" -eq 0 ]; then
+            mapfile -t np < <(apt-mark showmanual | sort -u | fzf -i -m --reverse --preview 'apt-cache show {1}' --preview-window right:80%:wrap)
+            [ -n "${np[*]}" ] && sudo apt purge "${np[@]}" && sudo apt autoremove
+        else
+            sudo apt purge "$@" && sudo apt autoremove
+        fi
     else
-        paru -Rsc "$@"
+        if [ "$#" -eq 0 ]; then
+            mapfile -t np < <(comm -23 <((
+                pacman -Qqen
+                pacman -Qqm
+            ) | sort) <((
+                expac -l '\n' '%E' base-devel
+                expac -l '\n' '%E' base
+            ) | sort -u) | sort -u | fzf -i -m --reverse --preview 'paru -Qii {1}' --preview-window right:80%:wrap)
+            [ -n "${np[*]}" ] && paru -Rsc "${np[@]}"
+        else
+            paru -Rsc "$@"
+        fi
     fi
 }
-alias Update="paru -Su"
-alias Upgrade="paru -Syu"
-alias Ccache="paru -Sc"
+if command -v apt >/dev/null 2>&1; then
+    alias Update="sudo apt update && sudo apt upgrade"
+    alias Upgrade="sudo apt update && sudo apt full-upgrade"
+    alias Ccache="sudo apt clean && sudo apt autoclean"
+else
+    alias Update="paru -Su"
+    alias Upgrade="paru -Syu"
+    alias Ccache="paru -Sc"
+fi
 
 #SYSTEM MAINTAINING
 getnews() {
-    # Required by block
-    max=$(pacman -Qqu | wc -L)
-    if [ "$max" -gt 0 ]; then
-        echo -e '\033[0;34m:: \033[0m\033[1mRequired by: \033[0m'
-        for pkg in $(pacman -Qqu); do
-            printf "%*s:%s\n" "$max" "$pkg" "$(pacman -Qi "$pkg" | grep Req | sed -e 's/Required By     : //g')" | column -c80 -s: -t -W2
-        done
+    if command -v apt >/dev/null 2>&1; then
+        sudo apt update
+        local max
+        max=$(apt list --upgradable 2>/dev/null | grep -vc 'Listing...')
+        if [ "$max" -gt 0 ]; then
+            echo -e '\033[0;34m:: \033[0m\033[1mUpgradable packages: \033[0m'
+            apt list --upgradable 2>/dev/null | grep -v 'Listing...' | column -t -s' '
+        fi
+        sudo apt upgrade
+    else
+        max=$(pacman -Qqu | wc -L)
+        if [ "$max" -gt 0 ]; then
+            echo -e '\033[0;34m:: \033[0m\033[1mRequired by: \033[0m'
+            for pkg in $(pacman -Qqu); do
+                printf "%*s:%s\n" "$max" "$pkg" "$(pacman -Qi "$pkg" | grep Req | sed -e 's/Required By     : //g')" | column -c80 -s: -t -W2
+            done
+        fi
+        mirror=$(grep -m1 '^[^#]*Server.*=' /etc/pacman.d/mirrorlist | cut -d'/' -f3)
+        echo -ne '\033[0;34m:: \033[0m\033[1mMirror:'
+        echo -n " $mirror"
+        echo -e '\033[0m'
+        NEWS=$HOME/.cache/archlinux.news
+        [ -r "$NEWS" ] || touch "$NEWS"
+        rss_url="https://archlinux.org/feeds/news/"
+        last_modified=$(curl -sIm3 "$rss_url" | grep -oP "^last-modified: \K[0-9A-Za-z,: ]+")
+        if [ -n "$last_modified" ] && ! grep -q "$last_modified" "$NEWS"; then
+            latestnews=$(curl -sm3 "$rss_url" | grep -Eo "<lastBuildDate>.*</title>" | sed -e 's/<[^>]*>/ /g;s/+0000  /GMT /g;s/&gt;/>/g')
+            [ -n "$latestnews" ] && (
+                echo "$latestnews" >"$NEWS"
+                echo -e '\033[0;34m:: \033[0m\033[1mLatest news...\033[0m'
+                echo "   $latestnews"
+            )
+        fi
+        paru -Syu
     fi
-    # Mirror block
-    mirror=$(grep -m1 '^[^#]*Server.*=' /etc/pacman.d/mirrorlist | cut -d'/' -f3)
-    echo -ne '\033[0;34m:: \033[0m\033[1mMirror:'
-    echo -n " $mirror"
-    echo -e '\033[0m'
-    # Arch news block
-    NEWS=$HOME/.cache/archlinux.news
-    [ -r "$NEWS" ] || touch "$NEWS"
-    rss_url="https://archlinux.org/feeds/news/"
-    last_modified=$(curl -sIm3 "$rss_url" | grep -oP "^last-modified: \K[0-9A-Za-z,: ]+")
-    if [ -n "$last_modified" ] && ! grep -q "$last_modified" "$NEWS"; then
-        latestnews=$(curl -sm3 "$rss_url" | grep -Eo "<lastBuildDate>.*</title>" | sed -e 's/<[^>]*>/ /g;s/+0000  /GMT /g;s/&gt;/>/g')
-        [ -n "$latestnews" ] && (
-            echo "$latestnews" >"$NEWS"
-            echo -e '\033[0;34m:: \033[0m\033[1mLatest news...\033[0m'
-            echo "   $latestnews"
-        )
-    fi
-    # Working with updates
-    paru -Syu
 }
 # https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
-alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
+if command -v apt >/dev/null 2>&1; then
+    alias whatsnew="find /etc -name '*.dpkg-dist' -o -name '*.dpkg-new' 2>/dev/null | fzf --reverse --preview 'diff -y --suppress-common-lines {1} \$(echo {1} | sed -r \"s/\.dpkg-(dist|new)//\")' --preview-window right:78%:wrap"
+else
+    alias whatsnew="find /etc -name *.pacnew 2>/dev/null | sed 's/.pacnew//' | fzf --reverse --preview 'diff -y --suppress-common-lines {1} {1}.pacnew' --preview-window right:78%:wrap | xargs -ro sudo etc-update"
+fi
 
 gen_ssh_key() {
     if [ -z "$1" ] || [ -z "$2" ]; then echo "Usage: gen_ssh_key <key_name> <host>" ; echo "Example: gen_ssh_key project1 github.com" ; return 1; fi
@@ -146,7 +201,7 @@ gen_ssh_key() {
     local HOST="$2"
     local CONF="${HOME}/.ssh/config"
     mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
-    [ -f "${PATH_K}" ] && echo "Key $KEY already exists. Skipping." || ssh-keygen -t ed25519 -f "${PATH_K}" -N ""
+    if [ -f "${PATH_K}" ]; then echo "Key $KEY already exists. Skipping."; else ssh-keygen -t ed25519 -f "${PATH_K}" -N ""; fi
     echo -e "\nHost $HOST\n    HostName $HOST\n    User git\n    IdentityFile ~/.ssh/$KEY\n    IdentitiesOnly yes" >> "$CONF" && chmod 600 "$CONF"
     [ -f "$HOME/.ssh/known_hosts" ] && ssh-keygen -R "$HOST" &>/dev/null
     cat "${PATH_K}.pub"
@@ -162,7 +217,9 @@ if [ -n "$PATHINSTANCE" ]; then
     alias age='$INSTANCESCRIPTWAY/age.sh'
     alias ustat='watch -n 10 $INSTANCESCRIPTWAY/serverstatus.sh'
     alias topmem='$INSTANCESCRIPTWAY/topmem.sh'
-    alias aurupd='$INSTANCESCRIPTWAY/aurupdates.sh'
+    if command -v pacman >/dev/null 2>&1; then
+        alias aurupd='$INSTANCESCRIPTWAY/aurupdates.sh'
+    fi
 
     if [ "$(mount | grep -o ' / type btrfs')" != "" ]; then
         alias uisorescue='$INSTANCESCRIPTWAY/uisorescue.sh'
@@ -183,7 +240,7 @@ if [ -n "$PATHINSTANCE" ]; then
     # server=http://mydomain.ip or file:///home/custompkgs
     # IN sensitive.sh file above
     # https://wiki.archlinux.org/title/DeveloperWiki:Building_in_a_clean_chroot
-    if [ -n "$checkcustomrepository" ]; then
+    if [ -n "$checkcustomrepository" ] && command -v pacman >/dev/null 2>&1; then
         pkgctl() {
             if [ -n "$checkcustomrepository" ] && ! grep -q "${repositoryname:?}" "${CONF:?}"; then
                 echo "Please update devtools config file and add custom repository by running: add_custom_repository"
@@ -197,7 +254,11 @@ if [ -n "$PATHINSTANCE" ]; then
                 file://*) FORMAT="\n[%s]\nSigLevel = Never\nServer = %s\n" ;;
                 *)        FORMAT="\n[%s]\nSigLevel = Never\nServer = %s/\$repo/os/\$arch\n" ;;
             esac
-            printf "$FORMAT" "${repositoryname:?}" "${server}" | sudo tee -a "${CONF:?}"
+            printf "%s %s %s\n" "$FORMAT" "${repositoryname:?}" "${server}" | sudo tee -a "${CONF:?}"
         }
+    fi
+    
+    if command -v paccache >/dev/null 2>&1; then
+        alias cleanrepo='paccache -rvk1 -c /home/http/archrepo/archive'
     fi
 fi

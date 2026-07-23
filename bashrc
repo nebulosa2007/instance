@@ -1,7 +1,10 @@
 #!/bin/env bash
 
-# Program packages:
+# Program packages Arch:
 # sudo pacman -Syu --needed bash-completion fzf git tmux
+
+# Program packages Ubuntu:
+# sudo apt update && sudo apt upgrade -y && sudo apt install -y bash-completion fzf git tmux
 
 case $- in
 *i*)
@@ -9,26 +12,44 @@ case $- in
     if [ -f /usr/share/bash-completion/bash_completion ]; then
         # shellcheck source=/dev/null
         . /usr/share/bash-completion/bash_completion
+    elif [ -f /etc/bash_completion ]; then
+        # shellcheck source=/dev/null
+        . /etc/bash_completion
     fi
 
     # https://wiki.archlinux.org/title/Fzf#Bash
     if [ -f /usr/share/fzf/completion.bash ]; then
         # shellcheck source=/dev/null
         . /usr/share/fzf/completion.bash
+    elif [ -f /usr/share/doc/fzf/examples/completion.bash ]; then
+        # shellcheck source=/dev/null
+        . /usr/share/doc/fzf/examples/completion.bash
     fi
     if [ -f /usr/share/fzf/key-bindings.bash ]; then
         # shellcheck source=/dev/null
         . /usr/share/fzf/key-bindings.bash
+    elif [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+        # shellcheck source=/dev/null
+        . /usr/share/doc/fzf/examples/key-bindings.bash
     fi
 
     # https://wiki.archlinux.org/title/Git#Bash_completion
     if [ -f /usr/share/git/completion/git-completion.bash ]; then
         # shellcheck source=/dev/null
         . /usr/share/git/completion/git-completion.bash
+    elif [ -f /usr/share/bash-completion/completions/git ]; then
+        # shellcheck source=/dev/null
+        . /usr/share/bash-completion/completions/git
     fi
 
     #https://wiki.archlinux.org/title/Git#Git_prompt
+	git_prompt_file=""
     if [ -f /usr/share/git/completion/git-prompt.sh ]; then
+        git_prompt_file="/usr/share/git/completion/git-prompt.sh"
+    elif [ -f /usr/lib/git-core/git-sh-prompt ]; then
+        git_prompt_file="/usr/lib/git-core/git-sh-prompt"
+    fi
+    if [ -n "$git_prompt_file" ]; then
         export GIT_PS1_SHOWDIRTYSTATE=on      # any nonempty value. + for staged, * if unstaged
         export GIT_PS1_SHOWSTASHSTATE=on      # any nonempty value. $ if something is stashed
         export GIT_PS1_SHOWUNTRACKEDFILES=on  # any nonempty value. % if there are untracked files
@@ -43,7 +64,7 @@ case $- in
         export GIT_PS1_DESCRIBE_STYLE="default" # show commit relative to tag or branch, when detached HEAD
         export GIT_PS1_SHOWCOLORHINTS=on        # any nonempty value. display in color
         # shellcheck source=/dev/null
-        . /usr/share/git/completion/git-prompt.sh
+        . "$git_prompt_file"
     fi
 
     PS1='\n \
@@ -95,8 +116,13 @@ $ '
         #[ `systemctl list-units --failed | grep "listed" | cut -d" " -f1` -ne 0 ] && echo -e "\n${red} $(systemctl list-units --failed -q)${nc}"
         [ "$(who | grep pts | grep -cv 'tmux')" -ne 1 ] && echo -e "\n${yellow} Login warning:\n$(who | sed 's/^/ /')${nc}"
         # https://wiki.archlinux.org/title/Pacman/Pacnew_and_Pacsave#.pacnew
-        PACNEWCOUNT=$(find /etc -name '*.pacnew' 2>/dev/null | wc -l)
-        [ "$PACNEWCOUNT" -ne 0 ] && echo -e "\n Pacnew files: $PACNEWCOUNT update""$([ "$PACNEWCOUNT" -ne 1 ] && echo -n 's')"" remaining"
+        if command -v pacman >/dev/null 2>&1; then
+            PACNEWCOUNT=$(find /etc -name '*.pacnew' 2>/dev/null | wc -l)
+            [ "$PACNEWCOUNT" -ne 0 ] && echo -e "\n Pacnew files: $PACNEWCOUNT update""$([ "$PACNEWCOUNT" -ne 1 ] && echo -n 's')"" remaining"
+        else
+            DPKGCOUNT=$(find /etc -name '*.dpkg-dist' -o -name '*.dpkg-new' 2>/dev/null | wc -l)
+            [ "$DPKGCOUNT" -ne 0 ] && echo -e "\n Pending config update files: $DPKGCOUNT remaining"
+        fi
     fi
 
     #INSTANCE PROJECT SCRIPTS:
@@ -105,10 +131,19 @@ $ '
     [ "$(systemctl list-units --user --failed | grep "listed" | cut -d" " -f1)" -ne 0 ] && echo -e "\n${red} $(systemctl list-units --user --failed -q)${nc}"
 
     if [ -n "$SSH_CLIENT" ] && [ -z "$TMUX" ]; then
-        if [ -f /var/tmp/updpackages.state ] && [ "$(pacman -Qu | grep -cv "\[ignored\]")" -ne 0 ]; then
-            echo -e "\n${yellow} Available updates:\n$(sed 's/<[^>]*>//g;s/^/ /' </var/tmp/updpackages.state | tail -n+2)${nc}"
+        if command -v pacman >/dev/null 2>&1; then
+            if [ -f /var/tmp/updpackages.state ] && [ "$(pacman -Qu 2>/dev/null | grep -cv "\[ignored\]")" -ne 0 ]; then
+                echo -e "\n${yellow} Available updates:\n$(sed 's/<[^>]*>//g;s/^/ /' </var/tmp/updpackages.state | tail -n+2)${nc}"
+            else
+                echo -e "\n${green} System is up-to-date${nc}"
+            fi
         else
-            echo -e "\n${green} System is up-to-date${nc}"
+            UPDCOUNT=$(apt list --upgradable 2>/dev/null | grep -v 'Listing...' | wc -l)
+            if [ "$UPDCOUNT" -gt 0 ]; then
+                echo -e "\n${yellow} Available updates: $UPDCOUNT package(s) can be upgraded${nc}"
+            else
+                echo -e "\n${green} System is up-to-date${nc}"
+            fi
         fi
 
         if [ -z "$PATHINSTANCE" ]; then

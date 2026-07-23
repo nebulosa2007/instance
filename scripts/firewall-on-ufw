@@ -1,0 +1,92 @@
+#!/bin/bash
+# Based on: https://wiki.archlinux.org/title/Nftables#Single_machine but for ufw.
+
+# isRoot
+[[ "$EUID" != 0 ]] && {
+    echo "You need to run this script as root"
+    exit 1
+}
+
+# ufw must be installed
+command -v ufw >/dev/null 2>&1 || {
+    echo "ufw is not installed. Install it first (e.g. apt install ufw)."
+    exit 1
+}
+
+echo " * Unmasking and enable ufw"
+systemctl unmask ufw.service >/dev/null 2>&1
+systemctl enable ufw.service >/dev/null 2>&1
+
+# Just disable everything?
+[[ "$1" == "off" ]] && {
+    echo "[*] Disabling ufw"
+    ufw --force disable
+    ufw status verbose
+    exit 0
+}
+
+# Interactive port selection
+for p in tcp udp; do
+    echo -e "\nOpen ${p^^} ports by processes:\n"
+    ops=$(ss -ln --$p | grep -Ev "(127\.|\[::\])" | grep -Po '(?<=:)(\d+)' | sort -nu | tr '\n' ' ')
+    ss -lnp --$p | tail -n +2 | grep -Ev "(127\.|\[::\])" | sed 's/users:(("//g;s/:/ /;s/"/ /' | awk '{print $4, $5, $7}' | (
+        echo "Address Port Process"
+        sort -nk3,3 -nk2
+    ) | column -t -R1
+    declare -n ops_ref="ops_$p"
+    read -rp $'\nPlease enter the '"${p^^}"$' ports (IPv4 only) for opening outside: ' -e -i "$ops" ops_ref
+done
+
+echo " * Resetting ufw to a clean state"
+ufw --force reset >/dev/null
+
+echo " * Setting default policies"
+ufw default deny incoming
+ufw default allow outgoing
+ufw default deny routed
+
+echo " * Adding port rules"
+for p in tcp udp; do
+    declare -n ops_ref="ops_$p"
+    if [[ -n "$ops_ref" ]]; then
+        echo " * Adding ${p^^} ports: $ops_ref"
+        for op in $ops_ref; do
+            ufw allow "$op/$p"
+        done
+    fi
+done
+
+echo -e "\n * WireGuard / VPN forwarding setup (optional)"
+read -rp "Enable NAT + forwarding for a WireGuard-style VPN subnet? [y/N]: " wg_ans
+if [[ "$wg_ans" =~ ^[Yy]$ ]]; then
+    read -rp "VPN subnet to NAT [10.0.0.0/24]: " wg_subnet
+    wg_subnet=${wg_subnet:-10.0.0.0/24}
+
+    ext_iface=$(ip route show | awk '/^default/ {print $5; exit}')
+    if [[ -z "$ext_iface" ]]; then
+        echo "   ! Could not detect the default outbound interface, skipping NAT setup"
+    else
+        echo "   * Detected external interface: $ext_iface"
+        ufw default allow routed
+        sed -i 's/DEFAULT_FORWARD_POLICY="DROP"/DEFAULT_FORWARD_POLICY="ACCEPT"/' /etc/default/ufw
+        if ! grep -q '^net.ipv4.ip_forward *= *1' /etc/sysctl.conf 2>/dev/null; then
+            echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+        fi
+        sysctl -w net.ipv4.ip_forward=1 >/dev/null
+        if ! grep -q "POSTROUTING -s ${wg_subnet}" /etc/ufw/before.rules 2>/dev/null; then
+            sed -i "0,/^\*filter/s|^\*filter|*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING -s ${wg_subnet} -o ${ext_iface} -j MASQUERADE\nCOMMIT\n\n*filter|" \
+                   /etc/ufw/before.rules
+            echo "   * NAT rule for $wg_subnet via $ext_iface added to /etc/ufw/before.rules"
+        else
+            echo "   * NAT rule for $wg_subnet already present in before.rules, skipping"
+        fi
+    fi
+fi
+
+echo " * Enabling ufw"
+ufw --force enable
+
+echo "All set. Good luck!"
+echo
+echo "Current ruleset:"
+ufw status verbose
