@@ -22,14 +22,18 @@ else
     echo
     df -h | grep -E "$(mount | grep -q ' on / type btrfs' && echo '/$' || echo '/[s|v]da')"
     echo
-    COUNTUPD=$(pacman -Qu | grep -cv "ignored")
+    COUNTUPD=0
+    command -v pacman >/dev/null && COUNTUPD=$(pacman -Qu | grep -cv "ignored")
+    command -v apt >/dev/null && COUNTUPD=$(apt list --upgradable 2>/dev/null | grep -cv "^Listing")
     if [ "$COUNTUPD" -gt 0 ]; then
         echo "Available updates:"
-        [ "$COUNTUPD" -lt 16 ] && grep -v "<b>" /var/log/updpackages.log
+        command -v pacman >/dev/null && [ "$COUNTUPD" -lt 16 ] && grep -v "<b>" /var/log/updpackages.log
+        command -v apt >/dev/null && [ "$COUNTUPD" -lt 16 ] && apt list --upgradable 2>/dev/null | grep -v "^Listing"
         echo "$COUNTUPD total"
         echo
     fi
-    echo "Total packages: $(pacman -Q | wc -l)"
+    command -v pacman >/dev/null && echo "Total packages: $(pacman -Q | wc -l)"
+    command -v apt >/dev/null && echo "Total packages: $(dpkg -l | grep -c '^ii')"
     echo
     command -v vnstat &>/dev/null && vnstat --oneline | sed 's/^\([^;]*;\)\{7\}//;s/;/   RX: /;s/;/   TX: /;s/;/   Total: /;s/;.*//'
     show_estimated_traffic

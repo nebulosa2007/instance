@@ -3,11 +3,14 @@
 df -h | grep -E "$(mount | grep -q ' on / type btrfs' && echo '/$' || echo '/[s|v]da')"
 
 # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#Removing_unused_packages_(orphans)
-pacman -Qdtq | sudo pacman --noconfirm -Rns - 2>/dev/null
+command -v pacman >/dev/null && pacman -Qdtq | sudo pacman --noconfirm -Rns - 2>/dev/null
 
 # https://wiki.archlinux.org/title/Pacman#Package_cache_directory
 # In case Cache folder is '/tmp' to do not wipe other files
-sudo find "$(grep -Po '(?<=CacheDir) *= *\K(\S+)' /etc/pacman.conf)" -type f -name "*.pkg.tar.zst*" -delete 2>/dev/null
+command -v pacman >/dev/null && sudo find "$(grep -Po '(?<=CacheDir) *= *\K(\S+)' /etc/pacman.conf)" -type f -name "*.pkg.tar.zst*" -delete 2>/dev/null
+
+command -v apt-get >/dev/null && sudo apt-get --purge -y autoremove 2>/dev/null
+command -v apt-get >/dev/null && sudo apt-get clean 2>/dev/null
 
 # https://wiki.archlinux.org/title/Systemd/Journal#Clean_journal_files_manually
 sudo journalctl --disk-usage
