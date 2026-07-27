@@ -1,28 +1,28 @@
 [DEFAULT]
 ignoreip  = 127.0.0.1/8 192.168.1.0/24
-
 maxretry  = 1
 findtime  = 10m
 bantime   = 1d
-backend   = auto
+backend   = systemd
 
-banaction = nftables[type=allports, blocktype=drop]
+
 # banaction = ufw[blocktype=deny]
+banaction = nftables[type=allports, blocktype=drop]
 
 action = %(action_)s
          telegram-geo[name=%(__name__)s]
 
 [nginx-444]
 enabled      = true
-backend      = systemd
 journalmatch = _SYSTEMD_UNIT=nginx.service
 port         = http,https
 
 [recidive]
 enabled      = true
-logpath      = /var/log/fail2ban.log
-journalmatch =
+journalmatch = _SYSTEMD_UNIT=fail2ban.service
 maxretry     = 2
 findtime     = 30d
 bantime      = 30d
 failregex    = ^.*?\[.*\] Ban <HOST>.*$
+# banaction  = ufw[blocktype=deny]
+banaction    = nftables[type=allports, blocktype=drop]
