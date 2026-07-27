@@ -1,2 +1,2 @@
 [Definition]
-failregex = ^<HOST> .*?" 444 \d+
+failregex = ^(?:[^:]+:\s+)*<HOST> - - \[.+?\] "[A-Z]+ .+? HTTP\/[0-9.]+" 444 \d+
