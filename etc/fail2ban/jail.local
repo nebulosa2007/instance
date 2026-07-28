@@ -7,7 +7,7 @@ backend   = systemd
 
 
 # banaction = ufw[blocktype=deny]
-banaction = nftables[type=allports, blocktype=drop]
+# banaction = nftables[type=allports, blocktype=drop]
 
 action = %(action_)s
          telegram-geo[name=%(__name__)s]
@@ -25,4 +25,4 @@ findtime     = 30d
 bantime      = 30d
 failregex    = ^.*?\[.*\] Ban <HOST>.*$
 # banaction  = ufw[blocktype=deny]
-banaction    = nftables[type=allports, blocktype=drop]
+# banaction    = nftables[type=allports, blocktype=drop]
